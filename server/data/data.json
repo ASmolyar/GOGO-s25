@@ -1,0 +1,221 @@
+{
+  "overview_mission": {
+    "title": "IMPACT REPORT 2024 / Impact Deck 2024 - GOGO Copy",
+    "mission": "Empower youth through music, art, and mentorship to help them overcome hardship, find their voice, and realize their potential as tomorrow’s leaders.",
+    "artistic_disciplines": [
+      "Guitar",
+      "Bass",
+      "Cinema",
+      "Keys",
+      "Dance",
+      "Drums",
+      "Latin Percussion",
+      "Modern Band",
+      "Music Production",
+      "Songwriting",
+      "Spoken Word",
+      "Photography & Digital Media",
+      "Poetry & Creative Writing",
+      "Rap",
+      "Visual Art",
+      "Vocals",
+      "DJing"
+    ]
+  },
+  "key_statistics_program_data": {
+    "total_students_served_since": 2008,
+    "total_students_served": 12000,
+    "at_a_glance": {
+      "unknown_metric": 1622,
+      "students": 59,
+      "mentors": 105,
+      "sites": "School & Community Sites",
+      "new_york_since": 2024
+    },
+    "survey_percentages": {
+      "encouraged_to_work_through_challenges": "90%",
+      "measurable_growth_in_PYD": "87%",
+      "mentor_encourages_future_envision": "87%",
+      "mentor_attentiveness": "80%"
+    },
+    "data_collection_tool": "Hello Insight SEL & Positive Youth Development Evaluation Platform"
+  },
+  "program_methodology_outcomes": {
+    "model_description": "Pairing youth with a caring adult mentor, the power of music, and trauma-informed mental health support via weekly after-school music and art instruction, mentoring sessions, and performance opportunities.",
+    "demographics": {
+      "age_range": "8-18",
+      "ethnicity": {
+        "black_african_american": "44%",
+        "hispanic_latinx": "46%"
+      },
+      "federal_poverty_level": "96%"
+    },
+    "outcomes": {
+      "academic_gains": "94%",
+      "improved_conduct": "95%"
+    },
+    "skills": [
+      "Confidence and self-awareness",
+      "Empathy and sense of belonging",
+      "Emotional intelligence and creativity",
+      "Self-presentation and expression",
+      "Workforce readiness and life skills",
+      "Trusted mentors and positive role models",
+      "Supportive community of peers"
+    ],
+    "economic_impact": "22x return on investment"
+  },
+  "m_power_mental_health_wellness": {
+    "description": "Expanded program integrating trauma-informed care with music/arts mentorship.",
+    "curriculum_enhancements": "Circle-keeping lesson plans and interactive, reflective practices",
+    "wellness_mentors": [
+      "Wisty Andre",
+      "Jessica Freites",
+      "Dana Gatziolis",
+      "Tiana Lanier",
+      "Josh Levine",
+      "A’ja Prophet"
+    ],
+    "testimonials": [
+      "Benjamin Eisenberg, M-Power Intern, Spring 2024",
+      "Daniella Lexine, M-Power Intern, Spring & Summer 2024"
+    ]
+  },
+  "wellness_interns_partnerships": {
+    "interns": [
+      {
+        "name": "Kayla Jean Baptiste",
+        "institution": "Florida Memorial University"
+      },
+      {
+        "name": "Gabriela Cabrera",
+        "institution": "Florida International University"
+      },
+      {
+        "name": "Alex De Rosa",
+        "institution": "Florida International University"
+      },
+      {
+        "name": "Stella Diez",
+        "institution": "Florida International University"
+      },
+      {
+        "name": "Benjamin Eisenberg",
+        "institution": "Frost School of Music"
+      },
+      {
+        "name": "Jeannette Ferrierra",
+        "institution": "Barry University"
+      },
+      {
+        "name": "Shadrack Jeanbaptiste",
+        "institution": "Florida Memorial University"
+      },
+      {
+        "name": "Daniella Lexine",
+        "institution": "Barry University"
+      },
+      {
+        "name": "Anaya Miller",
+        "institution": "Florida Memorial University"
+      },
+      {
+        "name": "David Ossa",
+        "institution": "Jewish Community Services South Florida"
+      },
+      {
+        "name": "Katherine Queirolo",
+        "institution": "Florida International University"
+      },
+      {
+        "name": "Daniela Soto",
+        "institution": "Florida International University"
+      },
+      {
+        "name": "Judelle White",
+        "institution": "Barry University"
+      }
+    ]
+  },
+  "annual_report_strategic_highlights": {
+    "program_support": {
+      "mentorship_hours": "12,000+ hours",
+      "sites": 55,
+      "field_trips": "60+",
+      "recording_studios": 5,
+      "eps_produced": 2,
+      "mentor_pay_increase": "Increased pay rates for professional mentors",
+      "staff_background": {
+        "former_mentors_percentage": "42%",
+        "program_alumni_percentage": "6%"
+      }
+    },
+    "new_program_launch": "GOGO New York pilot in two Harlem schools serving 23 young people",
+    "strategic_highlights": [
+      "Debut of updated signature music/arts and mental wellness curriculum",
+      "Strengthened partnerships with Lollapalooza, TEDxChicago, and The Obama Foundation’s MBK Alliance",
+      "Engagement with Illinois State Senators (Johnson, Sims, Hunter, and Peters)",
+      "Expansion of M-Power program in Miami and Chicago with local university partnerships and Youth Mental Health First Aid certification",
+      "Expanded collaboration with Miami-Dade County Department of Parks, Recreation & Open Spaces, serving four public parks including Papa Keith Music & Media Studio at Gwen Cherry Park"
+    ]
+  },
+  "site_locations": {
+    "miami_region": [
+      "Carol City Middle School",
+      "Lake Stevens Middle School",
+      "Myrtle Grove K-8 Center",
+      "North County K-8 Center",
+      "Citrus Grove K-8 Center",
+      "Coconut Palm K-8 Academy",
+      "Cutler Bay Middle School",
+      "Homestead Middle School",
+      "Homestead Senior High School",
+      "Leisure City K-8 Center",
+      "Mandarin Lakes K-8 Academy",
+      "Miami Southridge Senior High School",
+      "Redland Middle School",
+      "Richmond Heights Middle School",
+      "South Dade Middle School",
+      "West Homestead K-8 Center"
+    ],
+    "chicago_region": [
+      "Roberto Clemente Community Academy",
+      "Rusu-McCarten Boys & Girls Club",
+      "Washington Irving Elementary School",
+      "William H. Brown STEM Magnet School",
+      "William P. Nixon Public School",
+      "Mosaic Hub",
+      "Waukegan High School – Brookside Campus",
+      "JNAC Creatives",
+      "John R. Lewis Middle School",
+      "Boys & Girls Club of Lake County",
+      "Evergreen Academy Middle School",
+      "James Shields Middle School",
+      "Curie Metro High School",
+      "A.O.N. Productions Career Pathway",
+      "Art in Motion",
+      "Chicago Collegiate High School",
+      "CICS Prairie",
+      "CICS Lloyd Bond Charter School",
+      "Gary Comer College Prep Middle School",
+      "Kenwood Academy High School",
+      "Gary Comer Youth Center",
+      "Haven Studios",
+      "Juvenile Probation Program @ TASC",
+      "Haven Cinema",
+      "Cinema Career Pathway",
+      "Camp GOGO @ Covenant Harbor"
+    ]
+  },
+  "sponsors_partners": {
+    "textual_mentions": [
+      "Lollapalooza",
+      "TEDxChicago",
+      "The Obama Foundation’s MBK Alliance",
+      "Illinois State Senators (Johnson, Sims, Hunter, Peters)",
+      "Senator Mattie Hunter",
+      "Senator Adriane Johnson"
+    ],
+    "additional_notes": "Other sponsor details may be present in visual elements (logos, diagrams) not captured in text."
+  }
+}
