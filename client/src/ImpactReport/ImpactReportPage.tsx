@@ -1,87 +1,75 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './ImpactReportStructure.css';
+import Header from './components/Header';
+import HeroSection from './components/HeroSection';
+import MissionSection from './components/MissionSection';
+import ImpactSection from './components/ImpactSection';
+import ProgramsSection from './components/ProgramsSection';
+import LocationsSection from './components/LocationsSection';
 
 function ImpactReportPage() {
+  // Apply Spotify-like styles to body when component mounts
+  useEffect(() => {
+    // Save original styles to restore them later
+    const originalBackground = document.body.style.backgroundColor;
+    const originalColor = document.body.style.color;
+    const originalFontFamily = document.body.style.fontFamily;
+    const originalOverflow = document.body.style.overflowX;
+    
+    // Apply Spotify-inspired styles
+    document.body.style.backgroundColor = 'var(--spotify-black, #121212)';
+    document.body.style.color = 'white';
+    document.body.style.fontFamily = 'var(--font-main, "Gotham", "Montserrat", "Helvetica Neue", sans-serif)';
+    document.body.style.overflowX = 'hidden';
+    document.body.classList.add('has-spotify-header');
+    
+    // Add Google Fonts for Montserrat
+    const fontLink = document.createElement('link');
+    fontLink.href = 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap';
+    fontLink.rel = 'stylesheet';
+    document.head.appendChild(fontLink);
+    
+    // Cleanup function to restore original styles
+    return () => {
+      document.body.style.backgroundColor = originalBackground;
+      document.body.style.color = originalColor;
+      document.body.style.fontFamily = originalFontFamily;
+      document.body.style.overflowX = originalOverflow;
+      document.body.classList.remove('has-spotify-header');
+      document.head.removeChild(fontLink);
+    };
+  }, []);
+
   return (
     <div className="impact-report">
-      {/* Hero Section */}
-      <section className="hero-section">
-        <h1>IMPACT REPORT 2024</h1>
-        <h2>Guitars Over Guns</h2>
-      </section>
-
-      {/* Mission Section */}
-      <section className="mission-section">
-        <h2>Our Mission</h2>
-        <p>
-          Empowering youth through music, art and mentorship. Since 2008, we
-          have served nearly 12,000 students through arts education and
-          mentorship with professional musicians.
-        </p>
-        <div className="stats-container">
-          <div className="stat-item">
-            <h3>1622</h3>
-            <p>Students</p>
-          </div>
-          <div className="stat-item">
-            <h3>105</h3>
-            <p>Mentors</p>
-          </div>
-          <div className="stat-item">
-            <h3>59</h3>
-            <p>School & Community Sites</p>
+      <div className="spotify-gradient-background"></div>
+      <Header />
+      <div className="main-content">
+        <HeroSection />
+        <MissionSection />
+        <ImpactSection />
+        <ProgramsSection />
+        <LocationsSection />
+      </div>
+      <footer className="spotify-footer">
+        <div className="footer-content">
+          <div className="footer-logo">Guitars Over Guns</div>
+          <div className="footer-links">
+            <a href="#" className="footer-link">About</a>
+            <a href="#" className="footer-link">Programs</a>
+            <a href="#" className="footer-link">Donate</a>
+            <a href="#" className="footer-link">Contact</a>
           </div>
         </div>
-      </section>
-
-      {/* Impact Section */}
-      <section className="impact-section">
-        <h2>Our Impact</h2>
-        <div className="impact-stats">
-          <div className="impact-stat">
-            <h3>90%</h3>
-            <p>of students say their mentor can be counted on for help</p>
+        <div className="footer-bottom">
+          <div className="social-icons">
+            <span className="icon">♫</span>
+            <span className="icon">♪</span>
+            <span className="icon">🎵</span>
           </div>
-          <div className="impact-stat">
-            <h3>87%</h3>
-            <p>of students felt encouraged to work through challenges</p>
-          </div>
-          <div className="impact-stat">
-            <h3>85%</h3>
-            <p>of students showed measurable growth</p>
-          </div>
+          <div className="copyright">© 2024 Guitars Over Guns. All rights reserved.</div>
         </div>
-      </section>
-
-      {/* Programs Section */}
-      <section className="programs-section">
-        <h2>Our Programs</h2>
-        <div className="program-list">
-          <div className="program-item">
-            <h3>Music Education</h3>
-            <p>Guitar, Bass, Keys, Drums, Production, and more</p>
-          </div>
-          <div className="program-item">
-            <h3>Mentorship</h3>
-            <p>One-on-one guidance from professional musicians</p>
-          </div>
-          <div className="program-item">
-            <h3>Mental Health Support</h3>
-            <p>M-Power wellness program and counseling services</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Locations Section */}
-      <section className="locations-section">
-        <h2>Where We Work</h2>
-        <div className="locations-grid">
-          <div className="location">Miami (Since 2008)</div>
-          <div className="location">Chicago (Since 2014)</div>
-          <div className="location">Los Angeles (Since 2021)</div>
-          <div className="location">New York (Since 2024)</div>
-        </div>
-      </section>
+      </footer>
     </div>
   );
 }
