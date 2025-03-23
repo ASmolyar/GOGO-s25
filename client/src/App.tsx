@@ -22,7 +22,7 @@ import EmailResetPasswordPage from './Authentication/EmailResetPasswordPage.tsx'
 import ResetPasswordPage from './Authentication/ResetPasswordPage.tsx';
 import AlertPopup from './components/AlertPopup.tsx';
 import InviteRegisterPage from './Authentication/InviteRegisterPage.tsx';
-import appLogo from './assets/gogo logo_processed.png';
+import appLogo from './assets/gogoWithoutBkg.png';
 import MainTitle from './components/Title.tsx';
 
 function App() {
@@ -42,10 +42,10 @@ function App() {
                 }}>
                   <AlertPopup />
                   <MainTitle
-                    title="Welcome to Our Application" 
+                    title="YEARLY IMPACT REPORT" 
                     imageSrc={appLogo}
                     imageAlt="Application Logo"
-                    animationDuration={4}
+                    animationDuration={3.5}
                   />
                   <Routes>
                     {/* Routes accessed only if user is not authenticated */}

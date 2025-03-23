@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 interface AnimatedTitleProps {
   title: string;
@@ -19,12 +20,13 @@ const fadeIn = keyframes`
   }
 `;
 
+
 const float = keyframes`
   0% {
     transform: translateY(0px);
   }
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-30px);
   }
   100% {
     transform: translateY(0px);
@@ -53,15 +55,18 @@ const Title = styled.h1`
 
 const ImageContainer = styled.div<{ duration: number }>`
   animation: ${float} ${(props) => props.duration}s ease-in-out infinite;
-  width: 200px;
+  width: 90vw;
   margin: 0 auto;
 `;
 
 const Image = styled.img`
-  max-width: 100%;
+  width: 100%;
   height: auto;
   animation: ${fadeIn} 1.5s ease-out;
   display: block;
+  object-fit: cover;
+  object-position: center;
+  cursor: pointer;
 `;
 
 const MainTitle: React.FC<AnimatedTitleProps> = ({
@@ -70,7 +75,12 @@ const MainTitle: React.FC<AnimatedTitleProps> = ({
   imageAlt = 'Animated image',
   animationDuration = 3,
 }) => {
+  const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
+
+  const handleImageClick = () => {
+    navigate('/HomePage'); // Change '/home' to whatever route you want
+  };
 
   useEffect(() => {
     // Delay visibility to trigger animations
@@ -87,7 +97,7 @@ const MainTitle: React.FC<AnimatedTitleProps> = ({
         <>
           <Title>{title}</Title>
           <ImageContainer duration={animationDuration}>
-            <Image src={imageSrc} alt={imageAlt} />
+            <Image src={imageSrc} alt={imageAlt} onClick={handleImageClick} />
           </ImageContainer>
         </>
       )}
