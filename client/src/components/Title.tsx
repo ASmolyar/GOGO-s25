@@ -20,7 +20,6 @@ const fadeIn = keyframes`
   }
 `;
 
-
 const float = keyframes`
   0% {
     transform: translateY(0px);
@@ -69,6 +68,7 @@ const Image = styled.img`
   cursor: pointer;
 `;
 
+// eslint-disable-next-line react/function-component-definition
 const MainTitle: React.FC<AnimatedTitleProps> = ({
   title,
   imageSrc,
