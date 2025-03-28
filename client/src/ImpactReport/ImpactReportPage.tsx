@@ -15,20 +15,22 @@ function ImpactReportPage() {
     const originalColor = document.body.style.color;
     const originalFontFamily = document.body.style.fontFamily;
     const originalOverflow = document.body.style.overflowX;
-    
+
     // Apply Spotify-inspired styles
     document.body.style.backgroundColor = 'var(--spotify-black, #121212)';
     document.body.style.color = 'white';
-    document.body.style.fontFamily = 'var(--font-main, "Gotham", "Montserrat", "Helvetica Neue", sans-serif)';
+    document.body.style.fontFamily =
+      'var(--font-main, "Gotham", "Montserrat", "Helvetica Neue", sans-serif)';
     document.body.style.overflowX = 'hidden';
     document.body.classList.add('has-spotify-header');
-    
+
     // Add Google Fonts for Montserrat
     const fontLink = document.createElement('link');
-    fontLink.href = 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap';
+    fontLink.href =
+      'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap';
     fontLink.rel = 'stylesheet';
     document.head.appendChild(fontLink);
-    
+
     // Cleanup function to restore original styles
     return () => {
       document.body.style.backgroundColor = originalBackground;
@@ -55,10 +57,18 @@ function ImpactReportPage() {
         <div className="footer-content">
           <div className="footer-logo">Guitars Over Guns</div>
           <div className="footer-links">
-            <a href="#" className="footer-link">About</a>
-            <a href="#" className="footer-link">Programs</a>
-            <a href="#" className="footer-link">Donate</a>
-            <a href="#" className="footer-link">Contact</a>
+            <a href="#" className="footer-link">
+              About
+            </a>
+            <a href="#" className="footer-link">
+              Programs
+            </a>
+            <a href="#" className="footer-link">
+              Donate
+            </a>
+            <a href="#" className="footer-link">
+              Contact
+            </a>
           </div>
         </div>
         <div className="footer-bottom">
@@ -67,7 +77,9 @@ function ImpactReportPage() {
             <span className="icon">♪</span>
             <span className="icon">🎵</span>
           </div>
-          <div className="copyright">© 2024 Guitars Over Guns. All rights reserved.</div>
+          <div className="copyright">
+            © 2024 Guitars Over Guns. All rights reserved.
+          </div>
         </div>
       </footer>
     </div>
