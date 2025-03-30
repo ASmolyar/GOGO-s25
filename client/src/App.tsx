@@ -23,6 +23,7 @@ import ResetPasswordPage from './Authentication/ResetPasswordPage.tsx';
 import AlertPopup from './components/AlertPopup.tsx';
 import InviteRegisterPage from './Authentication/InviteRegisterPage.tsx';
 import Impact from './components/impact.tsx';
+import ImpactReportPage from './ImpactReport/ImpactReportPage.tsx';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
                   
                   {/* Routes accessed only if user is not authenticated */}
                   <Route element={<UnauthenticatedRoutesWrapper />}>
+                    <Route path="/" element={<ImpactReportPage />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<RegisterPage />} />
                     <Route
@@ -65,6 +67,9 @@ function App() {
                   <Route element={<AdminRoutesWrapper />}>
                     <Route path="/users" element={<AdminDashboardPage />} />
                   </Route>
+
+                  {/* SpotifyNav route */}
+                  {/* <Route path="/spotify" element={<SpotifyNav />} /> */}
 
                   {/* Route which redirects to a different page depending on if the user is an authenticated or not by utilizing the DynamicRedirect component */}
                   <Route
