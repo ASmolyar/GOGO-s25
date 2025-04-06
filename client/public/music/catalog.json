@@ -1,6 +1,113 @@
 {
   "albums": [
     {
+      "id": "the_rain_may_be_pouring",
+      "title": "The Rain May Be Pouring",
+      "description": "Original pieces by Guitars Over Guns students and mentors",
+      "coverImage": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/cover.jpg",
+      "year": "2024",
+      "tracks": [
+        {
+          "id": "hurricane",
+          "title": "Hurricane",
+          "artist": "GOGO Student Collective",
+          "duration": "4:05",
+          "file": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/Hurricane.mp3"
+        },
+        {
+          "id": "breathe_through_the_pain",
+          "title": "Breathe Through the Pain",
+          "artist": "GOGO Student Collective",
+          "duration": "3:22",
+          "file": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/Breathe_Through_the_Pain.mp3"
+        },
+        {
+          "id": "company",
+          "title": "Company",
+          "artist": "GOGO Student Collective",
+          "duration": "3:46",
+          "file": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/Company.mp3"
+        },
+        {
+          "id": "crazy",
+          "title": "Crazy",
+          "artist": "GOGO Student Collective",
+          "duration": "3:30",
+          "file": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/Crazy.mp3"
+        },
+        {
+          "id": "heavens_footsteps",
+          "title": "Heaven's Footsteps",
+          "artist": "GOGO Student Collective",
+          "duration": "3:18",
+          "file": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/Heaven's_Footsteps.mp3"
+        },
+        {
+          "id": "homesick",
+          "title": "Homesick",
+          "artist": "GOGO Student Collective",
+          "duration": "5:02",
+          "file": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/Homesick.mp3"
+        },
+        {
+          "id": "its_come_to_this",
+          "title": "It's Come to This...",
+          "artist": "GOGO Student Collective",
+          "duration": "4:42",
+          "file": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/It's_Come_to_This....mp3"
+        },
+        {
+          "id": "loud_silence",
+          "title": "Loud Silence",
+          "artist": "GOGO Student Collective",
+          "duration": "3:02",
+          "file": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/Loud_Silence.mp3"
+        },
+        {
+          "id": "neighborhood",
+          "title": "Neighborhood",
+          "artist": "GOGO Student Collective",
+          "duration": "6:43",
+          "file": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/Neighborhood.mp3"
+        },
+        {
+          "id": "pieces",
+          "title": "Pieces",
+          "artist": "GOGO Student Collective",
+          "duration": "5:35",
+          "file": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/Pieces.mp3"
+        },
+        {
+          "id": "prosper",
+          "title": "Prosper",
+          "artist": "GOGO Student Collective",
+          "duration": "4:02",
+          "file": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/Prosper.mp3"
+        },
+        {
+          "id": "quarantine_song",
+          "title": "Quarantine Song",
+          "artist": "GOGO Student Collective",
+          "duration": "3:41",
+          "file": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/Quarantine_Song.mp3"
+        },
+        {
+          "id": "the_truth_is_trouble",
+          "title": "The Truth Is Trouble",
+          "artist": "GOGO Student Collective",
+          "duration": "3:26",
+          "file": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/The_Truth_Is_Trouble.mp3"
+        },
+        {
+          "id": "this_is_nothing_new",
+          "title": "This Is Nothing New",
+          "artist": "GOGO Student Collective",
+          "duration": "2:57",
+          "file": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/This_Is_Nothing_New.mp3"
+        }
+      ]
+    },
+    {
       "id": "student_performances",
       "title": "Student Performances 2024",
       "description": "Showcasing the musical talent and growth of our students",

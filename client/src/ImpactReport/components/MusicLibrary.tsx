@@ -351,6 +351,113 @@ const TrackDuration = styled.div`
   text-align: right;
 `;
 
+// Adding a styled component for the featured album section
+const FeaturedAlbumSection = styled.div`
+  margin-bottom: 48px;
+  padding: 24px;
+  background: linear-gradient(135deg, #121212 0%, #1e1e1e 50%, ${COLORS.gogo_blue}22 100%);
+  border-radius: 8px;
+  display: flex;
+  gap: 24px;
+  position: relative;
+  overflow: hidden;
+`;
+
+const FeaturedAlbumCover = styled.div<{ image: string }>`
+  width: 232px;
+  height: 232px;
+  border-radius: 4px;
+  background-image: url(${props => props.image});
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  flex-shrink: 0;
+`;
+
+const FeaturedAlbumInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+
+const FeaturedAlbumBadge = styled.div`
+  background-color: ${COLORS.gogo_blue};
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+`;
+
+const FeaturedAlbumTitle = styled.h2`
+  font-size: 32px;
+  font-weight: 900;
+  color: white;
+  margin: 0 0 8px 0;
+`;
+
+const FeaturedAlbumArtist = styled.h3`
+  font-size: 18px;
+  font-weight: 700;
+  color: #b3b3b3;
+  margin: 0 0 16px 0;
+`;
+
+const FeaturedAlbumDescription = styled.p`
+  font-size: 14px;
+  color: #b3b3b3;
+  margin: 0 0 24px 0;
+  line-height: 1.5;
+  max-width: 700px;
+`;
+
+const FeaturedTrackList = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+`;
+
+const FeaturedTrack = styled.div`
+  padding: 8px 16px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+`;
+
+const FeaturedTrackTitle = styled.span`
+  font-size: 14px;
+  color: white;
+`;
+
+const FeaturedTrackDuration = styled.span`
+  font-size: 12px;
+  color: #b3b3b3;
+`;
+
+const PlayIcon = styled.div`
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: white;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+`;
+
 // Main component
 const MusicLibrary: React.FC<MusicLibraryProps> = ({ onArtistClick, onPlayTrack }) => {
   const [catalog, setCatalog] = useState<MusicCatalog | null>(null);
@@ -546,6 +653,41 @@ const MusicLibrary: React.FC<MusicLibraryProps> = ({ onArtistClick, onPlayTrack 
 
   return (
     <MusicLibraryContainer>
+      {/* Featured New Release - The Rain May Be Pouring */}
+      {catalog.albums.find(album => album.id === 'the_rain_may_be_pouring') && (
+        <FeaturedAlbumSection>
+          <FeaturedAlbumCover 
+            image={catalog.albums.find(album => album.id === 'the_rain_may_be_pouring')?.coverImage || ''}
+            onClick={() => handleAlbumSelect(catalog.albums.find(album => album.id === 'the_rain_may_be_pouring')!)}
+          />
+          <FeaturedAlbumInfo>
+            <FeaturedAlbumBadge>New Release</FeaturedAlbumBadge>
+            <FeaturedAlbumTitle>The Rain May Be Pouring</FeaturedAlbumTitle>
+            <FeaturedAlbumArtist>Guitars Over Guns</FeaturedAlbumArtist>
+            <FeaturedAlbumDescription>
+              An inspirational album created by GOGO students, featuring original compositions that share 
+              their experiences through music. These tracks showcase the talents developed through the 
+              Guitars Over Guns mentorship program.
+            </FeaturedAlbumDescription>
+            <FeaturedTrackList>
+              {catalog.albums.find(album => album.id === 'the_rain_may_be_pouring')?.tracks.slice(0, 5).map(track => (
+                <FeaturedTrack 
+                  key={track.id}
+                  onClick={() => handlePlayTrack(
+                    track, 
+                    catalog.albums.find(album => album.id === 'the_rain_may_be_pouring')?.coverImage || ''
+                  )}
+                >
+                  <PlayIcon>▶</PlayIcon>
+                  <FeaturedTrackTitle>{track.title}</FeaturedTrackTitle>
+                  <FeaturedTrackDuration>{track.duration}</FeaturedTrackDuration>
+                </FeaturedTrack>
+              ))}
+            </FeaturedTrackList>
+          </FeaturedAlbumInfo>
+        </FeaturedAlbumSection>
+      )}
+
       {/* Made For You Section */}
       <PageSection>
         <SectionHeader>
