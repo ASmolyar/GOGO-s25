@@ -9,13 +9,21 @@ const COLORS = {
   gray: '#657788',
   primaryDark: '#172a3a', // Dark Blue
   primaryDark2: '#2e5987', // Dark Blue level 2
-  background: '#d7fdff', // Light Light Blue
+  background: '#1a1a1e', // Dark mode pastel black
   accentOrange: '#f2594b',
   black: '#171717', // Black
   white: '#ffffff', // White
   neutral: '#8c8c8c', // Gray
   lightGray: '#ebeff2', // Gray-subsection
   actionBlue: '#155da1', // Action button
+  darkModePastelBlack: '#1a1a1e', // Dark mode pastel black
+
+  // GOGO Colors
+  gogo_blue: '#124af5',    // Blue
+  gogo_yellow: '#eabc4c',  // Yellow
+  gogo_green: '#69b594',   // Green
+  gogo_pink: '#b8328c',    // Pink
+  gogo_purple: '#643790',  // Purple
 
   // GOGO Brand Colors:
   gogo_blue: '#1946F5', // Blue Money - RGB: 25/75/245

@@ -51,9 +51,12 @@ function App() {
             />
           </Route>
           <Route path="/invite/:token" element={<InviteRegisterPage />} />
+                  {/* Public route for map demo */}
+                  <Route path="/map-demo" element={<MapDemo />} />
           {/* Routes accessed only if user is authenticated */}
           <Route element={<ProtectedRoutesWrapper />}>
             <Route path="/home" element={<HomePage />} />
+                    <Route path="/map" element={<MapDemo />} />
           </Route>
           <Route element={<AdminRoutesWrapper />}>
             <Route path="/users" element={<AdminDashboardPage />} />
