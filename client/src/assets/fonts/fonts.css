@@ -1,0 +1,25 @@
+/* Custom Fonts */
+
+/* Airwaves Font for Titles */
+@font-face {
+  font-family: 'Airwaves';
+  src: url('./Airwaves-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Century Gothic Font for Body Text */
+@font-face {
+  font-family: 'Century Gothic';
+  src: url('./CenturyGothic.ttc') format('truetype-collection');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Use the same Century Gothic font but specify bold weight */
+@font-face {
+  font-family: 'Century Gothic';
+  src: url('./CenturyGothic.ttc') format('truetype-collection');
+  font-weight: bold;
+  font-style: normal;
+} 

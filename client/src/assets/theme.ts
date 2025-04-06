@@ -4,6 +4,7 @@
 import { createTheme } from '@mui/material/styles';
 import COLORS from './colors.ts';
 import 'typeface-hk-grotesk';
+// No need to import the fonts.css here since we imported it in index.css
 
 // https://github.com/hack4impact/chapter-website-template/blob/main/public/style.css
 const theme = createTheme({
@@ -26,41 +27,62 @@ const theme = createTheme({
     tonalOffset: 0.2,
   },
   typography: {
-    fontFamily: [
-      'HK Grotesk',
-      '-apple-system',
-      'BlinkMacSystemFont',
-      'Segoe UI',
-      'Roboto',
-      'Oxygen',
-      'Ubuntu',
-      'Cantarell',
-      'Fira Sans',
-      'Droid Sans',
-      'Helvetica Neue',
-      'sans-serif',
-    ].join(','),
+    // Default body font
+    fontFamily: ['Century Gothic', 'Arial', 'sans-serif'].join(','),
+    // Heading font settings
+    h1: {
+      fontFamily: 'Airwaves, sans-serif',
+      fontWeight: 'normal',
+    },
+    h2: {
+      fontFamily: 'Airwaves, sans-serif',
+      fontWeight: 'normal',
+    },
+    h3: {
+      fontFamily: 'Airwaves, sans-serif',
+      fontWeight: 'normal',
+    },
+    h4: {
+      fontFamily: 'Airwaves, sans-serif',
+      fontWeight: 'normal',
+    },
+    h5: {
+      fontFamily: 'Airwaves, sans-serif',
+      fontWeight: 'normal',
+    },
+    h6: {
+      fontFamily: 'Airwaves, sans-serif',
+      fontWeight: 'normal',
+    },
   },
   components: {
     MuiCssBaseline: {
       styleOverrides: {
         body: {
+          fontFamily: 'Century Gothic, Arial, sans-serif',
           letterSpacing: '0.3px',
           lineHeight: '1.5',
         },
         h1: {
-          fontWeight: 'bold !important',
+          fontFamily: 'Airwaves, sans-serif !important',
         },
         h2: {
+          fontFamily: 'Airwaves, sans-serif !important',
           fontSize: '38px !important',
           marginBottom: '32px !important',
         },
         h3: {
-          fontWeight: 'bold !important',
+          fontFamily: 'Airwaves, sans-serif !important',
           marginBottom: '10px',
         },
         h4: {
-          fontWeight: 'bold !important',
+          fontFamily: 'Airwaves, sans-serif !important',
+        },
+        h5: {
+          fontFamily: 'Airwaves, sans-serif !important',
+        },
+        h6: {
+          fontFamily: 'Airwaves, sans-serif !important',
         },
       },
     },

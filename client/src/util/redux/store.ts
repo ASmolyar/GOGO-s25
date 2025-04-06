@@ -18,6 +18,12 @@ const rootReducer = combineReducers(reducers);
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 const store = configureStore({
   reducer: persistedReducer,
+  // Simplified middleware configuration that disables serializable check entirely
+  // This is not recommended for production, but will help debug the current issue
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 });
 
 const persistor = persistStore(store);
