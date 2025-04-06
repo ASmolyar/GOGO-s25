@@ -100,18 +100,40 @@ const RightContent = styled.div`
 interface Track {
   id: string;
   title: string;
-  artist: string;
-  cover: string;
-  duration: string;
-  audioSrc?: string;
-}
-
-// Interface for popular track data
-interface PopularTrack {
-  id: string;
-  title: string;
   duration: string;
   plays: string;
+  artist: string;
+  cover: string;
+}
+
+interface PlaybackTrack extends Omit<Track, 'plays'> {
+  // PlaybackTrack has everything except 'plays'
+}
+
+interface Artist {
+  id: string;
+  name: string;
+  image: string;
+  monthlyListeners: string;
+  description: string;
+  popularTracks: Track[];
+}
+
+interface ArtistProps {
+  artist: {
+    id: string;
+    name: string;
+    image: string;
+    monthlyListeners: string;
+    description: string;
+    popularTracks: {
+      id: string;
+      title: string;
+      duration: string;
+      plays: string;
+    }[];
+  };
+  onPlayTrack: (track: Track) => void;
 }
 
 // Mock data for artists
@@ -230,9 +252,10 @@ const MusicPage: React.FC = () => {
   const [currentTrack, setCurrentTrack] = useState<Track>({
     id: 'gs-1',
     title: 'Urban Rhythms',
-    artist: 'GOGO Student Ensemble',
-    cover: '/music/albums/student_performances/cover.jpg',
     duration: '3:45',
+    plays: '4,253',
+    artist: 'GOGO Student Ensemble',
+    cover: '/music/artists/gogo_students.jpg',
   });
 
   // Check if we're in the artist view
@@ -259,12 +282,8 @@ const MusicPage: React.FC = () => {
 
   const handleNextTrack = () => {
     // In a real app, this would play the next track
+    // eslint-disable-next-line no-console
     console.log('Playing next track');
-  };
-
-  const handlePreviousTrack = () => {
-    // In a real app, this would play the previous track
-    console.log('Playing previous track');
   };
 
   // Function to play a track from any component
@@ -275,16 +294,17 @@ const MusicPage: React.FC = () => {
 
   // Function to transform PopularTrack to Track
   const convertToTrack = (
-    track: PopularTrack,
+    track: Track,
     artistName: string,
     artistImage: string,
   ): Track => {
     return {
       id: track.id,
       title: track.title,
+      duration: track.duration,
+      plays: track.plays,
       artist: artistName,
       cover: artistImage,
-      duration: track.duration,
     };
   };
 
@@ -328,7 +348,7 @@ const MusicPage: React.FC = () => {
           {isArtistView && currentArtist ? (
             <ArtistView
               artist={currentArtist}
-              onPlayTrack={(track) => {
+              onPlayTrack={(track: Track) => {
                 const trackAsTrack = convertToTrack(
                   track,
                   currentArtist.name,
@@ -340,18 +360,28 @@ const MusicPage: React.FC = () => {
           ) : (
             <MusicLibrary
               onArtistClick={handleGoToArtist}
-              onPlayTrack={playTrack}
+              onPlayTrack={(track: PlaybackTrack) => {
+                // Convert PlaybackTrack to Track if needed
+                const fullTrack: Track = {
+                  ...track,
+                  plays: '0' // Add the missing plays property
+                };
+                playTrack(fullTrack);
+              }}
             />
           )}
         </RightContent>
       </MainContent>
 
       <NowPlayingBar
-        currentTrack={currentTrack}
+        currentTrack={{
+          ...currentTrack,
+          artist: currentTrack?.artist || '',
+          cover: currentTrack?.cover || ''
+        }}
         isPlaying={isPlaying}
         onPlayPause={handlePlayPause}
         onNext={handleNextTrack}
-        onPrevious={handlePreviousTrack}
       />
     </PageContainer>
   );
