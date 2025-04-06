@@ -18,6 +18,7 @@ import AlertPopup from './components/AlertPopup.tsx';
 import InviteRegisterPage from './Authentication/InviteRegisterPage.tsx';
 import ImpactReportPage from './ImpactReport/ImpactReportPage.tsx';
 import MusicPage from './ImpactReport/MusicPage.tsx';
+import ArtistView from './ImpactReport/components/ArtistView.tsx';
 import MapDemo from './components/map/MapDemo';
 
 function App() {
@@ -60,8 +61,11 @@ function App() {
           {/* Impact Report (Spotify-style) route */}
           <Route path="/impact-report" element={<ImpactReportPage />} />
 
-          {/* Music Library route */}
-          <Route path="/music" element={<MusicPage />} />
+          {/* Music Library routes */}
+          <Route path="/music">
+            <Route index element={<MusicPage />} />
+            <Route path="artist/:id" element={<MusicPage />} />
+          </Route>
 
           {/* Map route */}
           <Route path="/map" element={<MapDemo />} />
