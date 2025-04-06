@@ -1,3 +1,6 @@
+/* Import custom fonts */
+@import './assets/fonts/fonts.css';
+
 /* centers text */
 .Button {
   height: 100vh;

@@ -1,14 +1,19 @@
 :root {
-  --spotify-black: #121212;
-  --spotify-dark-gray: #181818;
-  --spotify-gray: #282828;
-  --spotify-light-gray: #b3b3b3;
-  --spotify-green: #1DB954;
-  --spotify-neon-green: #1ED760;
-  --spotify-blue: #4687d6;
-  --spotify-purple: #8c67ac;
-  --spotify-orange: #e8641c;
-  --font-main: 'Gotham', 'Montserrat', 'Helvetica Neue', sans-serif;
+  /* GOGO Colors replacing Spotify colors */
+  --spotify-black: #171717; /* Replaced with GOGO black */
+  --spotify-dark-gray: #172a3a; /* Replaced with GOGO primaryDark */
+  --spotify-gray: #2e5987; /* Replaced with GOGO primaryDark2 */
+  --spotify-light-gray: #657788; /* Replaced with GOGO gray */
+  --spotify-green: #8DDDA6; /* Replaced with GOGO Green Eyes */
+  --spotify-neon-green: #1946F5; /* Replaced with GOGO Blue Money */
+  --spotify-blue: #1946F5; /* Replaced with GOGO Blue Money */
+  --spotify-purple: #68369A; /* Kept GOGO Purple Rain */
+  --spotify-orange: #E9BB4D; /* Replaced with GOGO Tequila Sunrise */
+  
+  /* GOGO Fonts replacing Spotify fonts */
+  --font-main: 'Airwaves', 'Century Gothic', 'Arial', sans-serif;
+  --font-body: 'Century Gothic', 'Arial', sans-serif;
+  
   --transition-standard: all 0.3s ease;
 }
 
@@ -63,7 +68,7 @@ section:hover h2::after {
 .hero-section {
   text-align: left;
   padding: 120px max(5vw, 20px) 80px;
-  background: linear-gradient(to bottom, #5135a1, var(--spotify-black));
+  background: linear-gradient(to bottom, #68369A, var(--spotify-black)); /* GOGO Purple to black */
   position: relative;
   overflow: hidden;
 }
@@ -75,7 +80,7 @@ section:hover h2::after {
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at 10% 50%, rgba(29, 185, 84, 0.2), transparent 60%);
+  background: radial-gradient(circle at 10% 50%, rgba(25, 70, 245, 0.2), transparent 60%); /* GOGO Blue */
   z-index: 0;
 }
 
@@ -1271,6 +1276,8 @@ section:hover h2::after {
   right: 0;
   z-index: 1000;
   transition: background-color 0.3s ease;
+  height: 80px; /* Increased height for better visibility */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .spotify-header.scrolled {
@@ -1282,14 +1289,48 @@ section:hover h2::after {
   align-items: center;
 }
 
+.header-left {
+  flex: 1;
+}
+
 .header-center {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex: 1;
 }
 
+.header-right {
+  flex: 1;
+  justify-content: flex-end;
+}
+
+/* Brand title styling */
+.header-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.brand-title {
+  font-family: 'Airwaves', sans-serif;
+  font-size: 2rem; /* Increased size */
+  font-weight: 700;
+  margin: 0;
+  color: white;
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  line-height: 1.1;
+  background: linear-gradient(135deg, #fff 30%, #b3b3b3);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-fill-color: transparent;
+}
+
+/* Impact Report title */
 .header-title {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: 700;
   margin: 0;
   color: white;
@@ -1300,11 +1341,13 @@ section:hover h2::after {
   margin-left: 16px;
 }
 
+/* No longer needed for text - keeping for spacing
 .header-logo {
   height: 32px;
   max-width: 150px;
   object-fit: contain;
 }
+*/
 
 /* Make the menu button bigger and more like Spotify's pause button */
 .menu-button {

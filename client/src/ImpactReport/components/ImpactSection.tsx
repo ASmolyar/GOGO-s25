@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-const ImpactSection = () => {
+function ImpactSection(): JSX.Element {
   const [inView, setInView] = useState(false);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
@@ -11,7 +11,7 @@ const ImpactSection = () => {
           setInView(true);
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.2 },
     );
 
     const section = document.querySelector('.impact-section');
@@ -23,26 +23,45 @@ const ImpactSection = () => {
   }, []);
 
   const impactData = [
-    { percentage: 90, description: "of students say their mentor can be counted on for help" },
-    { percentage: 87, description: "of students felt encouraged to work through challenges" },
-    { percentage: 85, description: "of students showed measurable growth" }
+    {
+      id: 'mentor-trust',
+      percentage: 90,
+      description: 'of students say their mentor can be counted on for help',
+    },
+    {
+      id: 'challenge-encouragement',
+      percentage: 87,
+      description: 'of students felt encouraged to work through challenges',
+    },
+    {
+      id: 'measurable-growth',
+      percentage: 85,
+      description: 'of students showed measurable growth',
+    },
   ];
+
+  // Helper function to determine stroke color based on index
+  const getStrokeColor = (index: number): string => {
+    if (index === 0) return 'var(--spotify-green)';
+    if (index === 1) return 'var(--spotify-blue)';
+    return 'var(--spotify-purple)';
+  };
 
   return (
     <section className="impact-section">
       <div className="section-header">
         <h2>Our Impact</h2>
         <div className="spotify-now-playing">
-          <span className="pulse"></span>
+          <span className="pulse" />
           <span>Making a difference</span>
         </div>
       </div>
-      
+
       <div className="impact-stats">
         {impactData.map((item, index) => (
-          <div 
-            key={index} 
-            className={`impact-stat ${inView ? 'slide-up' : ''}`} 
+          <div
+            key={item.id}
+            className={`impact-stat ${inView ? 'slide-up' : ''}`}
             style={{ animationDelay: `${index * 0.2}s` }}
             onMouseEnter={() => setActiveIndex(index)}
             onMouseLeave={() => setActiveIndex(null)}
@@ -63,32 +82,30 @@ const ImpactSection = () => {
                   r="54"
                   strokeWidth="8"
                   strokeDasharray="339.292"
-                  strokeDashoffset={339.292 * (1 - (inView ? item.percentage / 100 : 0))}
-                  style={{ 
+                  strokeDashoffset={
+                    339.292 * (1 - (inView ? item.percentage / 100 : 0))
+                  }
+                  style={{
                     transition: `stroke-dashoffset 1.5s ease ${index * 0.3}s`,
-                    stroke: index === 0 
-                      ? 'var(--spotify-green)' 
-                      : index === 1 
-                        ? 'var(--spotify-blue)' 
-                        : 'var(--spotify-purple)'
+                    stroke: getStrokeColor(index),
                   }}
                 />
               </svg>
               <h3>{item.percentage}%</h3>
             </div>
             <p>{item.description}</p>
-            <div 
-              className="stat-highlight" 
-              style={{ 
+            <div
+              className="stat-highlight"
+              style={{
                 opacity: activeIndex === index ? 1 : 0,
-                transform: `scaleX(${activeIndex === index ? 1 : 0})`
+                transform: `scaleX(${activeIndex === index ? 1 : 0})`,
               }}
-            ></div>
+            />
           </div>
         ))}
       </div>
     </section>
   );
-};
+}
 
-export default ImpactSection; 
+export default ImpactSection;

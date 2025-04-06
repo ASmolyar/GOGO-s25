@@ -17,6 +17,12 @@ const COLORS = {
   lightGray: '#ebeff2', // Gray-subsection
   actionBlue: '#155da1', // Action button
 
-  // Other colors:
+  // GOGO Brand Colors:
+  gogo_blue: '#1946F5', // Blue Money - RGB: 25/75/245
+  gogo_teal: '#B1EBF2', // Mr Blue Sky - RGB: 177/235/239
+  gogo_yellow: '#E9BB4D', // Tequila Sunrise - RGB: 233/187/77
+  gogo_pink: '#BE2B93', // Pink Cadillac - RGB: 190/43/147
+  gogo_purple: '#68369A', // Purple Rain - RGB: 104/54/154
+  gogo_green: '#8DDDA6', // Green Eyes - RGB: 141/221/166
 };
 export default COLORS;

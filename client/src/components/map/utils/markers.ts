@@ -2,13 +2,108 @@ import L from 'leaflet';
 import COLORS from '../../../assets/colors.ts';
 import { LocationType } from '../types';
 
+// TypeScript definition for missing Leaflet types
+declare module 'leaflet' {
+  export function divIcon(options: any): L.Icon;
+}
+
+// Helper function to darken a color by a percentage
+function darkenColor(color: string, percent: number): string {
+  // For simple implementation, we'll just reduce the hex values
+  let processedColor = color;
+  if (processedColor.startsWith('#')) {
+    processedColor = processedColor.substring(1);
+  } else if (processedColor.startsWith('rgb')) {
+    // Extract values from rgb/rgba format
+    const rgbMatch = processedColor.match(
+      /rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*[\d.]+)?\)/,
+    );
+    if (rgbMatch) {
+      const r = Math.max(
+        0,
+        (parseInt(rgbMatch[1], 10) * (100 - percent)) / 100,
+      );
+      const g = Math.max(
+        0,
+        (parseInt(rgbMatch[2], 10) * (100 - percent)) / 100,
+      );
+      const b = Math.max(
+        0,
+        (parseInt(rgbMatch[3], 10) * (100 - percent)) / 100,
+      );
+      return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
+    }
+    return processedColor; // Return original if format not recognized
+  }
+
+  // Convert to RGB
+  const r = parseInt(processedColor.substr(0, 2), 16);
+  const g = parseInt(processedColor.substr(2, 2), 16);
+  const b = parseInt(processedColor.substr(4, 2), 16);
+
+  // Darken
+  const darkenR = Math.max(0, Math.round((r * (100 - percent)) / 100));
+  const darkenG = Math.max(0, Math.round((g * (100 - percent)) / 100));
+  const darkenB = Math.max(0, Math.round((b * (100 - percent)) / 100));
+
+  // Convert back to hex
+  return `#${darkenR.toString(16).padStart(2, '0')}${darkenG
+    .toString(16)
+    .padStart(2, '0')}${darkenB.toString(16).padStart(2, '0')}`;
+}
+
+// Helper function to lighten a color by a percentage
+function lightenColor(color: string, percent: number): string {
+  // For simple implementation, we'll just increase the hex values
+  let processedColor = color;
+  if (processedColor.startsWith('#')) {
+    processedColor = processedColor.substring(1);
+  } else if (processedColor.startsWith('rgb')) {
+    // Extract values from rgb/rgba format
+    const rgbMatch = processedColor.match(
+      /rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*[\d.]+)?\)/,
+    );
+    if (rgbMatch) {
+      const r = Math.min(
+        255,
+        (parseInt(rgbMatch[1], 10) * (100 + percent)) / 100,
+      );
+      const g = Math.min(
+        255,
+        (parseInt(rgbMatch[2], 10) * (100 + percent)) / 100,
+      );
+      const b = Math.min(
+        255,
+        (parseInt(rgbMatch[3], 10) * (100 + percent)) / 100,
+      );
+      return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
+    }
+    return processedColor; // Return original if format not recognized
+  }
+
+  // Convert to RGB
+  const r = parseInt(processedColor.substr(0, 2), 16);
+  const g = parseInt(processedColor.substr(2, 2), 16);
+  const b = parseInt(processedColor.substr(4, 2), 16);
+
+  // Lighten
+  const lightenR = Math.min(255, Math.round((r * (100 + percent)) / 100));
+  const lightenG = Math.min(255, Math.round((g * (100 + percent)) / 100));
+  const lightenB = Math.min(255, Math.round((b * (100 + percent)) / 100));
+
+  // Convert back to hex
+  return `#${lightenR.toString(16).padStart(2, '0')}${lightenG
+    .toString(16)
+    .padStart(2, '0')}${lightenB.toString(16).padStart(2, '0')}`;
+}
+
 /**
  * Creates a marker icon for a region
  */
-export function createRegionIcon(color: string = COLORS.gogo_blue, name: string = '') {
+export function createRegionIcon(color = COLORS.gogo_blue, name = '') {
   // Get the first letter of the region name, default to 'R' if empty
   const firstLetter = name && name.length > 0 ? name.charAt(0) : 'R';
-  
+
   return L.divIcon({
     className: 'custom-region-marker',
     html: `
@@ -56,7 +151,10 @@ export function createRegionIcon(color: string = COLORS.gogo_blue, name: string 
 /**
  * Creates a marker icon for a specific location type
  */
-export function createMarkerIcon(type: LocationType = 'default', color: string = COLORS.gogo_blue) {
+export function createMarkerIcon(
+  type: LocationType = 'default',
+  color: string = COLORS.gogo_blue,
+) {
   const getIconPath = () => {
     switch (type) {
       case 'school':
@@ -134,65 +232,3 @@ export function createMarkerIcon(type: LocationType = 'default', color: string =
     popupAnchor: [0, -22],
   });
 }
-
-// Helper function to darken a color by a percentage
-function darkenColor(color: string, percent: number): string {
-  // For simple implementation, we'll just reduce the hex values
-  if (color.startsWith('#')) {
-    color = color.substring(1);
-  } else if (color.startsWith('rgb')) {
-    // Extract values from rgb/rgba format
-    const rgbMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*[\d.]+)?\)/);
-    if (rgbMatch) {
-      const r = Math.max(0, parseInt(rgbMatch[1]) * (100 - percent) / 100);
-      const g = Math.max(0, parseInt(rgbMatch[2]) * (100 - percent) / 100);
-      const b = Math.max(0, parseInt(rgbMatch[3]) * (100 - percent) / 100);
-      return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
-    }
-    return color; // Return original if format not recognized
-  }
-  
-  // Convert to RGB
-  const r = parseInt(color.substr(0, 2), 16);
-  const g = parseInt(color.substr(2, 2), 16);
-  const b = parseInt(color.substr(4, 2), 16);
-  
-  // Darken
-  const darkenR = Math.max(0, Math.round(r * (100 - percent) / 100));
-  const darkenG = Math.max(0, Math.round(g * (100 - percent) / 100));
-  const darkenB = Math.max(0, Math.round(b * (100 - percent) / 100));
-  
-  // Convert back to hex
-  return `#${darkenR.toString(16).padStart(2, '0')}${darkenG.toString(16).padStart(2, '0')}${darkenB.toString(16).padStart(2, '0')}`;
-}
-
-// Helper function to lighten a color by a percentage
-function lightenColor(color: string, percent: number): string {
-  // For simple implementation, we'll just increase the hex values
-  if (color.startsWith('#')) {
-    color = color.substring(1);
-  } else if (color.startsWith('rgb')) {
-    // Extract values from rgb/rgba format
-    const rgbMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*[\d.]+)?\)/);
-    if (rgbMatch) {
-      const r = Math.min(255, parseInt(rgbMatch[1]) * (100 + percent) / 100);
-      const g = Math.min(255, parseInt(rgbMatch[2]) * (100 + percent) / 100);
-      const b = Math.min(255, parseInt(rgbMatch[3]) * (100 + percent) / 100);
-      return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
-    }
-    return color; // Return original if format not recognized
-  }
-  
-  // Convert to RGB
-  const r = parseInt(color.substr(0, 2), 16);
-  const g = parseInt(color.substr(2, 2), 16);
-  const b = parseInt(color.substr(4, 2), 16);
-  
-  // Lighten
-  const lightenR = Math.min(255, Math.round(r * (100 + percent) / 100));
-  const lightenG = Math.min(255, Math.round(g * (100 + percent) / 100));
-  const lightenB = Math.min(255, Math.round(b * (100 + percent) / 100));
-  
-  // Convert back to hex
-  return `#${lightenR.toString(16).padStart(2, '0')}${lightenG.toString(16).padStart(2, '0')}${lightenB.toString(16).padStart(2, '0')}`;
-} 

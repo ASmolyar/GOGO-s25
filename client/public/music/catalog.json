@@ -1,0 +1,94 @@
+{
+  "albums": [
+    {
+      "id": "student_performances",
+      "title": "Student Performances 2024",
+      "description": "Showcasing the musical talent and growth of our students",
+      "coverImage": "/music/albums/student_performances/cover.jpg",
+      "year": "2024",
+      "tracks": [
+        {
+          "id": "urban_rhythms",
+          "title": "Urban Rhythms",
+          "artist": "Chicago Youth Ensemble",
+          "duration": "3:45",
+          "file": "/music/albums/student_performances/urban_rhythms.mp3"
+        },
+        {
+          "id": "rise_up",
+          "title": "Rise Up",
+          "artist": "Miami Beat Makers",
+          "duration": "4:12",
+          "file": "/music/albums/student_performances/rise_up.mp3"
+        },
+        {
+          "id": "dreams",
+          "title": "Dreams and Determination",
+          "artist": "Youth Voice Collective",
+          "duration": "3:28",
+          "file": "/music/albums/student_performances/dreams.mp3"
+        }
+      ]
+    },
+    {
+      "id": "mentor_showcase",
+      "title": "Mentor Showcase",
+      "description": "Professional performances by our mentor musicians",
+      "coverImage": "/music/albums/mentor_showcase/cover.jpg",
+      "year": "2024",
+      "tracks": [
+        {
+          "id": "inspire",
+          "title": "Inspire",
+          "artist": "Marcus Johnson Trio",
+          "duration": "5:20",
+          "file": "/music/albums/mentor_showcase/inspire.mp3"
+        },
+        {
+          "id": "pathways",
+          "title": "Pathways",
+          "artist": "Nicole Rivera",
+          "duration": "4:45",
+          "file": "/music/albums/mentor_showcase/pathways.mp3"
+        },
+        {
+          "id": "breakthrough",
+          "title": "Breakthrough",
+          "artist": "DJ Mentor",
+          "duration": "3:58",
+          "file": "/music/albums/mentor_showcase/breakthrough.mp3"
+        }
+      ]
+    },
+    {
+      "id": "collaborative_works",
+      "title": "Students & Mentors: Collaborative Works",
+      "description": "Joint projects showcasing the power of mentorship through music",
+      "coverImage": "/music/albums/collaborative_works/cover.jpg",
+      "year": "2024",
+      "tracks": [
+        {
+          "id": "harmony",
+          "title": "Harmony in Action",
+          "artist": "Chicago Collective",
+          "duration": "4:30",
+          "file": "/music/albums/collaborative_works/harmony.mp3"
+        },
+        {
+          "id": "bridges",
+          "title": "Building Bridges",
+          "artist": "Miami Fusion Ensemble",
+          "duration": "3:45",
+          "file": "/music/albums/collaborative_works/bridges.mp3"
+        },
+        {
+          "id": "future",
+          "title": "Future Sound",
+          "artist": "Next Generation Band",
+          "duration": "5:10",
+          "file": "/music/albums/collaborative_works/future.mp3"
+        }
+      ]
+    }
+  ]
+} 

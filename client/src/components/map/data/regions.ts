@@ -13,7 +13,7 @@ const regions: Region[] = [
     color: COLORS.gogo_blue,
     maxBounds: [
       [41.6447, -87.9402], // Southwest corner
-      [42.0230, -87.3241]  // Northeast corner
+      [42.023, -87.3241], // Northeast corner
     ],
     sublocations: [
       {
@@ -50,21 +50,21 @@ const regions: Region[] = [
         coordinates: [41.8513, -87.6516],
         type: 'community-center',
         programs: ['After School Activities', 'Music Training'],
-        supportedBy: ['City of Chicago', 'GOGO Foundation']
-      }
-    ]
+        supportedBy: ['City of Chicago', 'GOGO Foundation'],
+      },
+    ],
   },
   {
     id: 'new-york',
     name: 'New York City',
-    centerCoordinates: [40.7128, -74.0060],
+    centerCoordinates: [40.7128, -74.006],
     defaultZoom: 11,
     minZoom: 9,
     maxZoom: 18,
     color: COLORS.gogo_green,
     maxBounds: [
-      [40.4774, -74.2590], // Southwest corner
-      [40.9176, -73.7004]  // Northeast corner
+      [40.4774, -74.259], // Southwest corner
+      [40.9176, -73.7004], // Northeast corner
     ],
     sublocations: [
       {
@@ -80,7 +80,7 @@ const regions: Region[] = [
         coordinates: [40.6782, -73.9442],
         type: 'community-center',
         programs: ['Urban Music', 'Hip Hop Production'],
-        supportedBy: ['NYC Arts Council', 'GOGO Foundation']
+        supportedBy: ['NYC Arts Council', 'GOGO Foundation'],
       },
       {
         id: 'juilliard-outreach',
@@ -92,10 +92,10 @@ const regions: Region[] = [
       {
         id: 'harlem-studio-museum',
         name: 'Harlem Studio Museum',
-        coordinates: [40.8054, -73.9430],
+        coordinates: [40.8054, -73.943],
         type: 'studio',
         programs: ['Recording Sessions', 'Music History'],
-        supportedBy: ['NYC Cultural Affairs']
+        supportedBy: ['NYC Cultural Affairs'],
       },
       {
         id: 'laguardia-high-school',
@@ -103,9 +103,9 @@ const regions: Region[] = [
         coordinates: [40.7744, -73.9816],
         type: 'school',
         programs: ['Music & Arts Education', 'Performance'],
-        supportedBy: ['NYC Department of Education']
-      }
-    ]
+        supportedBy: ['NYC Department of Education'],
+      },
+    ],
   },
   {
     id: 'los-angeles',
@@ -117,7 +117,7 @@ const regions: Region[] = [
     color: COLORS.gogo_purple,
     maxBounds: [
       [33.7037, -118.6682], // Southwest corner
-      [34.3373, -118.1553]  // Northeast corner
+      [34.3373, -118.1553], // Northeast corner
     ],
     sublocations: [
       {
@@ -126,7 +126,7 @@ const regions: Region[] = [
         coordinates: [34.0922, -118.3278],
         type: 'academy',
         programs: ['Music Industry', 'Production'],
-        supportedBy: ['LA Arts Commission']
+        supportedBy: ['LA Arts Commission'],
       },
       {
         id: 'hollywood-high',
@@ -141,7 +141,7 @@ const regions: Region[] = [
         coordinates: [34.0781, -118.2593],
         type: 'community-center',
         programs: ['Youth Music Program', 'Instrument Lessons'],
-        supportedBy: ['LA County', 'GOGO Foundation']
+        supportedBy: ['LA County', 'GOGO Foundation'],
       },
       {
         id: 'downtown-recording',
@@ -156,9 +156,9 @@ const regions: Region[] = [
         coordinates: [33.8958, -118.2201],
         type: 'program',
         programs: ['Orchestra', 'Music Education'],
-        supportedBy: ['LA Philharmonic Outreach']
-      }
-    ]
+        supportedBy: ['LA Philharmonic Outreach'],
+      },
+    ],
   },
   {
     id: 'miami',
@@ -170,7 +170,7 @@ const regions: Region[] = [
     color: COLORS.gogo_yellow,
     maxBounds: [
       [25.5644, -80.4502], // Southwest corner
-      [25.9717, -80.0867]  // Northeast corner
+      [25.9717, -80.0867], // Northeast corner
     ],
     sublocations: [
       {
@@ -179,7 +179,7 @@ const regions: Region[] = [
         coordinates: [25.7903, -80.1342],
         type: 'academy',
         programs: ['Classical Music', 'Latin Jazz'],
-        supportedBy: ['Miami Cultural Affairs']
+        supportedBy: ['Miami Cultural Affairs'],
       },
       {
         id: 'little-havana-arts',
@@ -187,7 +187,7 @@ const regions: Region[] = [
         coordinates: [25.7659, -80.2196],
         type: 'community-center',
         programs: ['Latin Music', 'Cultural Education'],
-        supportedBy: ['Miami-Dade County', 'GOGO Foundation']
+        supportedBy: ['Miami-Dade County', 'GOGO Foundation'],
       },
       {
         id: 'wynwood-sound-labs',
@@ -202,7 +202,7 @@ const regions: Region[] = [
         coordinates: [25.7741, -80.1906],
         type: 'school',
         programs: ['Performing Arts', 'Music Theory'],
-        supportedBy: ['Florida Department of Education']
+        supportedBy: ['Florida Department of Education'],
       },
       {
         id: 'overtown-youth-center',
@@ -210,9 +210,9 @@ const regions: Region[] = [
         coordinates: [25.7867, -80.2031],
         type: 'program',
         programs: ['After School Music', 'Instrument Training'],
-        supportedBy: ['Miami Heat Foundation', 'GOGO Foundation']
-      }
-    ]
+        supportedBy: ['Miami Heat Foundation', 'GOGO Foundation'],
+      },
+    ],
   },
   {
     id: 'summer-programs',
@@ -236,7 +236,7 @@ const regions: Region[] = [
         coordinates: [42.3467, -71.0972],
         type: 'summer-program',
         programs: ['College Prep Music', 'Performance Workshops'],
-        supportedBy: ['Berklee College of Music', 'GOGO Foundation']
+        supportedBy: ['Berklee College of Music', 'GOGO Foundation'],
       },
       {
         id: 'aspen-music-festival',
@@ -244,7 +244,7 @@ const regions: Region[] = [
         coordinates: [39.1911, -106.8175],
         type: 'summer-program',
         programs: ['Classical Training', 'Orchestra Experience'],
-        supportedBy: ['Aspen Music Festival']
+        supportedBy: ['Aspen Music Festival'],
       },
       {
         id: 'interlochen-arts-camp',
@@ -252,7 +252,7 @@ const regions: Region[] = [
         coordinates: [44.6367, -85.7694],
         type: 'summer-program',
         programs: ['Intensive Music Training', 'Performance Arts'],
-        supportedBy: ['Interlochen Center for the Arts']
+        supportedBy: ['Interlochen Center for the Arts'],
       },
       {
         id: 'new-orleans-jazz-camp',
@@ -260,10 +260,10 @@ const regions: Region[] = [
         coordinates: [29.9511, -90.0715],
         type: 'summer-program',
         programs: ['Jazz Education', 'Louisiana Music History'],
-        supportedBy: ['Jazz & Heritage Foundation', 'GOGO Foundation']
-      }
-    ]
-  }
+        supportedBy: ['Jazz & Heritage Foundation', 'GOGO Foundation'],
+      },
+    ],
+  },
 ];
 
-export default regions; 
+export default regions;
