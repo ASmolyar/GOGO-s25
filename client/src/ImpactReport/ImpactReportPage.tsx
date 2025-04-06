@@ -4,7 +4,7 @@ import './ImpactReportStructure.css';
 import '../assets/fonts/fonts.css'; // Import GOGO fonts
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
-import MissionSection from './components/MissionSection';
+import MissionSection from './sections/MissionSection';
 import ImpactSection from './components/ImpactSection';
 import ProgramsSection from './components/ProgramsSection';
 import LocationsSection from './sections/LocationsSection';
@@ -12,6 +12,8 @@ import TestimonialSection from './components/TestimonialSection';
 import AchievementsSection from './components/AchievementsSection';
 import PartnersSection from './components/PartnersSection';
 import FutureVisionSection from './components/FutureVisionSection';
+import MissionStatement from '../components/MissionStatement';
+import photo1 from '../assets/missionPhotos/Photo1.jpg';
 
 function ImpactReportPage() {
   // Apply GOGO-like styles to body when component mounts
@@ -48,7 +50,7 @@ function ImpactReportPage() {
       <Header />
       <div className="main-content">
         <HeroSection />
-        <MissionSection />
+        <MissionSection/>
         <ImpactSection />
         <AchievementsSection />
         <ProgramsSection />
