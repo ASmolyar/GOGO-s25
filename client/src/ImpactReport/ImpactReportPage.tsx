@@ -14,6 +14,8 @@ import PartnersSection from './components/PartnersSection';
 import FutureVisionSection from './components/FutureVisionSection';
 import MissionStatement from '../components/MissionStatement';
 import photo1 from '../assets/missionPhotos/Photo1.jpg';
+import gogoLogo from '../assets/GOGO_LOGO_STACKED_WH.png';
+import gogoWideLogo from '../assets/GOGO_LOGO_WIDE_WH.png';
 
 function ImpactReportPage() {
   // Apply GOGO-like styles to body when component mounts
@@ -61,7 +63,9 @@ function ImpactReportPage() {
       </div>
       <footer className="spotify-footer">
         <div className="footer-content">
-          <div className="footer-logo">Guitars Over Guns</div>
+          <div className="footer-logo">
+            <img src={gogoLogo} alt="GOGO Logo" style={{ height: '180px', width: 'auto' }} />
+          </div>
           <div className="footer-links">
             <a href="/about" className="footer-link">
               About
