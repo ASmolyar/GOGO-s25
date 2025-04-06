@@ -34,15 +34,39 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  background-color: #000000;
+  background-color: #1a2a3a; /* Dark blue background */
   padding: 2rem 0;
   overflow: hidden;
+  position: relative;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  &::before {
+    left: 0;
+    background: linear-gradient(to right, #1a2a3a, transparent);
+  }
+
+  &::after {
+    right: 0;
+    background: linear-gradient(to left, #1a2a3a, transparent);
+  }
 `;
 
 const ConveyorBelt = styled.div<{ direction: 'left' | 'right' }>`
   display: flex;
   width: 400%;
   animation: ${props => props.direction === 'left' ? slideLeft : slideRight} 30s linear infinite;
+  position: relative;
+  z-index: 0;
 `;
 
 const ImageContainer = styled.div`
@@ -53,9 +77,11 @@ const ImageContainer = styled.div`
   border-radius: 16px;
   overflow: hidden;
   transition: transform 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 
   &:hover {
     animation: ${jump} 0.5s ease;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
   }
 `;
 
@@ -75,6 +101,8 @@ const Statement = styled.div`
   max-width: 1000px;
   font-family: 'Century Gothic-Bold', 'Arial', sans-serif;
   line-height: 1.5;
+  position: relative;
+  z-index: 2;
 `;
 
 interface MissionStatementProps {
