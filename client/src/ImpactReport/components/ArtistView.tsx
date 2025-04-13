@@ -4,17 +4,23 @@ import COLORS from '../../assets/colors.ts';
 
 // Types
 interface Track {
+  id: string;
   title: string;
   plays: string;
   duration: string;
 }
 
-interface ArtistProps {
+interface Artist {
+  id: string;
   name: string;
   image: string;
   monthlyListeners: string;
   description: string;
   popularTracks: Track[];
+}
+
+interface ArtistProps {
+  artist: Artist;
 }
 
 // Styled components
@@ -269,7 +275,8 @@ const MoreIcon = () => (
 );
 
 // Default props for demo
-const defaultArtist: ArtistProps = {
+const defaultArtist: Artist = {
+  id: 'caetano-veloso',
   name: 'Caetano Veloso',
   image: 'https://i.scdn.co/image/ab6761610000e5eb0130d3f78e4348990cbb987b',
   monthlyListeners: '4,355,363',
@@ -277,20 +284,19 @@ const defaultArtist: ArtistProps = {
     'A true heavyweight, Caetano Veloso is a pop musician, political activist and intellectual who was also a driving force behind Tropicália, the late-1960s arts movement that influenced literature, film, visual arts and music in Brazil.',
   popularTracks: [
     {
+      id: 'cv-1',
       title: 'Chuvos De Verão - Remastered 2006',
       plays: '17,844,557',
       duration: '4:10',
     },
-    { title: 'Sozinho', plays: '15,622,418', duration: '3:47' },
-    { title: 'Leãozinho', plays: '14,376,809', duration: '2:30' },
-    { title: 'Você É Linda', plays: '12,933,254', duration: '3:58' },
-    { title: 'Lua e Estrela', plays: '9,876,543', duration: '3:21' },
+    { id: 'cv-2', title: 'Sozinho', plays: '15,622,418', duration: '3:47' },
+    { id: 'cv-3', title: 'Leãozinho', plays: '14,376,809', duration: '2:30' },
+    { id: 'cv-4', title: 'Você É Linda', plays: '12,933,254', duration: '3:58' },
+    { id: 'cv-5', title: 'Lua e Estrela', plays: '9,876,543', duration: '3:21' },
   ],
 };
 
-const ArtistView: React.FC<Partial<ArtistProps>> = (props) => {
-  const artist = { ...defaultArtist, ...props };
-
+const ArtistView: React.FC<ArtistProps> = ({ artist = defaultArtist }) => {
   return (
     <ArtistContainer>
       <ArtistHeader>
@@ -308,7 +314,6 @@ const ArtistView: React.FC<Partial<ArtistProps>> = (props) => {
               <Stat>{artist.monthlyListeners} monthly listeners</Stat>
             </ArtistStats>
             <ArtistControls>
-              <PlayButton>▶</PlayButton>
               <FollowButton>Follow</FollowButton>
               <MoreButton>
                 <MoreIcon />
@@ -328,7 +333,7 @@ const ArtistView: React.FC<Partial<ArtistProps>> = (props) => {
         </TrackHeader>
 
         {artist.popularTracks.map((track, index) => (
-          <TrackRow key={index}>
+          <TrackRow key={index} style={{ cursor: 'pointer' }}>
             <TrackNumber>{index + 1}</TrackNumber>
             <TrackTitle>{track.title}</TrackTitle>
             <TrackPlays>{track.plays}</TrackPlays>

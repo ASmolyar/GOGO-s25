@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import 'leaflet/dist/leaflet.css'; // Ensure Leaflet CSS is imported first
 import './ImpactReportStructure.css';
 import '../assets/fonts/fonts.css'; // Import GOGO fonts
@@ -12,8 +12,21 @@ import TestimonialSection from './components/TestimonialSection';
 import AchievementsSection from './components/AchievementsSection';
 import PartnersSection from './components/PartnersSection';
 import FutureVisionSection from './components/FutureVisionSection';
+import anime from 'animejs/lib/anime.es.js';
 
 function ImpactReportPage() {
+  // Refs for each section to animate
+  const heroRef = useRef<HTMLDivElement>(null);
+  const missionRef = useRef<HTMLDivElement>(null);
+  const impactRef = useRef<HTMLDivElement>(null);
+  const achievementsRef = useRef<HTMLDivElement>(null);
+  const programsRef = useRef<HTMLDivElement>(null);
+  const testimonialRef = useRef<HTMLDivElement>(null);
+  const locationsRef = useRef<HTMLDivElement>(null);
+  const partnersRef = useRef<HTMLDivElement>(null);
+  const futureRef = useRef<HTMLDivElement>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
+
   // Apply GOGO-like styles to body when component mounts
   useEffect(() => {
     // Save original styles to restore them later
@@ -42,25 +55,99 @@ function ImpactReportPage() {
     };
   }, []);
 
+  // Set up Intersection Observer for animations
+  useEffect(() => {
+    // Initial animation for hero section
+    if (heroRef.current) {
+      anime({
+        targets: heroRef.current,
+        opacity: [0, 1],
+        translateY: [50, 0],
+        duration: 1000,
+        easing: 'easeOutExpo'
+      });
+    }
+
+    // Observer for other sections
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Different animation for each section
+            const target = entry.target;
+            
+            anime({
+              targets: target,
+              opacity: [0, 1],
+              translateY: [50, 0],
+              duration: 800,
+              easing: 'easeOutExpo',
+              delay: 200,
+              complete: () => {
+                // Animate child elements after the section appears
+                const children = target.querySelectorAll('.animate-child');
+                anime({
+                  targets: children,
+                  opacity: [0, 1],
+                  translateY: [20, 0],
+                  scale: [0.98, 1],
+                  duration: 600,
+                  delay: anime.stagger(100),
+                  easing: 'easeOutExpo'
+                });
+              }
+            });
+            
+            // Unobserve after animation is triggered
+            observer.unobserve(target);
+          }
+        });
+      },
+      { threshold: 0.1 } // 10% of the element is visible
+    );
+
+    // Observe all sections except hero (which is animated on load)
+    [
+      missionRef.current,
+      impactRef.current,
+      achievementsRef.current,
+      programsRef.current,
+      testimonialRef.current,
+      locationsRef.current,
+      partnersRef.current,
+      futureRef.current,
+      footerRef.current
+    ].forEach((section) => {
+      if (section) {
+        // Set initial opacity to 0 for all sections
+        section.style.opacity = '0';
+        observer.observe(section);
+      }
+    });
+
+    // Cleanup observer on unmount
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="impact-report">
       <div className="spotify-gradient-background" />
       <Header />
       <div className="main-content">
-        <HeroSection />
-        <MissionSection />
-        <ImpactSection />
-        <AchievementsSection />
-        <ProgramsSection />
-        <TestimonialSection />
-        <LocationsSection />
-        <PartnersSection />
-        <FutureVisionSection />
+        <div ref={heroRef} style={{ opacity: 0 }}><HeroSection /></div>
+        <div ref={missionRef}><MissionSection /></div>
+        <div ref={impactRef}><ImpactSection /></div>
+        <div ref={achievementsRef}><AchievementsSection /></div>
+        <div ref={programsRef}><ProgramsSection /></div>
+        <div ref={testimonialRef}><TestimonialSection /></div>
+        <div ref={locationsRef}><LocationsSection /></div>
+        <div ref={partnersRef}><PartnersSection /></div>
+        <div ref={futureRef}><FutureVisionSection /></div>
       </div>
-      <footer className="spotify-footer">
+      <footer className="spotify-footer" ref={footerRef}>
         <div className="footer-content">
-          <div className="footer-logo">Guitars Over Guns</div>
-          <div className="footer-links">
+          <div className="footer-logo animate-child">Guitars Over Guns</div>
+          <div className="footer-links animate-child">
             <a href="/about" className="footer-link">
               About
             </a>
@@ -75,7 +162,7 @@ function ImpactReportPage() {
             </a>
           </div>
         </div>
-        <div className="footer-bottom">
+        <div className="footer-bottom animate-child">
           <div className="social-icons">
             <span className="icon">♫</span>
             <span className="icon">♪</span>
