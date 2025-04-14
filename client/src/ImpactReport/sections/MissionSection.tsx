@@ -1,4 +1,19 @@
 import React, { useEffect, useState } from 'react';
+import MissionStatement from '../../components/MissionStatement';
+import photo1 from '../../assets/missionPhotos/Photo1.jpg';
+import photo2 from '../../assets/missionPhotos/Photo2.jpg';
+import photo3 from '../../assets/missionPhotos/Photo3.jpg';
+import photo4 from '../../assets/missionPhotos/Photo4.jpg';
+import photo5 from '../../assets/missionPhotos/Photo5.jpg';
+import photo6 from '../../assets/missionPhotos/Photo6.jpg';
+import photo7 from '../../assets/missionPhotos/Photo7.jpg';
+import photo8 from '../../assets/missionPhotos/Photo8.jpg';
+import photo9 from '../../assets/missionPhotos/Photo9.jpg';
+import photo10 from '../../assets/missionPhotos/Photo10.jpg';
+import photo11 from '../../assets/missionPhotos/Photo11.jpg';
+import photo12 from '../../assets/missionPhotos/Photo12.jpg';
+import photo13 from '../../assets/missionPhotos/Photo13.jpg';
+import photo14 from '../../assets/missionPhotos/Photo14.jpg';
 
 function MissionSection(): JSX.Element {
   const [inView, setInView] = useState(false);
@@ -43,11 +58,27 @@ function MissionSection(): JSX.Element {
         </div>
       </div>
 
-      <p className="mission-text">
-        Empowering youth through music, art and mentorship. Since 2008, we have
-        served nearly 12,000 students through arts education and mentorship with
-        professional musicians.
-      </p>
+      <MissionStatement
+        topImages={[
+          photo1,
+          photo2,
+          photo3,
+          photo4,
+          photo5,
+          photo6,
+          photo7,
+        ]}
+        bottomImages={[
+          photo8,
+          photo9,
+          photo10,
+          photo11,
+          photo12,
+          photo13,
+          photo14,
+        ]}
+        statement="Empowering youth through music, art and mentorship. Since 2008, we have served nearly 12,000 students through arts education and mentorship with professional musicians."
+      />
 
       <div className="stats-container">
         {statsData.map((stat) => (

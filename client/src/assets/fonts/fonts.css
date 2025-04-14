@@ -6,20 +6,23 @@
   src: url('./Airwaves-Regular.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 /* Century Gothic Font for Body Text */
 @font-face {
-  font-family: 'Century Gothic';
+  font-family: 'Century Gothic-Regular';
   src: url('./CenturyGothic.ttc') format('truetype-collection');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 /* Use the same Century Gothic font but specify bold weight */
 @font-face {
-  font-family: 'Century Gothic';
+  font-family: 'Century Gothic-Bold';
   src: url('./CenturyGothic.ttc') format('truetype-collection');
   font-weight: bold;
   font-style: normal;
+  font-display: swap;
 } 

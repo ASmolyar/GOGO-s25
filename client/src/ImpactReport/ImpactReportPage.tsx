@@ -4,7 +4,7 @@ import './ImpactReportStructure.css';
 import '../assets/fonts/fonts.css'; // Import GOGO fonts
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
-import MissionSection from './components/MissionSection';
+import MissionSection from './sections/MissionSection';
 import ImpactSection from './components/ImpactSection';
 import ProgramsSection from './components/ProgramsSection';
 import LocationsSection from './sections/LocationsSection';
@@ -13,6 +13,10 @@ import AchievementsSection from './components/AchievementsSection';
 import PartnersSection from './components/PartnersSection';
 import FutureVisionSection from './components/FutureVisionSection';
 import anime from 'animejs/lib/anime.es.js';
+import MissionStatement from '../components/MissionStatement';
+import photo1 from '../assets/missionPhotos/Photo1.jpg';
+import gogoLogo from '../assets/GOGO_LOGO_STACKED_WH.png';
+import gogoWideLogo from '../assets/GOGO_LOGO_WIDE_WH.png';
 
 function ImpactReportPage() {
   // Refs for each section to animate
@@ -143,6 +147,15 @@ function ImpactReportPage() {
         <div ref={locationsRef}><LocationsSection /></div>
         <div ref={partnersRef}><PartnersSection /></div>
         <div ref={futureRef}><FutureVisionSection /></div>
+        <HeroSection />
+        <MissionSection/>
+        <ImpactSection />
+        <AchievementsSection />
+        <ProgramsSection />
+        <TestimonialSection />
+        <LocationsSection />
+        <PartnersSection />
+        <FutureVisionSection />
       </div>
       <footer className="spotify-footer" ref={footerRef}>
         <div className="footer-content">
