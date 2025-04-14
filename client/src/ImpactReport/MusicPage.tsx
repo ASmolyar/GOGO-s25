@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import { useParams, useLocation, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useParams, useLocation, useNavigate, Routes, Route } from 'react-router-dom';
 import styled from 'styled-components';
 import MusicLibrary from './components/MusicLibrary';
 import ArtistView from './components/ArtistView';
+import AlbumPage from './components/AlbumPage';
 import NowPlayingBar from './components/NowPlayingBar';
 import COLORS from '../assets/colors.ts';
+import { pageEnterAnimation, nowPlayingEnterAnimation } from '../utils/animations';
 
 // Main container component for the music page
 const PageContainer = styled.div`
@@ -13,6 +15,14 @@ const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding-bottom: 90px; /* Add space for the NowPlayingBar */
+  opacity: 0; /* Start with opacity 0 for animation */
+`;
+
+// Content wrapper for animation purposes
+const ContentWrapper = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 `;
 
 // Header component for the music page
@@ -136,6 +146,21 @@ interface ArtistProps {
   onPlayTrack: (track: Track) => void;
 }
 
+// Add the required interfaces for components based on their definitions
+interface Artist {
+  id: string;
+  name: string;
+  image: string;
+  monthlyListeners: string;
+  description: string;
+  popularTracks: {
+    id: string;
+    title: string;
+    duration: string;
+    plays: string;
+  }[];
+}
+
 // Mock data for artists
 const artists = {
   'caetano-veloso': {
@@ -257,6 +282,29 @@ const MusicPage: React.FC = () => {
     artist: 'GOGO Student Ensemble',
     cover: '/music/artists/gogo_students.jpg',
   });
+  
+  // Refs for animations
+  const pageRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const nowPlayingRef = useRef<HTMLDivElement>(null);
+  
+  // Initialize animations when the component mounts
+  useEffect(() => {
+    if (pageRef.current) {
+      pageEnterAnimation(pageRef.current);
+    }
+    
+    if (nowPlayingRef.current) {
+      nowPlayingEnterAnimation(nowPlayingRef.current);
+    }
+  }, []);
+
+  // Animate on route changes
+  useEffect(() => {
+    if (contentRef.current) {
+      pageEnterAnimation(contentRef.current);
+    }
+  }, [location.pathname]);
 
   // Check if we're in the artist view
   const isArtistView = location.pathname.includes('/artist/');
@@ -271,7 +319,7 @@ const MusicPage: React.FC = () => {
     navigate('/music');
   };
 
-  const handleGoToArtist = (artistId: string) => {
+  const handleArtistClick = (artistId: string) => {
     navigate(`/music/artist/${artistId}`);
   };
 
@@ -291,7 +339,6 @@ const MusicPage: React.FC = () => {
     setCurrentTrack(track);
     setIsPlaying(true);
   };
-
   // Function to transform PopularTrack to Track
   const convertToTrack = (
     track: Track,
@@ -309,41 +356,29 @@ const MusicPage: React.FC = () => {
   };
 
   return (
-    <PageContainer>
+    <PageContainer ref={pageRef}>
       <Header>
         <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-          {isArtistView && (
-            <BackButton onClick={handleGoBack}>
-              <ArrowLeftIcon />
-              Back
-            </BackButton>
-          )}
-          <Logo onClick={handleGoToHome}>Music | Guitars Over Guns</Logo>
+          <Logo onClick={handleGoToHome}>GOGO Music</Logo>
+          <Navigation>
+            {location.pathname !== '/music' && (
+              <BackButton onClick={handleGoBack}>
+                <ArrowLeftIcon /> Back
+              </BackButton>
+            )}
+          </Navigation>
         </div>
-        <Navigation>
-          <NavButton onClick={handleGoToHome}>
-            <HomeIcon />
-            Home
-          </NavButton>
-        </Navigation>
       </Header>
 
       <MainContent>
         <LeftSidebar>
-          <NavItem className="active">
-            <HomeIcon />
-            Home
-          </NavItem>
-          <NavItem>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M6 13c0 1.105-1.12 2-2.5 2S1 14.105 1 13c0-1.104 1.12-2 2.5-2s2.5.896 2.5 2zm9-2c0 1.105-1.12 2-2.5 2s-2.5-.895-2.5-2 1.12-2 2.5-2 2.5.895 2.5 2z" />
-              <path fillRule="evenodd" d="M14 11V2h1v9h-1zM6 3v10H5V3h1z" />
-              <path d="M5 2.905a1 1 0 0 1 .9-.995l8-.8a1 1 0 0 1 1.1.995V3L5 4V2.905z" />
-            </svg>
-            Browse
+          <NavItem
+            className={location.pathname === '/music' ? 'active' : ''}
+            onClick={handleGoToHome}
+          >
+            <HomeIcon /> Home
           </NavItem>
         </LeftSidebar>
-
         <RightContent>
           {isArtistView && currentArtist ? (
             <ArtistView
@@ -372,7 +407,6 @@ const MusicPage: React.FC = () => {
           )}
         </RightContent>
       </MainContent>
-
       <NowPlayingBar
         currentTrack={{
           ...currentTrack,

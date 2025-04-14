@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import COLORS from '../../assets/colors.ts';
+import { useNavigate } from 'react-router-dom';
 
 // Internal Track interface for the music catalog
 interface CatalogTrack {
@@ -64,20 +65,6 @@ const SectionTitle = styled.h2`
   font-weight: 700;
   color: white;
   margin: 0;
-`;
-
-const SeeAllLink = styled.a`
-  color: #b3b3b3;
-  font-size: 14px;
-  font-weight: 700;
-  text-decoration: none;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  
-  &:hover {
-    color: white;
-    text-decoration: underline;
-  }
 `;
 
 const CardGrid = styled.div`
@@ -177,65 +164,6 @@ const CardDescription = styled.p`
   text-overflow: ellipsis;
 `;
 
-const DailyMixGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 24px;
-  margin-top: 24px;
-`;
-
-const DailyMixCard = styled.div`
-  background: #181818;
-  border-radius: 8px;
-  padding: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  
-  &:hover {
-    background: #282828;
-  }
-`;
-
-const DailyMixCover = styled.div<{ color: string, number: number }>`
-  width: 100%;
-  aspect-ratio: 1/1;
-  border-radius: 4px;
-  background: ${props => props.color};
-  margin-bottom: 16px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-  
-  &::before {
-    content: '${props => props.number}';
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
-    font-size: 36px;
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.7);
-  }
-`;
-
-const DailyMixTitle = styled.h3`
-  font-size: 16px;
-  font-weight: 700;
-  color: white;
-  margin: 0 0 8px 0;
-`;
-
-const DailyMixDescription = styled.p`
-  font-size: 14px;
-  color: #b3b3b3;
-  margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-`;
-
 const NoAlbumsMessage = styled.div`
   text-align: center;
   padding: 3rem;
@@ -243,113 +171,94 @@ const NoAlbumsMessage = styled.div`
   color: #b3b3b3;
 `;
 
-const AlbumDetailView = styled.div`
-  background: linear-gradient(180deg, #313131 0%, #181818 100%);
-  border-radius: 8px;
+// Featured Album Section
+const FeaturedAlbumSection = styled.div`
+  margin-bottom: 48px;
   padding: 24px;
-  margin-top: 24px;
-`;
-
-const AlbumHeader = styled.div`
+  background: linear-gradient(135deg, #121212 0%, #1e1e1e 50%, ${COLORS.gogo_blue}22 100%);
+  border-radius: 8px;
   display: flex;
   gap: 24px;
-  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
 `;
 
-const AlbumCoverLarge = styled.div<{ url: string }>`
+const FeaturedAlbumCover = styled.div<{ image: string }>`
   width: 232px;
   height: 232px;
   border-radius: 4px;
-  background-image: url(${props => props.url});
+  background-image: url(${props => props.image});
   background-size: cover;
   background-position: center;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  flex-shrink: 0;
 `;
 
-const AlbumInfo = styled.div`
+const FeaturedAlbumInfo = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: center;
 `;
 
-const AlbumType = styled.p`
-  font-size: 14px;
-  font-weight: 700;
+const FeaturedAlbumBadge = styled.div`
+  background-color: ${COLORS.gogo_blue};
   color: white;
-  margin: 0 0 8px 0;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 12px;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 `;
 
-const AlbumTitleLarge = styled.h1`
-  font-size: 36px;
+const FeaturedAlbumTitle = styled.h2`
+  font-size: 32px;
   font-weight: 900;
   color: white;
+  margin: 0 0 8px 0;
+`;
+
+const FeaturedAlbumArtist = styled.h3`
+  font-size: 18px;
+  font-weight: 700;
+  color: #b3b3b3;
   margin: 0 0 16px 0;
 `;
 
-const AlbumMetadata = styled.div`
+const FeaturedAlbumDescription = styled.p`
+  font-size: 14px;
+  color: #b3b3b3;
+  margin: 0 0 24px 0;
+  line-height: 1.5;
+  max-width: 700px;
+`;
+
+const GreenPlayButton = styled.button`
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: #1db954;
+  border: none;
+  color: black;
   display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 14px;
-  color: #b3b3b3;
-`;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 24px;
 
-const TrackList = styled.div`
-  margin-top: 32px;
-`;
-
-const TrackHeader = styled.div`
-  display: grid;
-  grid-template-columns: 40px 1fr 120px;
-  padding: 0 16px 8px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-`;
-
-const HeaderCell = styled.div`
-  font-size: 14px;
-  color: #b3b3b3;
-  text-transform: uppercase;
-`;
-
-const TrackRow = styled.div`
-  display: grid;
-  grid-template-columns: 40px 1fr 120px;
-  padding: 8px 16px;
-  border-radius: 4px;
-  align-items: center;
-  
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.05);
+    background-color: #1ed760;
   }
 `;
 
-const TrackNumber = styled.div`
-  font-size: 16px;
-  color: #b3b3b3;
-`;
-
-const TrackDetails = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const TrackTitle = styled.span`
-  font-size: 16px;
-  color: white;
-  margin-bottom: 4px;
-`;
-
-const TrackArtist = styled.span`
-  font-size: 14px;
-  color: #b3b3b3;
-`;
-
-const TrackDuration = styled.div`
-  font-size: 14px;
-  color: #b3b3b3;
-  text-align: right;
-`;
+const VerifiedIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="#3D91F4">
+    <path d="M12 1a11 11 0 1 0 0 22 11 11 0 0 0 0-22zm5.045 8.866L11.357 16.9l-4.4-3.396a.75.75 0 1 1 .914-1.182l3.417 2.639 4.968-6.276a.749.749 0 0 1 1.185.918l-.003.004a.752.752 0 0 1-.136.177l-.258.326z" />
+  </svg>
+);
 
 // Main component
 const MusicLibrary: React.FC<MusicLibraryProps> = ({ onArtistClick, onPlayTrack }) => {
@@ -357,81 +266,8 @@ const MusicLibrary: React.FC<MusicLibraryProps> = ({ onArtistClick, onPlayTrack 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
-  const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
-
-  // Daily mix data
-  const dailyMixes = [
-    {
-      id: 'daily-mix-1',
-      title: 'Daily Mix 1',
-      color: COLORS.gogo_blue,
-      number: 1,
-      description: 'Dire Straits, King Krule, Daryl Hall & more'
-    },
-    {
-      id: 'daily-mix-2',
-      title: 'Daily Mix 2',
-      color: COLORS.gogo_yellow,
-      number: 2,
-      description: 'Yuri Vizbor, Zoya Yashchenko, Floran & more'
-    },
-    {
-      id: 'daily-mix-3',
-      title: 'Daily Mix 3',
-      color: COLORS.gogo_pink,
-      number: 3,
-      description: 'Tom Misch, Karl Onibuje, Parcels & more'
-    },
-    {
-      id: 'daily-mix-4',
-      title: 'Daily Mix 4',
-      color: COLORS.gogo_purple,
-      number: 4,
-      description: 'Daniela Soledade, Evandro Reis, João & more'
-    },
-    {
-      id: 'daily-mix-5',
-      title: 'Daily Mix 5',
-      color: COLORS.gogo_green,
-      number: 5,
-      description: 'CHIBS, Superlate, Kaskade, berlioz & more'
-    }
-  ];
-
-  // Top mixes data
-  const topMixes = [
-    {
-      id: '70s-mix',
-      title: '70s Mix',
-      description: 'Earth, Wind & Fire, The Police, Dire Straits & more',
-      coverImage: '/music/playlists/70s-mix.jpg'
-    },
-    {
-      id: 'rock-mix',
-      title: 'Rock Mix',
-      description: 'Fleetwood Mac, America, Eagles & more',
-      coverImage: '/music/playlists/rock-mix.jpg'
-    },
-    {
-      id: 'jazz-mix',
-      title: 'Jazz Mix',
-      description: 'Piero Piccioni, Laufey, Jack Wilkins & more',
-      coverImage: '/music/playlists/jazz-mix.jpg'
-    },
-    {
-      id: 'happy-mix',
-      title: 'Happy Mix',
-      description: 'Gloria Gaynor, Bee Gees, Earth, Wind & more',
-      coverImage: '/music/playlists/happy-mix.jpg'
-    },
-    {
-      id: 'chill-mix',
-      title: 'Chill Mix',
-      description: 'Bobby Caldwell, Sade, Marc Johnson & more',
-      coverImage: '/music/playlists/chill-mix.jpg'
-    }
-  ];
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCatalog = async () => {
@@ -492,28 +328,8 @@ const MusicLibrary: React.FC<MusicLibraryProps> = ({ onArtistClick, onPlayTrack 
     }
   };
 
-  const handleAlbumSelect = (album: Album) => {
-    setSelectedAlbum(album);
-    
-    // If there are tracks in the album, play the first one
-    if (album.tracks && album.tracks.length > 0) {
-      const firstTrack = album.tracks[0];
-      onPlayTrack({
-        id: firstTrack.id,
-        title: firstTrack.title,
-        artist: firstTrack.artist,
-        cover: album.coverImage,
-        duration: firstTrack.duration
-      });
-    }
-    
-    // Scroll to the album detail view
-    setTimeout(() => {
-      window.scrollTo({
-        top: document.querySelector('#album-detail')?.getBoundingClientRect().top || 0,
-        behavior: 'smooth'
-      });
-    }, 100);
+  const handleAlbumClick = (albumId: string) => {
+    navigate(`/music/album/${albumId}`);
   };
 
   if (loading) {
@@ -546,64 +362,76 @@ const MusicLibrary: React.FC<MusicLibraryProps> = ({ onArtistClick, onPlayTrack 
 
   return (
     <MusicLibraryContainer>
-      {/* Made For You Section */}
+      {/* Featured Album Banner */}
       <PageSection>
-        <SectionHeader>
-          <SectionTitle>Made For Aaron Smolyar</SectionTitle>
-          <SeeAllLink href="#">SHOW ALL</SeeAllLink>
-        </SectionHeader>
-        
-        <DailyMixGrid>
-          {dailyMixes.map((mix) => (
-            <DailyMixCard key={mix.id}>
-              <DailyMixCover color={mix.color} number={mix.number}>
-                <PlayButton>▶</PlayButton>
-              </DailyMixCover>
-              <DailyMixTitle>{mix.title}</DailyMixTitle>
-              <DailyMixDescription>{mix.description}</DailyMixDescription>
-            </DailyMixCard>
-          ))}
-        </DailyMixGrid>
-      </PageSection>
-
-      {/* Your top mixes */}
-      <PageSection>
-        <SectionHeader>
-          <SectionTitle>Your top mixes</SectionTitle>
-          <SeeAllLink href="#">SHOW ALL</SeeAllLink>
-        </SectionHeader>
-        
-        <CardGrid>
-          {topMixes.map(mix => (
-            <Card key={mix.id}>
-              <CardCover url={mix.coverImage}>
-                <PlayButton>▶</PlayButton>
-              </CardCover>
-              <CardTitle>{mix.title}</CardTitle>
-              <CardDescription>{mix.description}</CardDescription>
-            </Card>
-          ))}
-        </CardGrid>
-      </PageSection>
-
-      {/* GOGO Albums */}
-      <PageSection>
-        <SectionHeader>
-          <SectionTitle>GOGO Music Collection</SectionTitle>
-          <SeeAllLink href="#">SHOW ALL</SeeAllLink>
-        </SectionHeader>
-        
-        <CardGrid>
-          {catalog.albums.map((album) => (
-            <Card key={album.id} onClick={() => handleAlbumSelect(album)}>
-              <CardCover 
-                url={album.coverImage}
-                onError={(e: React.SyntheticEvent<HTMLDivElement, Event>) => {
-                  const target = e.target as HTMLElement;
-                  target.style.backgroundImage = `url('https://placehold.co/500x500/171717/b3b3b3?text=${album.title}')`;
+        <FeaturedAlbumSection>
+          <FeaturedAlbumCover 
+            image="/music/albums/The Rain May Be Pouring (Guitars over Guns)/cover.jpg" 
+            onClick={() => handleAlbumClick('the_rain_may_be_pouring')}
+            style={{ cursor: 'pointer' }}
+          />
+          <FeaturedAlbumInfo>
+            <FeaturedAlbumBadge>Featured Album</FeaturedAlbumBadge>
+            <FeaturedAlbumTitle 
+              onClick={() => handleAlbumClick('the_rain_may_be_pouring')}
+              style={{ cursor: 'pointer' }}
+            >
+              The Rain May Be Pouring
+            </FeaturedAlbumTitle>
+            <FeaturedAlbumArtist>Guitars Over Guns</FeaturedAlbumArtist>
+            <FeaturedAlbumDescription>
+              Original pieces created by students and mentors from the Guitars Over Guns program,
+              showcasing their talent, creativity, and musical growth.
+            </FeaturedAlbumDescription>
+            <div style={{ display: 'flex', gap: '16px' }}>
+              <GreenPlayButton 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const album = catalog.albums.find(a => a.id === 'the_rain_may_be_pouring');
+                  if (album && album.tracks.length > 0) {
+                    handlePlayTrack(album.tracks[0], album.coverImage);
+                  }
+                }}
+                style={{ width: '48px', height: '48px' }}
+              >
+                ▶
+              </GreenPlayButton>
+              <button 
+                onClick={() => handleAlbumClick('the_rain_may_be_pouring')}
+                style={{ 
+                  background: 'transparent', 
+                  border: '1px solid rgba(255, 255, 255, 0.3)', 
+                  borderRadius: '4px', 
+                  padding: '8px 16px', 
+                  color: 'white', 
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  fontWeight: 'bold'
                 }}
               >
-                <PlayButton>▶</PlayButton>
+                VIEW ALBUM
+              </button>
+            </div>
+          </FeaturedAlbumInfo>
+        </FeaturedAlbumSection>
+      </PageSection>
+
+      {/* Albums section that auto-populates from catalog */}
+      <PageSection>
+        <SectionHeader>
+          <SectionTitle>Our Albums</SectionTitle>
+        </SectionHeader>
+        
+        <CardGrid>
+          {catalog.albums.map(album => (
+            <Card key={album.id} onClick={() => handleAlbumClick(album.id)}>
+              <CardCover url={album.coverImage}>
+                <PlayButton onClick={(e) => {
+                  e.stopPropagation(); // Prevent navigating to album page
+                  if (album.tracks.length > 0) {
+                    handlePlayTrack(album.tracks[0], album.coverImage);
+                  }
+                }}>▶</PlayButton>
               </CardCover>
               <CardTitle>{album.title}</CardTitle>
               <CardDescription>{album.description}</CardDescription>
@@ -612,76 +440,25 @@ const MusicLibrary: React.FC<MusicLibraryProps> = ({ onArtistClick, onPlayTrack 
         </CardGrid>
       </PageSection>
 
-      {/* Album Detail View */}
-      {selectedAlbum && (
-        <AlbumDetailView id="album-detail">
-          <AlbumHeader>
-            <AlbumCoverLarge 
-              url={selectedAlbum.coverImage}
-              onError={(e: React.SyntheticEvent<HTMLDivElement, Event>) => {
-                const target = e.target as HTMLElement;
-                target.style.backgroundImage = `url('https://placehold.co/500x500/171717/b3b3b3?text=${selectedAlbum.title}')`;
-              }}
-            />
-            <AlbumInfo>
-              <AlbumType>Album</AlbumType>
-              <AlbumTitleLarge>{selectedAlbum.title}</AlbumTitleLarge>
-              <AlbumMetadata>
-                <span>GOGO • {selectedAlbum.year} • {selectedAlbum.tracks.length} songs</span>
-              </AlbumMetadata>
-            </AlbumInfo>
-          </AlbumHeader>
-
-          <TrackList>
-            <TrackHeader>
-              <HeaderCell>#</HeaderCell>
-              <HeaderCell>Title</HeaderCell>
-              <HeaderCell>Duration</HeaderCell>
-            </TrackHeader>
-            
-            {selectedAlbum.tracks.map((track, index) => (
-              <TrackRow 
-                key={track.id} 
-                onClick={() => handlePlayTrack(track, selectedAlbum.coverImage)}
-              >
-                <TrackNumber>{currentlyPlaying === track.file ? '▶' : index + 1}</TrackNumber>
-                <TrackDetails>
-                  <TrackTitle>{track.title}</TrackTitle>
-                  <TrackArtist>{track.artist}</TrackArtist>
-                </TrackDetails>
-                <TrackDuration>{track.duration}</TrackDuration>
-              </TrackRow>
-            ))}
-          </TrackList>
-        </AlbumDetailView>
-      )}
-
-      {/* Artist section */}
+      {/* Artist section with hyperlinks */}
       <PageSection>
         <SectionHeader>
           <SectionTitle>GOGO Artists</SectionTitle>
-          <SeeAllLink href="#">SHOW ALL</SeeAllLink>
         </SectionHeader>
         
         <CardGrid>
           <Card onClick={() => onArtistClick('caetano-veloso')}>
-            <CardCover url="https://i.scdn.co/image/ab6761610000e5eb23960da5fab496188f9d5054">
-              <PlayButton>▶</PlayButton>
-            </CardCover>
+            <CardCover url="https://i.scdn.co/image/ab6761610000e5eb23960da5fab496188f9d5054" />
             <CardTitle>Caetano Veloso</CardTitle>
             <CardDescription>Artist</CardDescription>
           </Card>
           <Card onClick={() => onArtistClick('gogo-students')}>
-            <CardCover url="/music/artists/gogo_students.jpg">
-              <PlayButton>▶</PlayButton>
-            </CardCover>
+            <CardCover url="/music/artists/gogo_students.jpg" />
             <CardTitle>GOGO Student Ensemble</CardTitle>
             <CardDescription>Artist</CardDescription>
           </Card>
           <Card onClick={() => onArtistClick('gogo-mentors')}>
-            <CardCover url="/music/artists/gogo_mentors.jpg">
-              <PlayButton>▶</PlayButton>
-            </CardCover>
+            <CardCover url="/music/artists/gogo_mentors.jpg" />
             <CardTitle>GOGO Mentor Collective</CardTitle>
             <CardDescription>Artist</CardDescription>
           </Card>
@@ -691,4 +468,4 @@ const MusicLibrary: React.FC<MusicLibraryProps> = ({ onArtistClick, onPlayTrack 
   );
 };
 
-export default MusicLibrary;
+export default MusicLibrary; 

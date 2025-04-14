@@ -7,7 +7,11 @@ const TestimonialSectionWrapper = styled.section`
   padding: 5rem 0;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(180deg, rgba(23, 23, 23, 1) 0%, rgba(35, 35, 40, 1) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(23, 23, 23, 1) 0%,
+    rgba(35, 35, 40, 1) 100%
+  );
 `;
 
 const SectionContainer = styled.div`
@@ -40,10 +44,10 @@ const TestimonialCard = styled.div`
   max-width: 340px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   border-top: 4px solid;
-  border-top-color: ${props => props.color || COLORS.gogo_blue};
+  border-top-color: ${(props) => props.color || COLORS.gogo_blue};
   transition: transform 0.3s ease;
   position: relative;
-  
+
   &:hover {
     transform: translateY(-10px);
   }
@@ -56,7 +60,7 @@ const QuoteMark = styled.div`
   font-size: 8rem;
   line-height: 1;
   font-family: Georgia, serif;
-  color: ${props => props.color || COLORS.gogo_blue};
+  color: ${(props) => props.color || COLORS.gogo_blue};
   opacity: 0.3;
   pointer-events: none;
   z-index: 0;
@@ -83,7 +87,7 @@ const PersonAvatar = styled.div`
   border-radius: 50%;
   overflow: hidden;
   margin-right: 1rem;
-  background-color: ${props => props.color || COLORS.gogo_blue};
+  background-color: ${(props) => props.color || COLORS.gogo_blue};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -109,31 +113,34 @@ const PersonRole = styled.p`
 // Testimonial data
 const testimonials = [
   {
-    quote: "GOGO has changed my life. I've discovered my passion for music and found a community where I belong. My mentor has been there for me through some tough times.",
-    name: "Jasmine",
-    role: "Student, Chicago",
-    avatarText: "J",
-    color: COLORS.gogo_purple
+    quote:
+      "GOGO has changed my life. I've discovered my passion for music and found a community where I belong. My mentor has been there for me through some tough times.",
+    name: 'Jasmine',
+    role: 'Student, Chicago',
+    avatarText: 'J',
+    color: COLORS.gogo_purple,
   },
   {
-    quote: "Having the opportunity to mentor these amazing young people has been the most rewarding experience. I've watched them grow not just as musicians, but as confident young adults.",
-    name: "Marcus",
-    role: "Mentor, Miami",
-    avatarText: "M",
-    color: COLORS.gogo_blue
+    quote:
+      "Having the opportunity to mentor these amazing young people has been the most rewarding experience. I've watched them grow not just as musicians, but as confident young adults.",
+    name: 'Marcus',
+    role: 'Mentor, Miami',
+    avatarText: 'M',
+    color: COLORS.gogo_blue,
   },
   {
-    quote: "Before GOGO, I didn't have a creative outlet. Now I'm producing my own music and have performed at local venues. This program gave me skills I'll use for life.",
-    name: "Carlos",
-    role: "Student, Los Angeles",
-    avatarText: "C",
-    color: COLORS.gogo_green
-  }
+    quote:
+      "Before GOGO, I didn't have a creative outlet. Now I'm producing my own music and have performed at local venues. This program gave me skills I'll use for life.",
+    name: 'Carlos',
+    role: 'Student, Los Angeles',
+    avatarText: 'C',
+    color: COLORS.gogo_green,
+  },
 ];
 
 const TestimonialSection: React.FC = () => {
   const [inView, setInView] = useState(false);
-  
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -141,30 +148,32 @@ const TestimonialSection: React.FC = () => {
           setInView(true);
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.2 },
     );
-    
+
     const section = document.querySelector('.testimonial-section');
     if (section) observer.observe(section);
-    
+
     return () => {
       if (section) observer.unobserve(section);
     };
   }, []);
-  
+
   return (
     <TestimonialSectionWrapper className="testimonial-section">
       <SectionContainer>
         <SectionHeading>Stories of Impact</SectionHeading>
         <TestimonialsContainer>
           {testimonials.map((testimonial, index) => (
-            <TestimonialCard 
-              key={`testimonial-${index}`} 
+            <TestimonialCard
+              key={`testimonial-${index}`}
               color={testimonial.color}
               style={{
                 opacity: inView ? 1 : 0,
                 transform: inView ? 'translateY(0)' : 'translateY(30px)',
-                transition: `opacity 0.6s ease ${index * 0.2}s, transform 0.6s ease ${index * 0.2}s`
+                transition: `opacity 0.6s ease ${
+                  index * 0.2
+                }s, transform 0.6s ease ${index * 0.2}s`,
               }}
             >
               <QuoteMark color={testimonial.color}>"</QuoteMark>
@@ -186,4 +195,4 @@ const TestimonialSection: React.FC = () => {
   );
 };
 
-export default TestimonialSection; 
+export default TestimonialSection;

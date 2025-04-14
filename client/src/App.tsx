@@ -21,6 +21,7 @@ import MusicPage from './ImpactReport/MusicPage.tsx';
 import ArtistView from './ImpactReport/components/ArtistView.tsx';
 import MapDemo from './components/map/MapDemo';
 import Impact from './components/impact';
+import './assets/fonts/fonts.css';
 
 function App() {
   return (

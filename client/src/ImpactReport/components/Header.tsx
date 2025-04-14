@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import gogoWideLogo from '../../assets/GOGO_LOGO_WIDE_WH.png';
 
 function Header(): JSX.Element {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -6,11 +7,7 @@ function Header(): JSX.Element {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      setIsScrolled(window.scrollY > 50);
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -71,7 +68,16 @@ function Header(): JSX.Element {
           </button>
           <div className="logo-container">
             <div className="header-brand">
-              <h1 className="brand-title">Guitars Over Guns</h1>
+              <img 
+                src={gogoWideLogo} 
+                alt="GOGO Logo" 
+                style={{ 
+                  height: '60px',
+                  width: '180px',
+                  objectFit: 'cover',
+                  objectPosition: 'center'
+                }} 
+              />
             </div>
           </div>
         </div>
