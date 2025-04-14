@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
+import anime from 'animejs/lib/anime.es.js';
 
 // Update title styling to use GOGO brand colors
 const GogoTitle = styled.h1`
@@ -17,6 +18,13 @@ const GogoTitle = styled.h1`
   line-height: 0.9;
   position: relative;
   z-index: 1;
+  opacity: 0; /* Start hidden for animation */
+`;
+
+const TitleLetter = styled.span`
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(20px);
 `;
 
 // Update button styling to use GOGO colors
@@ -31,6 +39,7 @@ const PrimaryButton = styled.button`
   padding: 12px 24px;
   margin-right: 12px;
   transition: all 0.3s ease;
+  opacity: 0; /* Start hidden for animation */
 
   &:hover {
     background: var(--spotify-purple, #68369a);
@@ -48,6 +57,7 @@ const SecondaryButton = styled.button`
   font-weight: bold;
   padding: 12px 24px;
   transition: all 0.3s ease;
+  opacity: 0; /* Start hidden for animation */
 
   &:hover {
     background: var(--spotify-orange, #e9bb4d);
@@ -56,14 +66,83 @@ const SecondaryButton = styled.button`
   }
 `;
 
+const Subtitle = styled.h2`
+  opacity: 0; /* Start hidden for animation */
+`;
+
 function HeroSection(): JSX.Element {
   const [isLoaded, setIsLoaded] = useState(false);
+  
+  // Create refs for animations
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const subtitleRef = useRef<HTMLHeadingElement>(null);
+  const primaryButtonRef = useRef<HTMLButtonElement>(null);
+  const secondaryButtonRef = useRef<HTMLButtonElement>(null);
+  const waveContainerRef = useRef<HTMLDivElement>(null);
+  const waveBarsRef = useRef<HTMLDivElement[]>([]);
+  
+  // Split text for letter animation
+  const titleText = 'IMPACT REPORT 2024';
+  const titleLetters = titleText.split('');
 
   useEffect(() => {
     setIsLoaded(true);
+    
+    // Staggered animation for title letters
+    anime({
+      targets: '.title-letter',
+      opacity: [0, 1],
+      translateY: [40, 0],
+      easing: 'easeOutExpo',
+      duration: 1200,
+      delay: anime.stagger(50, {start: 300}),
+      complete: () => {
+        // Animate subtitle after title completes
+        anime({
+          targets: subtitleRef.current,
+          opacity: [0, 1],
+          translateY: [20, 0],
+          easing: 'easeOutExpo',
+          duration: 800,
+          complete: () => {
+            // Animate buttons after subtitle
+            anime({
+              targets: [primaryButtonRef.current, secondaryButtonRef.current],
+              opacity: [0, 1],
+              translateY: [20, 0],
+              easing: 'easeOutExpo',
+              duration: 800,
+              delay: anime.stagger(200)
+            });
+          }
+        });
+      }
+    });
+    
+    // Animate the wave bars
+    if (waveContainerRef.current) {
+      // Create a dynamic wave animation using anime.js
+      const waveAnimation = anime({
+        targets: '.wave-bar',
+        height: (el: Element, i: number) => {
+          // Base height with sine wave pattern
+          const baseHeight = Math.sin(i / 3) * 30 + 70;
+          // Return array of heights for animation
+          return [
+            `${baseHeight * 0.7}%`, 
+            `${baseHeight}%`,
+            `${baseHeight * 0.85}%`,
+            `${baseHeight * 0.95}%`
+          ];
+        },
+        easing: 'easeInOutSine',
+        duration: 2000,
+        delay: anime.stagger(100),
+        loop: true,
+        direction: 'alternate'
+      });
+    }
   }, []);
-
-  const titleText = 'IMPACT REPORT 2024';
 
   // Define wave bar colors array to avoid nested ternary
   const waveBarColors = [
@@ -76,33 +155,38 @@ function HeroSection(): JSX.Element {
     <section className="hero-section">
       <div className={`content-wrapper ${isLoaded ? 'fade-in' : ''}`}>
         <div className="title-wrapper">
-          <GogoTitle>{titleText}</GogoTitle>
+          <GogoTitle ref={titleRef}>
+            {titleLetters.map((letter, index) => (
+              <TitleLetter 
+                key={`${letter}-${index}`} 
+                className="title-letter"
+              >
+                {letter === ' ' ? '\u00A0' : letter}
+              </TitleLetter>
+            ))}
+          </GogoTitle>
         </div>
-        <h2>Guitars Over Guns</h2>
+        <Subtitle ref={subtitleRef}>Guitars Over Guns</Subtitle>
         <div className="hero-cta">
-          <PrimaryButton>
+          <PrimaryButton ref={primaryButtonRef}>
             <span className="icon">▶</span>
             <span>Watch Our Story</span>
           </PrimaryButton>
-          <SecondaryButton>
+          <SecondaryButton ref={secondaryButtonRef}>
             <span>Support Our Mission</span>
           </SecondaryButton>
         </div>
       </div>
       <div className="hero-visual">
-        <div className="sound-wave">
+        <div className="sound-wave" ref={waveContainerRef}>
           {Array.from({ length: 20 }).map((_, i) => {
-            // Create a unique identifier based on position and calculated height
-            const height = Math.sin(i / 3) * 30 + 70;
-            const uniqueId = `wave-bar-pos-${i}-height-${height.toFixed(2)}`;
-
+            // Create a unique identifier based on position
             return (
               <div
-                key={uniqueId}
+                key={`wave-bar-${i}`}
                 className="wave-bar"
+                ref={(el) => el && (waveBarsRef.current[i] = el)}
                 style={{
-                  animationDelay: `${i * 0.1}s`,
-                  height: `${height}%`,
                   backgroundColor: waveBarColors[i % 3],
                 }}
               />
