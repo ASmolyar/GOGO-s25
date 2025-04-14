@@ -20,6 +20,7 @@ import ImpactReportPage from './ImpactReport/ImpactReportPage.tsx';
 import MusicPage from './ImpactReport/MusicPage.tsx';
 import ArtistView from './ImpactReport/components/ArtistView.tsx';
 import MapDemo from './components/map/MapDemo';
+import Impact from './components/impact';
 import './assets/fonts/fonts.css';
 
 function App() {
@@ -51,9 +52,12 @@ function App() {
             />
           </Route>
           <Route path="/invite/:token" element={<InviteRegisterPage />} />
+                  {/* Public route for map demo */}
+                  <Route path="/map-demo" element={<MapDemo />} />
           {/* Routes accessed only if user is authenticated */}
           <Route element={<ProtectedRoutesWrapper />}>
             <Route path="/home" element={<HomePage />} />
+                    <Route path="/map" element={<MapDemo />} />
           </Route>
           <Route element={<AdminRoutesWrapper />}>
             <Route path="/users" element={<AdminDashboardPage />} />
@@ -79,6 +83,9 @@ function App() {
 
           {/* Route which is accessed if no other route is matched */}
           <Route path="*" element={<NotFoundPage />} />
+
+          {/* New route for Impact component */}
+          <Route path="/impact" element={<Impact />} />
         </Routes>
       </div>
     </div>

@@ -9,14 +9,35 @@ import 'typeface-hk-grotesk';
 // https://github.com/hack4impact/chapter-website-template/blob/main/public/style.css
 const theme = createTheme({
   palette: {
+    mode: 'dark', // Set the theme to dark mode
     primary: {
       // light: will be calculated from palette.primary.main,
       // dark: will be calculated from palette.primary.main,
       // contrastText: will be calculated to contrast with palette.primary.main
-      main: COLORS.primaryBlue,
+      main: COLORS.gogo_blue,
     },
     secondary: {
-      main: COLORS.secondarySeafoam,
+      main: COLORS.gogo_green,
+    },
+    background: {
+      default: COLORS.darkModePastelBlack,
+      paper: COLORS.darkModePastelBlack,
+    },
+    text: {
+      primary: COLORS.white,
+      secondary: COLORS.lightGray,
+    },
+    error: {
+      main: COLORS.gogo_pink,
+    },
+    warning: {
+      main: COLORS.gogo_yellow,
+    },
+    info: {
+      main: COLORS.gogo_purple,
+    },
+    success: {
+      main: COLORS.gogo_green,
     },
     // Used by `getContrastText()` to maximize the contrast between
     // the background and the text.
@@ -62,6 +83,8 @@ const theme = createTheme({
           fontFamily: 'Century Gothic, Arial, sans-serif',
           letterSpacing: '0.3px',
           lineHeight: '1.5',
+          backgroundColor: COLORS.darkModePastelBlack,
+          color: COLORS.white,
         },
         h1: {
           fontFamily: 'Airwaves, sans-serif !important',
@@ -83,6 +106,27 @@ const theme = createTheme({
         },
         h6: {
           fontFamily: 'Airwaves, sans-serif !important',
+        },
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: '4px',
+          textTransform: 'none',
+          fontWeight: 'bold',
+        },
+        containedPrimary: {
+          backgroundColor: COLORS.gogo_blue,
+          '&:hover': {
+            backgroundColor: '#0e3cd0', // Darker shade of gogo_blue
+          },
+        },
+        containedSecondary: {
+          backgroundColor: COLORS.gogo_green,
+          '&:hover': {
+            backgroundColor: '#57a080', // Darker shade of gogo_green
+          },
         },
       },
     },

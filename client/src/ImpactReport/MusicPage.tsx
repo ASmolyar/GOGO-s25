@@ -110,18 +110,40 @@ const RightContent = styled.div`
 interface Track {
   id: string;
   title: string;
-  artist: string;
-  cover: string;
-  duration: string;
-  audioSrc?: string;
-}
-
-// Interface for popular track data
-interface PopularTrack {
-  id: string;
-  title: string;
   duration: string;
   plays: string;
+  artist: string;
+  cover: string;
+}
+
+interface PlaybackTrack extends Omit<Track, 'plays'> {
+  // PlaybackTrack has everything except 'plays'
+}
+
+interface Artist {
+  id: string;
+  name: string;
+  image: string;
+  monthlyListeners: string;
+  description: string;
+  popularTracks: Track[];
+}
+
+interface ArtistProps {
+  artist: {
+    id: string;
+    name: string;
+    image: string;
+    monthlyListeners: string;
+    description: string;
+    popularTracks: {
+      id: string;
+      title: string;
+      duration: string;
+      plays: string;
+    }[];
+  };
+  onPlayTrack: (track: Track) => void;
 }
 
 // Add the required interfaces for components based on their definitions
@@ -255,9 +277,10 @@ const MusicPage: React.FC = () => {
   const [currentTrack, setCurrentTrack] = useState<Track>({
     id: 'gs-1',
     title: 'Urban Rhythms',
-    artist: 'GOGO Student Ensemble',
-    cover: '/music/albums/student_performances/cover.jpg',
     duration: '3:45',
+    plays: '4,253',
+    artist: 'GOGO Student Ensemble',
+    cover: '/music/artists/gogo_students.jpg',
   });
   
   // Refs for animations
@@ -300,13 +323,36 @@ const MusicPage: React.FC = () => {
     navigate(`/music/artist/${artistId}`);
   };
 
-  const handlePlayTrack = (track: Track) => {
+  // Playback control functions
+  const handlePlayPause = () => {
+    setIsPlaying(!isPlaying);
+  };
+
+  const handleNextTrack = () => {
+    // In a real app, this would play the next track
+    // eslint-disable-next-line no-console
+    console.log('Playing next track');
+  };
+
+  // Function to play a track from any component
+  const playTrack = (track: Track) => {
     setCurrentTrack(track);
     setIsPlaying(true);
   };
-
-  const handlePlayPause = () => {
-    setIsPlaying(!isPlaying);
+  // Function to transform PopularTrack to Track
+  const convertToTrack = (
+    track: Track,
+    artistName: string,
+    artistImage: string,
+  ): Track => {
+    return {
+      id: track.id,
+      title: track.title,
+      duration: track.duration,
+      plays: track.plays,
+      artist: artistName,
+      cover: artistImage,
+    };
   };
 
   return (
@@ -333,40 +379,43 @@ const MusicPage: React.FC = () => {
             <HomeIcon /> Home
           </NavItem>
         </LeftSidebar>
-
-        <RightContent ref={contentRef}>
-          <Routes>
-            <Route path="/" element={
-              <MusicLibrary 
-                onArtistClick={handleArtistClick} 
-                onPlayTrack={handlePlayTrack} 
-              />
-            } />
-            <Route path="/artist/:id" element={
-              currentArtist ? (
-                <ArtistView 
-                  artist={currentArtist} 
-                />
-              ) : (
-                <div>Artist not found</div>
-              )
-            } />
-            <Route path="/album/:albumId" element={
-              <AlbumPage 
-                onPlayTrack={handlePlayTrack} 
-              />
-            } />
-          </Routes>
+        <RightContent>
+          {isArtistView && currentArtist ? (
+            <ArtistView
+              artist={currentArtist}
+              onPlayTrack={(track: Track) => {
+                const trackAsTrack = convertToTrack(
+                  track,
+                  currentArtist.name,
+                  currentArtist.image,
+                );
+                playTrack(trackAsTrack);
+              }}
+            />
+          ) : (
+            <MusicLibrary
+              onArtistClick={handleGoToArtist}
+              onPlayTrack={(track: PlaybackTrack) => {
+                // Convert PlaybackTrack to Track if needed
+                const fullTrack: Track = {
+                  ...track,
+                  plays: '0' // Add the missing plays property
+                };
+                playTrack(fullTrack);
+              }}
+            />
+          )}
         </RightContent>
       </MainContent>
-
       <NowPlayingBar
-        ref={nowPlayingRef}
-        currentTrack={currentTrack}
+        currentTrack={{
+          ...currentTrack,
+          artist: currentTrack?.artist || '',
+          cover: currentTrack?.cover || ''
+        }}
         isPlaying={isPlaying}
         onPlayPause={handlePlayPause}
-        onNext={() => console.log('Playing next track')}
-        onPrevious={() => console.log('Playing previous track')}
+        onNext={handleNextTrack}
       />
     </PageContainer>
   );
