@@ -1,12 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useLocation, useNavigate, Routes, Route } from 'react-router-dom';
+import {
+  useParams,
+  useLocation,
+  useNavigate,
+  Routes,
+  Route,
+} from 'react-router-dom';
 import styled from 'styled-components';
 import MusicLibrary from './components/MusicLibrary';
 import ArtistView from './components/ArtistView';
 import AlbumPage from './components/AlbumPage';
 import NowPlayingBar from './components/NowPlayingBar';
-import COLORS from '../assets/colors.ts';
-import { pageEnterAnimation, nowPlayingEnterAnimation } from '../utils/animations';
+import COLORS from '../assets/colors';
+import {
+  pageEnterAnimation,
+  nowPlayingEnterAnimation,
+} from '../utils/animations';
 
 // Main container component for the music page
 const PageContainer = styled.div`
@@ -118,6 +127,7 @@ interface Track {
 
 interface PlaybackTrack extends Omit<Track, 'plays'> {
   // PlaybackTrack has everything except 'plays'
+  audioSrc?: string; // Adding a property so interface isn't empty
 }
 
 interface Artist {
@@ -130,35 +140,8 @@ interface Artist {
 }
 
 interface ArtistProps {
-  artist: {
-    id: string;
-    name: string;
-    image: string;
-    monthlyListeners: string;
-    description: string;
-    popularTracks: {
-      id: string;
-      title: string;
-      duration: string;
-      plays: string;
-    }[];
-  };
-  onPlayTrack: (track: Track) => void;
-}
-
-// Add the required interfaces for components based on their definitions
-interface Artist {
-  id: string;
-  name: string;
-  image: string;
-  monthlyListeners: string;
-  description: string;
-  popularTracks: {
-    id: string;
-    title: string;
-    duration: string;
-    plays: string;
-  }[];
+  artist: Artist;
+  onPlayTrack?: (track: Track) => void;
 }
 
 // Mock data for artists
@@ -171,21 +154,51 @@ const artists = {
     description:
       'Brazilian composer, singer, guitarist, writer, and political activist',
     popularTracks: [
-      { id: 'cv-1', title: 'Sozinho', duration: '3:48', plays: '31,562,984' },
-      { id: 'cv-2', title: 'Leãozinho', duration: '2:56', plays: '28,977,463' },
+      {
+        id: 'cv-1',
+        title: 'Sozinho',
+        duration: '3:48',
+        plays: '31,562,984',
+        artist: 'Caetano Veloso',
+        cover:
+          'https://i.scdn.co/image/ab6761610000e5eb23960da5fab496188f9d5054',
+      },
+      {
+        id: 'cv-2',
+        title: 'Leãozinho',
+        duration: '2:56',
+        plays: '28,977,463',
+        artist: 'Caetano Veloso',
+        cover:
+          'https://i.scdn.co/image/ab6761610000e5eb23960da5fab496188f9d5054',
+      },
       {
         id: 'cv-3',
         title: 'Você É Linda',
         duration: '3:58',
         plays: '24,119,734',
+        artist: 'Caetano Veloso',
+        cover:
+          'https://i.scdn.co/image/ab6761610000e5eb23960da5fab496188f9d5054',
       },
       {
         id: 'cv-4',
         title: 'Qualquer Coisa',
         duration: '3:35',
         plays: '12,578,235',
+        artist: 'Caetano Veloso',
+        cover:
+          'https://i.scdn.co/image/ab6761610000e5eb23960da5fab496188f9d5054',
       },
-      { id: 'cv-5', title: 'Terra', duration: '8:05', plays: '10,825,189' },
+      {
+        id: 'cv-5',
+        title: 'Terra',
+        duration: '8:05',
+        plays: '10,825,189',
+        artist: 'Caetano Veloso',
+        cover:
+          'https://i.scdn.co/image/ab6761610000e5eb23960da5fab496188f9d5054',
+      },
     ],
   },
   'gogo-students': {
@@ -195,26 +208,46 @@ const artists = {
     monthlyListeners: '1,287',
     description: 'Student musicians from Guitars Over Guns mentorship program',
     popularTracks: [
-      { id: 'gs-1', title: 'Urban Rhythms', duration: '3:45', plays: '4,253' },
+      {
+        id: 'gs-1',
+        title: 'Urban Rhythms',
+        duration: '3:45',
+        plays: '4,253',
+        artist: 'GOGO Student Ensemble',
+        cover: '/music/artists/gogo_students.jpg',
+      },
       {
         id: 'gs-2',
         title: 'Finding My Voice',
         duration: '4:12',
         plays: '3,879',
+        artist: 'GOGO Student Ensemble',
+        cover: '/music/artists/gogo_students.jpg',
       },
       {
         id: 'gs-3',
         title: 'Community Beats',
         duration: '2:58',
         plays: '3,124',
+        artist: 'GOGO Student Ensemble',
+        cover: '/music/artists/gogo_students.jpg',
       },
       {
         id: 'gs-4',
         title: "Tomorrow's Sound",
         duration: '3:22',
         plays: '2,865',
+        artist: 'GOGO Student Ensemble',
+        cover: '/music/artists/gogo_students.jpg',
       },
-      { id: 'gs-5', title: 'The Journey', duration: '5:17', plays: '2,341' },
+      {
+        id: 'gs-5',
+        title: 'The Journey',
+        duration: '5:17',
+        plays: '2,341',
+        artist: 'GOGO Student Ensemble',
+        cover: '/music/artists/gogo_students.jpg',
+      },
     ],
   },
   'gogo-mentors': {
@@ -225,51 +258,70 @@ const artists = {
     description:
       'Professional musicians mentoring youth through Guitars Over Guns',
     popularTracks: [
-      { id: 'gm-1', title: 'Guidance', duration: '4:32', plays: '12,456' },
+      {
+        id: 'gm-1',
+        title: 'Guidance',
+        duration: '4:32',
+        plays: '12,456',
+        artist: 'GOGO Mentor Collective',
+        cover: '/music/artists/gogo_mentors.jpg',
+      },
       {
         id: 'gm-2',
         title: 'Passing the Torch',
         duration: '3:48',
         plays: '10,235',
+        artist: 'GOGO Mentor Collective',
+        cover: '/music/artists/gogo_mentors.jpg',
       },
       {
         id: 'gm-3',
         title: 'Musical Foundations',
         duration: '5:21',
         plays: '8,754',
+        artist: 'GOGO Mentor Collective',
+        cover: '/music/artists/gogo_mentors.jpg',
       },
       {
         id: 'gm-4',
         title: 'Collaborative Spirit',
         duration: '3:15',
         plays: '7,239',
+        artist: 'GOGO Mentor Collective',
+        cover: '/music/artists/gogo_mentors.jpg',
       },
       {
         id: 'gm-5',
         title: 'Next Generation',
         duration: '4:05',
         plays: '6,587',
+        artist: 'GOGO Mentor Collective',
+        cover: '/music/artists/gogo_mentors.jpg',
       },
     ],
   },
 };
 
 // Arrow Left Icon component
-const ArrowLeftIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-    <path d="M11.03.47a.75.75 0 0 1 0 1.06L4.56 8l6.47 6.47a.75.75 0 1 1-1.06 1.06L2.44 8 9.97.47a.75.75 0 0 1 1.06 0z"></path>
-  </svg>
-);
+function ArrowLeftIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+      <path d="M11.03.47a.75.75 0 0 1 0 1.06L4.56 8l6.47 6.47a.75.75 0 1 1-1.06 1.06L2.44 8 9.97.47a.75.75 0 0 1 1.06 0z" />
+    </svg>
+  );
+}
 
 // Home Icon component
-const HomeIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-    <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5Z"></path>
-    <path d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293l6-6Z"></path>
-  </svg>
-);
+function HomeIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+      <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5Z" />
+      <path d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293l6-6Z" />
+    </svg>
+  );
+}
 
-const MusicPage: React.FC = () => {
+function MusicPage(): JSX.Element {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const navigate = useNavigate();
@@ -282,18 +334,18 @@ const MusicPage: React.FC = () => {
     artist: 'GOGO Student Ensemble',
     cover: '/music/artists/gogo_students.jpg',
   });
-  
+
   // Refs for animations
   const pageRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const nowPlayingRef = useRef<HTMLDivElement>(null);
-  
+
   // Initialize animations when the component mounts
   useEffect(() => {
     if (pageRef.current) {
       pageEnterAnimation(pageRef.current);
     }
-    
+
     if (nowPlayingRef.current) {
       nowPlayingEnterAnimation(nowPlayingRef.current);
     }
@@ -319,7 +371,7 @@ const MusicPage: React.FC = () => {
     navigate('/music');
   };
 
-  const handleArtistClick = (artistId: string) => {
+  const handleGoToArtist = (artistId: string) => {
     navigate(`/music/artist/${artistId}`);
   };
 
@@ -399,7 +451,7 @@ const MusicPage: React.FC = () => {
                 // Convert PlaybackTrack to Track if needed
                 const fullTrack: Track = {
                   ...track,
-                  plays: '0' // Add the missing plays property
+                  plays: '0', // Add the missing plays property
                 };
                 playTrack(fullTrack);
               }}
@@ -411,7 +463,7 @@ const MusicPage: React.FC = () => {
         currentTrack={{
           ...currentTrack,
           artist: currentTrack?.artist || '',
-          cover: currentTrack?.cover || ''
+          cover: currentTrack?.cover || '',
         }}
         isPlaying={isPlaying}
         onPlayPause={handlePlayPause}
@@ -419,6 +471,6 @@ const MusicPage: React.FC = () => {
       />
     </PageContainer>
   );
-};
+}
 
 export default MusicPage;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useParams, useNavigate } from 'react-router-dom';
-import COLORS from '../../assets/colors.ts';
+import COLORS from '../../assets/colors';
 
 // Internal Track interface for the music catalog
 interface CatalogTrack {

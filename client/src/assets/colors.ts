@@ -18,13 +18,6 @@ const COLORS = {
   actionBlue: '#155da1', // Action button
   darkModePastelBlack: '#1a1a1e', // Dark mode pastel black
 
-  // GOGO Colors
-  gogo_blue: '#124af5',    // Blue
-  gogo_yellow: '#eabc4c',  // Yellow
-  gogo_green: '#69b594',   // Green
-  gogo_pink: '#b8328c',    // Pink
-  gogo_purple: '#643790',  // Purple
-
   // GOGO Brand Colors:
   gogo_blue: '#1946F5', // Blue Money - RGB: 25/75/245
   gogo_teal: '#B1EBF2', // Mr Blue Sky - RGB: 177/235/239

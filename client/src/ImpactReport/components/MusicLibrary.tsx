@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import COLORS from '../../assets/colors.ts';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import COLORS from '../../assets/colors';
 
 // Internal Track interface for the music catalog
 interface CatalogTrack {
@@ -79,7 +79,7 @@ const Card = styled.div`
   padding: 16px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  
+
   &:hover {
     background: #282828;
   }
@@ -89,13 +89,13 @@ const CardCover = styled.div<{ url: string }>`
   width: 100%;
   aspect-ratio: 1/1;
   border-radius: 4px;
-  background-image: url(${props => props.url});
+  background-image: url(${(props) => props.url});
   background-size: cover;
   background-position: center;
   margin-bottom: 16px;
   position: relative;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -103,12 +103,12 @@ const CardCover = styled.div<{ url: string }>`
     left: 0;
     right: 0;
     height: 50%;
-    background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent);
     border-radius: 4px;
     opacity: 0;
     transition: opacity 0.3s ease;
   }
-  
+
   &:hover::after {
     opacity: 1;
   }
@@ -131,12 +131,12 @@ const PlayButton = styled.div`
   transition: all 0.3s ease;
   z-index: 2;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-  
+
   ${Card}:hover & {
     opacity: 1;
     transform: translateY(0);
   }
-  
+
   &:hover {
     transform: scale(1.1) !important;
     background: #1ed760;
@@ -175,7 +175,12 @@ const NoAlbumsMessage = styled.div`
 const FeaturedAlbumSection = styled.div`
   margin-bottom: 48px;
   padding: 24px;
-  background: linear-gradient(135deg, #121212 0%, #1e1e1e 50%, ${COLORS.gogo_blue}22 100%);
+  background: linear-gradient(
+    135deg,
+    #121212 0%,
+    #1e1e1e 50%,
+    ${COLORS.gogo_blue}22 100%
+  );
   border-radius: 8px;
   display: flex;
   gap: 24px;
@@ -187,7 +192,7 @@ const FeaturedAlbumCover = styled.div<{ image: string }>`
   width: 232px;
   height: 232px;
   border-radius: 4px;
-  background-image: url(${props => props.image});
+  background-image: url(${(props) => props.image});
   background-size: cover;
   background-position: center;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
@@ -254,14 +259,19 @@ const GreenPlayButton = styled.button`
   }
 `;
 
-const VerifiedIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="#3D91F4">
-    <path d="M12 1a11 11 0 1 0 0 22 11 11 0 0 0 0-22zm5.045 8.866L11.357 16.9l-4.4-3.396a.75.75 0 1 1 .914-1.182l3.417 2.639 4.968-6.276a.749.749 0 0 1 1.185.918l-.003.004a.752.752 0 0 1-.136.177l-.258.326z" />
-  </svg>
-);
+function VerifiedIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="#3D91F4">
+      <path d="M12 1a11 11 0 1 0 0 22 11 11 0 0 0 0-22zm5.045 8.866L11.357 16.9l-4.4-3.396a.75.75 0 1 1 .914-1.182l3.417 2.639 4.968-6.276a.749.749 0 0 1 1.185.918l-.003.004a.752.752 0 0 1-.136.177l-.258.326z" />
+    </svg>
+  );
+}
 
 // Main component
-const MusicLibrary: React.FC<MusicLibraryProps> = ({ onArtistClick, onPlayTrack }) => {
+function MusicLibrary({
+  onArtistClick,
+  onPlayTrack,
+}: MusicLibraryProps): JSX.Element {
   const [catalog, setCatalog] = useState<MusicCatalog | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -307,9 +317,9 @@ const MusicLibrary: React.FC<MusicLibraryProps> = ({ onArtistClick, onPlayTrack 
       title: track.title,
       artist: track.artist,
       cover: albumCover,
-      duration: track.duration
+      duration: track.duration,
     });
-    
+
     // Continue to handle local audio player if needed
     if (audioRef.current) {
       // If the same track is clicked, toggle play/pause
@@ -365,14 +375,14 @@ const MusicLibrary: React.FC<MusicLibraryProps> = ({ onArtistClick, onPlayTrack 
       {/* Featured Album Banner */}
       <PageSection>
         <FeaturedAlbumSection>
-          <FeaturedAlbumCover 
-            image="/music/albums/The Rain May Be Pouring (Guitars over Guns)/cover.jpg" 
+          <FeaturedAlbumCover
+            image="/music/albums/The Rain May Be Pouring (Guitars over Guns)/cover.jpg"
             onClick={() => handleAlbumClick('the_rain_may_be_pouring')}
             style={{ cursor: 'pointer' }}
           />
           <FeaturedAlbumInfo>
             <FeaturedAlbumBadge>Featured Album</FeaturedAlbumBadge>
-            <FeaturedAlbumTitle 
+            <FeaturedAlbumTitle
               onClick={() => handleAlbumClick('the_rain_may_be_pouring')}
               style={{ cursor: 'pointer' }}
             >
@@ -380,14 +390,17 @@ const MusicLibrary: React.FC<MusicLibraryProps> = ({ onArtistClick, onPlayTrack 
             </FeaturedAlbumTitle>
             <FeaturedAlbumArtist>Guitars Over Guns</FeaturedAlbumArtist>
             <FeaturedAlbumDescription>
-              Original pieces created by students and mentors from the Guitars Over Guns program,
-              showcasing their talent, creativity, and musical growth.
+              Original pieces created by students and mentors from the Guitars
+              Over Guns program, showcasing their talent, creativity, and
+              musical growth.
             </FeaturedAlbumDescription>
             <div style={{ display: 'flex', gap: '16px' }}>
-              <GreenPlayButton 
+              <GreenPlayButton
                 onClick={(e) => {
                   e.stopPropagation();
-                  const album = catalog.albums.find(a => a.id === 'the_rain_may_be_pouring');
+                  const album = catalog.albums.find(
+                    (a) => a.id === 'the_rain_may_be_pouring',
+                  );
                   if (album && album.tracks.length > 0) {
                     handlePlayTrack(album.tracks[0], album.coverImage);
                   }
@@ -396,17 +409,18 @@ const MusicLibrary: React.FC<MusicLibraryProps> = ({ onArtistClick, onPlayTrack 
               >
                 ▶
               </GreenPlayButton>
-              <button 
+              <button
+                type="button"
                 onClick={() => handleAlbumClick('the_rain_may_be_pouring')}
-                style={{ 
-                  background: 'transparent', 
-                  border: '1px solid rgba(255, 255, 255, 0.3)', 
-                  borderRadius: '4px', 
-                  padding: '8px 16px', 
-                  color: 'white', 
+                style={{
+                  background: 'transparent',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  borderRadius: '4px',
+                  padding: '8px 16px',
+                  color: 'white',
                   cursor: 'pointer',
                   fontSize: '14px',
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
                 }}
               >
                 VIEW ALBUM
@@ -421,17 +435,21 @@ const MusicLibrary: React.FC<MusicLibraryProps> = ({ onArtistClick, onPlayTrack 
         <SectionHeader>
           <SectionTitle>Our Albums</SectionTitle>
         </SectionHeader>
-        
+
         <CardGrid>
-          {catalog.albums.map(album => (
+          {catalog.albums.map((album) => (
             <Card key={album.id} onClick={() => handleAlbumClick(album.id)}>
               <CardCover url={album.coverImage}>
-                <PlayButton onClick={(e) => {
-                  e.stopPropagation(); // Prevent navigating to album page
-                  if (album.tracks.length > 0) {
-                    handlePlayTrack(album.tracks[0], album.coverImage);
-                  }
-                }}>▶</PlayButton>
+                <PlayButton
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent navigating to album page
+                    if (album.tracks.length > 0) {
+                      handlePlayTrack(album.tracks[0], album.coverImage);
+                    }
+                  }}
+                >
+                  ▶
+                </PlayButton>
               </CardCover>
               <CardTitle>{album.title}</CardTitle>
               <CardDescription>{album.description}</CardDescription>
@@ -445,7 +463,7 @@ const MusicLibrary: React.FC<MusicLibraryProps> = ({ onArtistClick, onPlayTrack 
         <SectionHeader>
           <SectionTitle>GOGO Artists</SectionTitle>
         </SectionHeader>
-        
+
         <CardGrid>
           <Card onClick={() => onArtistClick('caetano-veloso')}>
             <CardCover url="https://i.scdn.co/image/ab6761610000e5eb23960da5fab496188f9d5054" />
@@ -466,6 +484,6 @@ const MusicLibrary: React.FC<MusicLibraryProps> = ({ onArtistClick, onPlayTrack 
       </PageSection>
     </MusicLibraryContainer>
   );
-};
+}
 
-export default MusicLibrary; 
+export default MusicLibrary;

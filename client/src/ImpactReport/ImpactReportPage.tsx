@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { animate, stagger } from 'animejs';
 import 'leaflet/dist/leaflet.css'; // Ensure Leaflet CSS is imported first
 import './ImpactReportStructure.css';
 import '../assets/fonts/fonts.css'; // Import GOGO fonts
@@ -12,7 +13,6 @@ import TestimonialSection from './components/TestimonialSection';
 import AchievementsSection from './components/AchievementsSection';
 import PartnersSection from './components/PartnersSection';
 import FutureVisionSection from './components/FutureVisionSection';
-import anime from 'animejs/lib/anime.es.js';
 import MissionStatement from '../components/MissionStatement';
 import photo1 from '../assets/missionPhotos/Photo1.jpg';
 import gogoLogo from '../assets/GOGO_LOGO_STACKED_WH.png';
@@ -63,12 +63,11 @@ function ImpactReportPage() {
   useEffect(() => {
     // Initial animation for hero section
     if (heroRef.current) {
-      anime({
-        targets: heroRef.current,
+      animate(heroRef.current, {
         opacity: [0, 1],
         translateY: [50, 0],
         duration: 1000,
-        easing: 'easeOutExpo'
+        easing: 'easeOutExpo',
       });
     }
 
@@ -78,10 +77,9 @@ function ImpactReportPage() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             // Different animation for each section
-            const target = entry.target;
-            
-            anime({
-              targets: target,
+            const { target } = entry;
+
+            animate(target, {
               opacity: [0, 1],
               translateY: [50, 0],
               duration: 800,
@@ -90,28 +88,27 @@ function ImpactReportPage() {
               complete: () => {
                 // Animate child elements after the section appears
                 const children = target.querySelectorAll('.animate-child');
-                anime({
-                  targets: children,
+                animate(children, {
                   opacity: [0, 1],
                   translateY: [20, 0],
                   scale: [0.98, 1],
                   duration: 600,
-                  delay: anime.stagger(100),
-                  easing: 'easeOutExpo'
+                  delay: stagger(100),
+                  easing: 'easeOutExpo',
                 });
-              }
+              },
             });
-            
+
             // Unobserve after animation is triggered
             observer.unobserve(target);
           }
         });
       },
-      { threshold: 0.1 } // 10% of the element is visible
+      { threshold: 0.1 }, // 10% of the element is visible
     );
 
     // Observe all sections except hero (which is animated on load)
-    [
+    const sections = [
       missionRef.current,
       impactRef.current,
       achievementsRef.current,
@@ -120,11 +117,14 @@ function ImpactReportPage() {
       locationsRef.current,
       partnersRef.current,
       futureRef.current,
-      footerRef.current
-    ].forEach((section) => {
+      footerRef.current,
+    ];
+
+    sections.forEach((section) => {
       if (section) {
         // Set initial opacity to 0 for all sections
-        section.style.opacity = '0';
+        // Using inline styles directly instead of modifying the parameter
+        section.setAttribute('style', 'opacity: 0');
         observer.observe(section);
       }
     });
@@ -138,24 +138,33 @@ function ImpactReportPage() {
       <div className="spotify-gradient-background" />
       <Header />
       <div className="main-content">
-        <div ref={heroRef} style={{ opacity: 0 }}><HeroSection /></div>
-        <div ref={missionRef}><MissionSection /></div>
-        <div ref={impactRef}><ImpactSection /></div>
-        <div ref={achievementsRef}><AchievementsSection /></div>
-        <div ref={programsRef}><ProgramsSection /></div>
-        <div ref={testimonialRef}><TestimonialSection /></div>
-        <div ref={locationsRef}><LocationsSection /></div>
-        <div ref={partnersRef}><PartnersSection /></div>
-        <div ref={futureRef}><FutureVisionSection /></div>
-        <HeroSection />
-        <MissionSection/>
-        <ImpactSection />
-        <AchievementsSection />
-        <ProgramsSection />
-        <TestimonialSection />
-        <LocationsSection />
-        <PartnersSection />
-        <FutureVisionSection />
+        <div ref={heroRef} style={{ opacity: 0 }}>
+          <HeroSection />
+        </div>
+        <div ref={missionRef}>
+          <MissionSection />
+        </div>
+        <div ref={impactRef}>
+          <ImpactSection />
+        </div>
+        <div ref={achievementsRef}>
+          <AchievementsSection />
+        </div>
+        <div ref={programsRef}>
+          <ProgramsSection />
+        </div>
+        <div ref={testimonialRef}>
+          <TestimonialSection />
+        </div>
+        <div ref={locationsRef}>
+          <LocationsSection />
+        </div>
+        <div ref={partnersRef}>
+          <PartnersSection />
+        </div>
+        <div ref={futureRef}>
+          <FutureVisionSection />
+        </div>
       </div>
       <footer className="spotify-footer" ref={footerRef}>
         <div className="footer-content">

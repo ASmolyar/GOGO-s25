@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useRef } from 'react';
-import anime from 'animejs/lib/anime.es.js';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
+import { animate, stagger } from 'animejs';
 
 function ImpactSection(): JSX.Element {
   const [inView, setInView] = useState(false);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  
+
   // Create refs for each impact stat
   const sectionRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -12,64 +12,89 @@ function ImpactSection(): JSX.Element {
   const progressRefs = useRef<(SVGCircleElement | null)[]>([]);
   const percentageRefs = useRef<(HTMLHeadingElement | null)[]>([]);
 
+  // Define impact data with useMemo to avoid recreating it on every render
+  const impactData = useMemo(
+    () => [
+      {
+        id: 'mentor-trust',
+        percentage: 90,
+        description: 'of students say their mentor can be counted on for help',
+      },
+      {
+        id: 'challenge-encouragement',
+        percentage: 87,
+        description: 'of students felt encouraged to work through challenges',
+      },
+      {
+        id: 'measurable-growth',
+        percentage: 85,
+        description: 'of students showed measurable growth',
+      },
+    ],
+    [],
+  );
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setInView(true);
-          
+
           // Animate the section header
-          anime({
-            targets: headerRef.current,
-            opacity: [0, 1],
-            translateY: [30, 0],
-            easing: 'easeOutExpo',
-            duration: 800
-          });
-          
+          if (headerRef.current) {
+            animate(headerRef.current, {
+              opacity: [0, 1],
+              translateY: [30, 0],
+              easing: 'easeOutExpo',
+              duration: 800,
+            });
+          }
+
           // Animate each stat card with staggered timing
-          anime({
-            targets: statRefs.current,
-            opacity: [0, 1],
-            translateY: [50, 0],
-            scale: [0.9, 1],
-            easing: 'easeOutExpo',
-            duration: 1200,
-            delay: anime.stagger(200)
-          });
-          
+          const validStatRefs = statRefs.current.filter(Boolean);
+          if (validStatRefs.length > 0) {
+            animate(validStatRefs, {
+              opacity: [0, 1],
+              translateY: [50, 0],
+              scale: [0.9, 1],
+              easing: 'easeOutExpo',
+              duration: 1200,
+              delay: stagger(200),
+            });
+          }
+
           // Animate each percentage with counting
           impactData.forEach((item, index) => {
             const percentageEl = percentageRefs.current[index];
             if (percentageEl) {
               // Starting at 0
-              let startValue = 0; 
-              
+              const startValue = 0;
+              const obj = { value: startValue };
+
               // Animate the percentage number
-              anime({
-                targets: { value: startValue },
+              animate(obj, {
                 value: item.percentage,
                 duration: 2000,
                 easing: 'easeOutCubic',
                 delay: 300 + index * 200,
-                update: (anim: any) => {
-                  const value = Math.round(anim.animations[0].currentValue);
-                  if (percentageEl) {
-                    percentageEl.textContent = `${value}%`;
-                  }
-                }
+                update(anim: any) {
+                  const value = Math.round(obj.value);
+                  percentageEl.textContent = `${value}%`;
+                },
               });
-              
+
               // Animate the circle stroke
               if (progressRefs.current[index]) {
                 const circlePath = progressRefs.current[index];
                 if (circlePath) {
-                  anime({
-                    targets: circlePath,
-                    strokeDashoffset: [339.292, 339.292 * (1 - item.percentage / 100)],
+                  animate(circlePath, {
+                    strokeDashoffset: [
+                      339.292,
+                      339.292 * (1 - item.percentage / 100),
+                    ],
                     easing: 'easeOutCubic',
                     duration: 2000,
-                    delay: 300 + index * 200
+                    delay: 300 + index * 200,
                   });
                 }
               }
@@ -80,34 +105,19 @@ function ImpactSection(): JSX.Element {
       { threshold: 0.2 },
     );
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
+    // Store reference to current value to use in cleanup function
+    const currentSectionRef = sectionRef.current;
+
+    if (currentSectionRef) {
+      observer.observe(currentSectionRef);
     }
 
     return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
+      if (currentSectionRef) {
+        observer.unobserve(currentSectionRef);
       }
     };
-  }, []);
-
-  const impactData = [
-    {
-      id: 'mentor-trust',
-      percentage: 90,
-      description: 'of students say their mentor can be counted on for help',
-    },
-    {
-      id: 'challenge-encouragement',
-      percentage: 87,
-      description: 'of students felt encouraged to work through challenges',
-    },
-    {
-      id: 'measurable-growth',
-      percentage: 85,
-      description: 'of students showed measurable growth',
-    },
-  ];
+  }, [impactData]); // Add impactData as a dependency
 
   // Helper function to determine stroke color based on index
   const getStrokeColor = (index: number): string => {
@@ -119,35 +129,43 @@ function ImpactSection(): JSX.Element {
   // Handle mouse enter animation
   const handleMouseEnter = (index: number) => {
     setActiveIndex(index);
-    
+
     // Animate the progress ring on hover
-    anime({
-      targets: progressRefs.current[index],
-      scale: 1.05,
-      duration: 300,
-      easing: 'easeOutElastic(1, .8)'
-    });
-    
+    if (progressRefs.current[index]) {
+      animate(progressRefs.current[index], {
+        scale: 1.05,
+        duration: 300,
+        easing: 'easeOutElastic(1, .8)',
+      });
+    }
+
     // Animate the percentage text on hover
-    anime({
-      targets: percentageRefs.current[index],
-      scale: 1.2,
-      duration: 300,
-      easing: 'easeOutElastic(1, .8)'
-    });
+    if (percentageRefs.current[index]) {
+      animate(percentageRefs.current[index], {
+        scale: 1.2,
+        duration: 300,
+        easing: 'easeOutElastic(1, .8)',
+      });
+    }
   };
-  
+
   // Handle mouse leave animation
   const handleMouseLeave = (index: number) => {
     setActiveIndex(null);
-    
+
     // Animate back to normal
-    anime({
-      targets: [progressRefs.current[index], percentageRefs.current[index]],
-      scale: 1,
-      duration: 500,
-      easing: 'easeOutElastic(1, .5)'
-    });
+    const targets = [
+      progressRefs.current[index],
+      percentageRefs.current[index],
+    ].filter(Boolean);
+
+    if (targets.length > 0) {
+      animate(targets, {
+        scale: 1,
+        duration: 500,
+        easing: 'easeOutElastic(1, .5)',
+      });
+    }
   };
 
   return (
@@ -165,7 +183,9 @@ function ImpactSection(): JSX.Element {
           <div
             key={item.id}
             className="impact-stat"
-            ref={(el) => (statRefs.current[index] = el)}
+            ref={(el) => {
+              statRefs.current[index] = el;
+            }}
             style={{ opacity: 0 }}
             onMouseEnter={() => handleMouseEnter(index)}
             onMouseLeave={() => handleMouseLeave(index)}
@@ -190,10 +210,18 @@ function ImpactSection(): JSX.Element {
                   style={{
                     stroke: getStrokeColor(index),
                   }}
-                  ref={(el) => (progressRefs.current[index] = el)}
+                  ref={(el) => {
+                    progressRefs.current[index] = el;
+                  }}
                 />
               </svg>
-              <h3 ref={(el) => (percentageRefs.current[index] = el)}>0%</h3>
+              <h3
+                ref={(el) => {
+                  percentageRefs.current[index] = el;
+                }}
+              >
+                0%
+              </h3>
             </div>
             <p>{item.description}</p>
             <div

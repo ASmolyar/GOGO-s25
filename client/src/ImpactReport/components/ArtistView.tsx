@@ -8,6 +8,8 @@ interface Track {
   title: string;
   plays: string;
   duration: string;
+  artist: string;
+  cover: string;
 }
 
 interface Artist {
@@ -21,6 +23,7 @@ interface Artist {
 
 interface ArtistProps {
   artist: Artist;
+  onPlayTrack?: (track: Track) => void;
 }
 
 // Styled components
@@ -262,17 +265,21 @@ const AboutText = styled.p`
 `;
 
 // SVG icons
-const VerifiedIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="#3D91F4">
-    <path d="M12 1a11 11 0 1 0 0 22 11 11 0 0 0 0-22zm5.045 8.866L11.357 16.9l-4.4-3.396a.75.75 0 1 1 .914-1.182l3.417 2.639 4.968-6.276a.749.749 0 0 1 1.185.918l-.003.004a.752.752 0 0 1-.136.177l-.258.326z" />
-  </svg>
-);
+function VerifiedIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="#3D91F4">
+      <path d="M12 1a11 11 0 1 0 0 22 11 11 0 0 0 0-22zm5.045 8.866L11.357 16.9l-4.4-3.396a.75.75 0 1 1 .914-1.182l3.417 2.639 4.968-6.276a.749.749 0 0 1 1.185.918l-.003.004a.752.752 0 0 1-.136.177l-.258.326z" />
+    </svg>
+  );
+}
 
-const MoreIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M4.5 13.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm7.5 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm7.5 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
-  </svg>
-);
+function MoreIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M4.5 13.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm7.5 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm7.5 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
+    </svg>
+  );
+}
 
 // Default props for demo
 const defaultArtist: Artist = {
@@ -288,15 +295,48 @@ const defaultArtist: Artist = {
       title: 'Chuvos De Verão - Remastered 2006',
       plays: '17,844,557',
       duration: '4:10',
+      artist: 'Caetano Veloso',
+      cover: 'https://i.scdn.co/image/ab6761610000e5eb0130d3f78e4348990cbb987b',
     },
-    { id: 'cv-2', title: 'Sozinho', plays: '15,622,418', duration: '3:47' },
-    { id: 'cv-3', title: 'Leãozinho', plays: '14,376,809', duration: '2:30' },
-    { id: 'cv-4', title: 'Você É Linda', plays: '12,933,254', duration: '3:58' },
-    { id: 'cv-5', title: 'Lua e Estrela', plays: '9,876,543', duration: '3:21' },
+    {
+      id: 'cv-2',
+      title: 'Sozinho',
+      plays: '15,622,418',
+      duration: '3:47',
+      artist: 'Caetano Veloso',
+      cover: 'https://i.scdn.co/image/ab6761610000e5eb0130d3f78e4348990cbb987b',
+    },
+    {
+      id: 'cv-3',
+      title: 'Leãozinho',
+      plays: '14,376,809',
+      duration: '2:30',
+      artist: 'Caetano Veloso',
+      cover: 'https://i.scdn.co/image/ab6761610000e5eb0130d3f78e4348990cbb987b',
+    },
+    {
+      id: 'cv-4',
+      title: 'Você É Linda',
+      plays: '12,933,254',
+      duration: '3:58',
+      artist: 'Caetano Veloso',
+      cover: 'https://i.scdn.co/image/ab6761610000e5eb0130d3f78e4348990cbb987b',
+    },
+    {
+      id: 'cv-5',
+      title: 'Lua e Estrela',
+      plays: '9,876,543',
+      duration: '3:21',
+      artist: 'Caetano Veloso',
+      cover: 'https://i.scdn.co/image/ab6761610000e5eb0130d3f78e4348990cbb987b',
+    },
   ],
 };
 
-const ArtistView: React.FC<ArtistProps> = ({ artist = defaultArtist }) => {
+function ArtistView({
+  artist = defaultArtist,
+  onPlayTrack,
+}: ArtistProps): JSX.Element {
   return (
     <ArtistContainer>
       <ArtistHeader>
@@ -333,7 +373,11 @@ const ArtistView: React.FC<ArtistProps> = ({ artist = defaultArtist }) => {
         </TrackHeader>
 
         {artist.popularTracks.map((track, index) => (
-          <TrackRow key={index} style={{ cursor: 'pointer' }}>
+          <TrackRow
+            key={track.id}
+            style={{ cursor: 'pointer' }}
+            onClick={() => onPlayTrack && onPlayTrack(track)}
+          >
             <TrackNumber>{index + 1}</TrackNumber>
             <TrackTitle>{track.title}</TrackTitle>
             <TrackPlays>{track.plays}</TrackPlays>
@@ -348,6 +392,6 @@ const ArtistView: React.FC<ArtistProps> = ({ artist = defaultArtist }) => {
       </AboutSection>
     </ArtistContainer>
   );
-};
+}
 
 export default ArtistView;
