@@ -75,7 +75,7 @@ const TitleUnderline = styled.div`
 // Report year text
 const ReportYear = styled.div`
   font-size: 2.2rem;
-  color: var(--spotify-orange, #e5a93d);
+  color: var(--spotify-orange, #e9bb4d);
   font-family: 'Century Gothic-Bold', 'Arial', sans-serif;
   font-weight: 500;
   margin-top: 1rem;
