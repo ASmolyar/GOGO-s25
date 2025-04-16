@@ -1,6 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import styled from 'styled-components';
 import { animate, stagger } from 'animejs';
+import '../../assets/fonts/fonts.css';
 
 // Main container with Spotify-like gradient background
 const HeroContainer = styled.section`
@@ -73,8 +74,9 @@ const TitleUnderline = styled.div`
 
 // Report year text
 const ReportYear = styled.div`
-  font-size: 2.5rem;
-  color: var(--spotify-orange, #e9bb4d);
+  font-size: 2.2rem;
+  color: var(--spotify-orange, #e5a93d);
+  font-family: 'Century Gothic-Bold', 'Arial', sans-serif;
   font-weight: 500;
   margin-top: 1rem;
   margin-bottom: 3rem;

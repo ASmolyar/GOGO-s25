@@ -12,7 +12,7 @@
 /* Century Gothic Font for Body Text */
 @font-face {
   font-family: 'Century Gothic-Regular';
-  src: url('./CenturyGothic.ttc') format('truetype-collection');
+  src: url('./CenturyGothic.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -21,7 +21,7 @@
 /* Use the same Century Gothic font but specify bold weight */
 @font-face {
   font-family: 'Century Gothic-Bold';
-  src: url('./CenturyGothic.ttc') format('truetype-collection');
+  src: url('./CenturyGothic-Bold.woff2') format('woff2');
   font-weight: bold;
   font-style: normal;
   font-display: swap;
