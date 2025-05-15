@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { animate, stagger, createTimeline, createAnimatable } from 'animejs';
@@ -113,8 +113,9 @@ const TitleUnderline = styled.div`
 
 // Report year text
 const ReportYear = styled.div`
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   color: var(--spotify-orange, #e9bb4d);
+  font-family: 'Century Gothic-Bold', 'Arial', sans-serif;
   font-weight: 500;
   margin-top: 1rem;
   margin-bottom: 3rem;
