@@ -1,0 +1,225 @@
+/* NowPlayingBar.css - Global styles for the now playing bar */
+
+/* Make sure the now-playing-bar-wrapper has proper positioning */
+.now-playing-bar-wrapper {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  z-index: 99999 !important;
+}
+
+/* Ensure the bar stays fixed to bottom of viewport */
+.now-playing-bar-container {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  z-index: 99999 !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  background-color: #181818 !important;
+  border-top: 1px solid #282828 !important;
+  height: 90px !important;
+  padding: 0 16px !important;
+}
+
+/* Override for progress bar */
+.progress-container {
+  height: 6px !important;
+  background-color: #535353 !important;
+  border-radius: 3px !important;
+  position: relative !important;
+  cursor: pointer !important;
+  width: 100% !important;
+  flex: 1 !important;
+  transition: height 0.2s ease-in-out !important;
+  margin: 0 8px !important;
+  overflow: visible !important;
+}
+
+.progress-container:hover {
+  height: 6px !important;
+}
+
+.progress-fill {
+  height: 100% !important;
+  background-color: #1DB954 !important; /* Spotify green */
+  border-radius: 3px !important;
+  position: relative !important;
+  left: 0 !important;
+  top: 0 !important;
+  max-width: 100% !important;
+  min-width: 1px !important;
+  transition: width 0.1s linear !important;
+  will-change: width !important;
+}
+
+/* More specific selector to increase specificity */
+.now-playing-bar-container .ProgressBar .progress-container .progress-fill {
+  background-color: #1DB954 !important; /* Spotify green */
+  height: 100% !important;
+  display: block !important;
+}
+
+.progress-handle {
+  width: 14px !important;
+  height: 14px !important;
+  border-radius: 50% !important;
+  background-color: white !important;
+  position: absolute !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  opacity: 0 !important;
+  z-index: 2 !important;
+  pointer-events: none !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+}
+
+.progress-container:hover .progress-handle {
+  opacity: 1 !important;
+}
+
+/* Fix for the ProgressBar component */
+.ProgressBar {
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+  gap: 10px !important;
+  margin-top: 4px !important;
+}
+
+/* More styling to ensure consistent bar display */
+.now-playing-bar-container .ProgressBar {
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+  gap: 10px !important;
+  margin-top: 4px !important;
+}
+
+/* More explicit styling for time info */
+.now-playing-bar-container .ProgressBar div[class*="TimeInfo"] {
+  font-size: 11px !important;
+  color: #b3b3b3 !important;
+  min-width: 40px !important;
+  text-align: center !important;
+}
+
+/* Fix for the NowPlayingLeft section */
+.now-playing-bar-container > div:first-child {
+  display: flex !important;
+  align-items: center !important;
+  margin-right: 20px !important;
+}
+
+/* Fix for the NowPlayingCenter section */
+.now-playing-bar-container > div:nth-child(2) {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 1 !important;
+  margin: 0 20px !important;
+}
+
+/* Fix for the NowPlayingRight section */
+.now-playing-bar-container > div:last-child {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  margin-left: 20px !important;
+}
+
+/* Fix progress bar layout */
+.now-playing-bar-container .ProgressBar {
+  width: 100% !important;
+  cursor: pointer !important;
+}
+
+/* Fix volume controls layout */
+.now-playing-bar-container .VolumeControls {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  min-width: 125px !important;
+}
+
+/* Ensure all content has padding at the bottom to not be hidden by the player */
+body {
+  padding-bottom: 90px !important;
+  overflow-y: auto !important;
+  min-height: 100vh !important;
+  position: relative !important;
+}
+
+html {
+  height: 100% !important;
+  overflow-y: auto !important;
+}
+
+/* Force svg icon colors */
+.now-playing-bar-container svg {
+  fill: currentColor !important;
+}
+
+.now-playing-bar-container [aria-label="Toggle Music Library"] {
+  color: #b3b3b3 !important;
+}
+
+.now-playing-bar-container [aria-label="Toggle Music Library"]:hover {
+  color: white !important;
+}
+
+/* Fix for the player controls */
+.PlayerControls {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 16px !important;
+  margin-bottom: 8px !important;
+}
+
+/* Fix for iOS Safari */
+@supports (-webkit-touch-callout: none) {
+  body {
+    padding-bottom: calc(90px + env(safe-area-inset-bottom, 0)) !important;
+  }
+}
+
+.progress-container:hover .progress-fill,
+.volume-container:hover .volume-fill {
+  background-color: #1DB954 !important;
+}
+
+.progress-container:hover .progress-handle,
+.volume-container:hover .volume-handle {
+  opacity: 1 !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+/* Fix selector for play button color */
+button[class*="PlayButton"] {
+  background-color: white !important;
+  color: black !important;
+  border-radius: 50% !important;
+}
+
+button[class*="PlayButton"]:hover {
+  transform: scale(1.05) !important;
+  color: black !important;
+}
+
+/* Fix for any elements creating new stacking contexts */
+#root, .App {
+  position: relative !important;
+  z-index: auto !important;
+}
+
+.active {
+  color: #1DB954 !important;
+} 

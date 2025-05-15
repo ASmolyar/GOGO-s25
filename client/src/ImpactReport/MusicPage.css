@@ -1,0 +1,56 @@
+/* MusicPage.css - Styles for the Music player page */
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  position: relative;
+}
+
+body {
+  background: linear-gradient(to bottom, #1e1e1e, #121212);
+  color: #fff;
+  padding-bottom: 90px !important; /* Important to ensure space for the player */
+}
+
+/* Set proper z-index stacking for fixed elements */
+.header-container {
+  z-index: 10;
+}
+
+.now-playing-bar-container {
+  z-index: 99999 !important; /* Highest z-index to ensure it's always on top */
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  background: rgba(18, 18, 18, 0.95) !important;
+  /* Force hardware acceleration */
+  transform: translateZ(0) !important;
+  -webkit-transform: translate3d(0, 0, 0) !important;
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+}
+
+/* Ensure proper scrolling with fixed elements */
+.music-content {
+  position: relative;
+  min-height: calc(100vh - 90px);
+  padding-bottom: 90px;
+}
+
+/* Fix any potential stacking context issues */
+#root, .App {
+  position: relative !important;
+  min-height: 100vh !important;
+  width: 100% !important;
+  overflow-x: hidden !important;
+} 
+
+/* Fix for transform creating a new stacking context */
+.PageContainer {
+  transform: none !important;
+} 

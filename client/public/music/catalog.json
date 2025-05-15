@@ -1,199 +1,254 @@
 {
   "albums": [
     {
-      "id": "the_rain_may_be_pouring",
-      "title": "The Rain May Be Pouring",
-      "description": "Original pieces by Guitars Over Guns students and mentors",
-      "coverImage": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/cover.jpg",
-      "year": "2024",
-      "tracks": [
+      "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+      "name": "The Rain May Be Pouring",
+      "album_url": "https://open.spotify.com/album/4dkhXFnrDTnwvr9Iy5hEEW",
+      "type": "album",
+      "cover": "/music/albums/the_rain_may_be_pouring/cover.jpg",
+      "date": "2021-04-21",
+      "artists": [
         {
-          "id": "hurricane",
-          "title": "Hurricane",
-          "artist": "GOGO Student Collective",
-          "duration": "4:05",
-          "file": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/Hurricane.mp3"
+          "artist_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+          "name": "Lee-Yahna Lawson"
         },
         {
-          "id": "breathe_through_the_pain",
-          "title": "Breathe Through the Pain",
-          "artist": "GOGO Student Collective",
-          "duration": "3:22",
-          "file": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/Breathe_Through_the_Pain.mp3"
+          "artist_id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+          "name": "Justine Garcia"
         },
         {
-          "id": "company",
-          "title": "Company",
-          "artist": "GOGO Student Collective",
-          "duration": "3:46",
-          "file": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/Company.mp3"
+          "artist_id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+          "name": "Starve Marve"
         },
         {
-          "id": "crazy",
-          "title": "Crazy",
-          "artist": "GOGO Student Collective",
-          "duration": "3:30",
-          "file": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/Crazy.mp3"
+          "artist_id": "d4e5f6a7-b8c9-0123-defg-2345678901234",
+          "name": "F.A.B.L.E"
         },
         {
-          "id": "heavens_footsteps",
-          "title": "Heaven's Footsteps",
-          "artist": "GOGO Student Collective",
-          "duration": "3:18",
-          "file": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/Heaven's_Footsteps.mp3"
+          "artist_id": "e5f6a7b8-c9d0-1234-efgh-3456789012345",
+          "name": "'Kechi"
         },
         {
-          "id": "homesick",
-          "title": "Homesick",
-          "artist": "GOGO Student Collective",
-          "duration": "5:02",
-          "file": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/Homesick.mp3"
+          "artist_id": "f6a7b8c9-d0e1-2345-fghi-45678901234567",
+          "name": "Tif Boom"
         },
         {
-          "id": "its_come_to_this",
-          "title": "It's Come to This...",
-          "artist": "GOGO Student Collective",
-          "duration": "4:42",
-          "file": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/It's_Come_to_This....mp3"
+          "artist_id": "a7b8c9d0-e1f2-3456-ghij-5678901234567",
+          "name": "Mish"
         },
         {
-          "id": "loud_silence",
-          "title": "Loud Silence",
-          "artist": "GOGO Student Collective",
-          "duration": "3:02",
-          "file": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/Loud_Silence.mp3"
+          "artist_id": "b8c9d0e1-f2a3-4567-hijk-6789012345678",
+          "name": "C.A.M."
         },
         {
-          "id": "neighborhood",
-          "title": "Neighborhood",
-          "artist": "GOGO Student Collective",
-          "duration": "6:43",
-          "file": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/Neighborhood.mp3"
+          "artist_id": "c9d0e1f2-a3b4-5678-ijkl-7890123456789",
+          "name": "RonDon Keyz"
         },
         {
-          "id": "pieces",
-          "title": "Pieces",
-          "artist": "GOGO Student Collective",
-          "duration": "5:35",
-          "file": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/Pieces.mp3"
+          "artist_id": "d0e1f2a3-b4c5-6789-jklm-8901234567890",
+          "name": "Rios"
         },
         {
-          "id": "prosper",
-          "title": "Prosper",
-          "artist": "GOGO Student Collective",
-          "duration": "4:02",
-          "file": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/Prosper.mp3"
+          "artist_id": "e1f2a3b4-c5d6-7890-klmn-9012345678901",
+          "name": "Corinne Stevie"
         },
         {
-          "id": "quarantine_song",
-          "title": "Quarantine Song",
-          "artist": "GOGO Student Collective",
-          "duration": "3:41",
-          "file": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/Quarantine_Song.mp3"
+          "artist_id": "f2a3b4c5-d6e7-8901-lmno-0123456789012",
+          "name": "Lyrical Grenade"
         },
         {
-          "id": "the_truth_is_trouble",
-          "title": "The Truth Is Trouble",
-          "artist": "GOGO Student Collective",
-          "duration": "3:26",
-          "file": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/The_Truth_Is_Trouble.mp3"
+          "artist_id": "a3b4c5d6-e7f8-9012-mnop-1234567890123",
+          "name": "Kenzy Lafrance"
         },
         {
-          "id": "this_is_nothing_new",
+          "artist_id": "b4c5d6e7-f8a9-0123-nopq-2345678901234",
+          "name": "Desiree Jaha"
+        },
+        {
+          "artist_id": "c5d6e7f8-a9b0-1234-opqr-3456789012345",
+          "name": "Inez Barlatier"
+        },
+        {
+          "artist_id": "d6e7f8a9-b0c1-2345-pqrs-4567890123456",
+          "name": "St. James Valsin"
+        }
+      ],
+      "songs": [
+    {
+          "song_id": "f8a9b0c1-d2e3-4567-rstu-6789012345678",
           "title": "This Is Nothing New",
-          "artist": "GOGO Student Collective",
-          "duration": "2:57",
-          "file": "/music/albums/The Rain May Be Pouring (Guitars over Guns)/This_Is_Nothing_New.mp3"
+          "audio_file": "/music/albums/the_rain_may_be_pouring/This_Is_Nothing_New.mp3",
+          "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+          "artists": [
+            {
+              "artist_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+              "name": "Lee-Yahna Lawson"
+            }
+          ]
+        },
+        {
+          "song_id": "a9b0c1d2-e3f4-5678-stuv-7890123456789",
+          "title": "Quarantine Song",
+          "audio_file": "/music/albums/the_rain_may_be_pouring/Quarantine_Song.mp3",
+          "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+          "artists": [
+            {
+              "artist_id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+              "name": "Justine Garcia"
         }
       ]
     },
     {
-      "id": "student_performances",
-      "title": "Student Performances 2024",
-      "description": "Showcasing the musical talent and growth of our students",
-      "coverImage": "/music/albums/student_performances/cover.jpg",
-      "year": "2024",
-      "tracks": [
+          "song_id": "b0c1d2e3-f4a5-6789-tuvw-8901234567890",
+          "title": "Company",
+          "audio_file": "/music/albums/the_rain_may_be_pouring/Company.mp3",
+          "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+          "artists": [
         {
-          "id": "urban_rhythms",
-          "title": "Urban Rhythms",
-          "artist": "Chicago Youth Ensemble",
-          "duration": "3:45",
-          "file": "/music/albums/student_performances/urban_rhythms.mp3"
+              "artist_id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+              "name": "Starve Marve"
+            }
+          ]
         },
         {
-          "id": "rise_up",
-          "title": "Rise Up",
-          "artist": "Miami Beat Makers",
-          "duration": "4:12",
-          "file": "/music/albums/student_performances/rise_up.mp3"
+          "song_id": "c1d2e3f4-a5b6-7890-uvwx-9012345678901",
+          "title": "Neighborhood",
+          "audio_file": "/music/albums/the_rain_may_be_pouring/Neighborhood.mp3",
+          "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+          "artists": [
+            {
+              "artist_id": "d4e5f6a7-b8c9-0123-defg-2345678901234",
+              "name": "F.A.B.L.E"
+            },
+            {
+              "artist_id": "e5f6a7b8-c9d0-1234-efgh-3456789012345",
+              "name": "'Kechi"
+            }
+          ]
         },
         {
-          "id": "dreams",
-          "title": "Dreams and Determination",
-          "artist": "Youth Voice Collective",
-          "duration": "3:28",
-          "file": "/music/albums/student_performances/dreams.mp3"
+          "song_id": "d2e3f4a5-b6c7-8901-vwxy-0123456789012",
+          "title": "Heaven's Footsteps",
+          "audio_file": "/music/albums/the_rain_may_be_pouring/Heaven's_Footsteps.mp3",
+          "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+          "artists": [
+            {
+              "artist_id": "f6a7b8c9-d0e1-2345-fghi-45678901234567",
+              "name": "Tif Boom"
         }
       ]
     },
     {
-      "id": "mentor_showcase",
-      "title": "Mentor Showcase",
-      "description": "Professional performances by our mentor musicians",
-      "coverImage": "/music/albums/mentor_showcase/cover.jpg",
-      "year": "2024",
-      "tracks": [
+          "song_id": "e3f4a5b6-c7d8-9012-wxyz-1234567890123",
+          "title": "Homesick",
+          "audio_file": "/music/albums/the_rain_may_be_pouring/Homesick.mp3",
+          "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+          "artists": [
         {
-          "id": "inspire",
-          "title": "Inspire",
-          "artist": "Marcus Johnson Trio",
-          "duration": "5:20",
-          "file": "/music/albums/mentor_showcase/inspire.mp3"
+              "artist_id": "a7b8c9d0-e1f2-3456-ghij-5678901234567",
+              "name": "Mish"
+            }
+          ]
         },
         {
-          "id": "pathways",
-          "title": "Pathways",
-          "artist": "Nicole Rivera",
-          "duration": "4:45",
-          "file": "/music/albums/mentor_showcase/pathways.mp3"
+          "song_id": "f4a5b6c7-d8e9-0123-xyza-2345678901234",
+          "title": "Loud Silence",
+          "audio_file": "/music/albums/the_rain_may_be_pouring/Loud_Silence.mp3",
+          "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+          "artists": [
+            {
+              "artist_id": "b8c9d0e1-f2a3-4567-hijk-6789012345678",
+              "name": "C.A.M."
+            }
+          ]
         },
         {
-          "id": "breakthrough",
-          "title": "Breakthrough",
-          "artist": "DJ Mentor",
-          "duration": "3:58",
-          "file": "/music/albums/mentor_showcase/breakthrough.mp3"
+          "song_id": "a5b6c7d8-e9f0-1234-yzab-3456789012345",
+          "title": "Crazy",
+          "audio_file": "/music/albums/the_rain_may_be_pouring/Crazy.mp3",
+          "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+          "artists": [
+            {
+              "artist_id": "c9d0e1f2-a3b4-5678-ijkl-7890123456789",
+              "name": "RonDon Keyz"
         }
       ]
     },
     {
-      "id": "collaborative_works",
-      "title": "Students & Mentors: Collaborative Works",
-      "description": "Joint projects showcasing the power of mentorship through music",
-      "coverImage": "/music/albums/collaborative_works/cover.jpg",
-      "year": "2024",
-      "tracks": [
+          "song_id": "b6c7d8e9-f0a1-2345-zabc-4567890123456",
+          "title": "Pieces",
+          "audio_file": "/music/albums/the_rain_may_be_pouring/Pieces.mp3",
+          "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+          "artists": [
         {
-          "id": "harmony",
-          "title": "Harmony in Action",
-          "artist": "Chicago Collective",
-          "duration": "4:30",
-          "file": "/music/albums/collaborative_works/harmony.mp3"
+              "artist_id": "d0e1f2a3-b4c5-6789-jklm-8901234567890",
+              "name": "Rios"
+            }
+          ]
         },
         {
-          "id": "bridges",
-          "title": "Building Bridges",
-          "artist": "Miami Fusion Ensemble",
-          "duration": "3:45",
-          "file": "/music/albums/collaborative_works/bridges.mp3"
+          "song_id": "c7d8e9f0-a1b2-3456-abcd-5678901234567",
+          "title": "Breathe Through the Pain",
+          "audio_file": "/music/albums/the_rain_may_be_pouring/Breathe_Through_the_Pain.mp3",
+          "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+          "artists": [
+            {
+              "artist_id": "e1f2a3b4-c5d6-7890-klmn-9012345678901",
+              "name": "Corinne Stevie"
+            }
+          ]
         },
         {
-          "id": "future",
-          "title": "Future Sound",
-          "artist": "Next Generation Band",
-          "duration": "5:10",
-          "file": "/music/albums/collaborative_works/future.mp3"
+          "song_id": "d8e9f0a1-b2c3-4567-bcde-6789012345678",
+          "title": "The Truth Is Trouble",
+          "audio_file": "/music/albums/the_rain_may_be_pouring/The_Truth_Is_Trouble.mp3",
+          "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+          "artists": [
+            {
+              "artist_id": "f2a3b4c5-d6e7-8901-lmno-0123456789012",
+              "name": "Lyrical Grenade"
+        }
+      ]
+    },
+    {
+          "song_id": "e9f0a1b2-c3d4-5678-cdef-7890123456789",
+          "title": "It's Come to This...",
+          "audio_file": "/music/albums/the_rain_may_be_pouring/It's_Come_to_This....mp3",
+          "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+          "artists": [
+        {
+              "artist_id": "a3b4c5d6-e7f8-9012-mnop-1234567890123",
+              "name": "Kenzy Lafrance"
+            }
+          ]
+        },
+        {
+          "song_id": "f0a1b2c3-d4e5-6789-defg-8901234567890",
+          "title": "Hurricane",
+          "audio_file": "/music/albums/the_rain_may_be_pouring/Hurricane.mp3",
+          "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+          "artists": [
+            {
+              "artist_id": "b4c5d6e7-f8a9-0123-nopq-2345678901234",
+              "name": "Desiree Jaha"
+            }
+          ]
+        },
+        {
+          "song_id": "a1b2c3d4-e5f6-7890-efgh-9012345678901",
+          "title": "Prosper",
+          "audio_file": "/music/albums/the_rain_may_be_pouring/Prosper.mp3",
+          "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+          "artists": [
+            {
+              "artist_id": "c5d6e7f8-a9b0-1234-opqr-3456789012345",
+              "name": "Inez Barlatier"
+            },
+            {
+              "artist_id": "d6e7f8a9-b0c1-2345-pqrs-4567890123456",
+              "name": "St. James Valsin"
+            }
+          ]
         }
       ]
     }

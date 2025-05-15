@@ -59,15 +59,7 @@ function MissionSection(): JSX.Element {
       </div>
 
       <MissionStatement
-        topImages={[
-          photo1,
-          photo2,
-          photo3,
-          photo4,
-          photo5,
-          photo6,
-          photo7,
-        ]}
+        topImages={[photo1, photo2, photo3, photo4, photo5, photo6, photo7]}
         bottomImages={[
           photo8,
           photo9,
@@ -77,7 +69,7 @@ function MissionSection(): JSX.Element {
           photo13,
           photo14,
         ]}
-        statement="Empowering youth through music, art and mentorship. Since 2008, we have served nearly 12,000 students through arts education and mentorship with professional musicians."
+        statement="Our mission is to empower youth through music, art and mentorship. Guitars Over Guns offers students from our most vulnerable communities a combination of arts education and mentorship with professional musicians to help them overcome hardship, find their voice and reach their potential as tomorrow's leaders. Since 2008, we have served nearly 12,000 students."
       />
 
       <div className="stats-container">

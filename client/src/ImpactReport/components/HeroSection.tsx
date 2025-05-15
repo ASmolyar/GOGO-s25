@@ -1,6 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import styled from 'styled-components';
-import { animate, stagger } from 'animejs';
+import { Link } from 'react-router-dom';
+import { animate, stagger, createTimeline, createAnimatable } from 'animejs';
+import COLORS from '../../assets/colors';
 
 // Main container with Spotify-like gradient background
 const HeroContainer = styled.section`
@@ -12,21 +14,52 @@ const HeroContainer = styled.section`
   background: linear-gradient(180deg, #5038a0 0%, #121242 100%);
   overflow: hidden;
   padding: 0;
+  /* Ensure this container receives all mouse events */
+  cursor: default;
+`;
+
+// Waveform container that spans the entire width of the page as a background element
+const WaveBackground = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Spread bars across full width */
+  gap: 3px; /* Larger gap for fewer bars */
+  z-index: 1; /* Lower z-index to ensure it's below content */
+  opacity: 0;
+  padding: 0 1%; /* Small padding to prevent edge cutoff */
+  pointer-events: none; /* Don't catch events directly - parent will handle them */
+  background: rgba(80, 56, 160, 0.15); /* Semi-transparent background tint */
+`;
+
+// Individual wave bar styled for a music waveform
+const WaveBar = styled.div`
+  width: 4px; /* Thicker bars for better visibility with even fewer of them */
+  height: 4px; /* Default minimal height */
+  border-radius: 2px;
+  transition: height 0.15s ease-out, opacity 0.15s ease-out; /* Simpler, faster transitions */
+  transform-origin: center; /* Center so it can extend both up and down */
+  opacity: 0.6; /* Semi-transparent by default */
+  pointer-events: none; /* Don't catch events */
 `;
 
 // Content wrapper with better Spotify-like spacing
 const ContentWrapper = styled.div`
-  display: flex;
   width: 100%;
   max-width: 1400px;
   padding: 0 5%;
-  height: 100%;
   position: relative;
   margin-top: 8%;
+  z-index: 2; /* Content above wave but still allows events to pass through */
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
   gap: 2rem;
+  pointer-events: none; /* Let events pass through to the container */
 `;
 
 // Left side content container
@@ -34,6 +67,7 @@ const LeftContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  pointer-events: none; /* Let events pass through */
 `;
 
 // Main title - "IMPACT REPORT"
@@ -47,6 +81,8 @@ const MainTitle = styled.h1`
   line-height: 0.9;
   letter-spacing: -0.02em;
   opacity: 0; /* Start hidden for animation */
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  pointer-events: none; /* Let events pass through */
 `;
 
 // Subtitle - "GUITARS OVER GUNS"
@@ -59,6 +95,8 @@ const SubtitleText = styled.h2`
   text-align: left;
   opacity: 0;
   position: relative;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  pointer-events: none; /* Let events pass through */
 `;
 
 // Green underline
@@ -69,6 +107,8 @@ const TitleUnderline = styled.div`
   margin: 1.5rem 0;
   transform: scaleX(0);
   transform-origin: left;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  pointer-events: none; /* Let events pass through */
 `;
 
 // Report year text
@@ -79,6 +119,8 @@ const ReportYear = styled.div`
   margin-top: 1rem;
   margin-bottom: 3rem;
   opacity: 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  pointer-events: none; /* Let events pass through */
 `;
 
 // Button container
@@ -87,6 +129,7 @@ const ButtonContainer = styled.div`
   gap: 1rem;
   margin-top: 2rem;
   flex-wrap: wrap;
+  pointer-events: auto; /* Re-enable pointer events for buttons */
 `;
 
 // Primary button styling (more Spotify-like)
@@ -105,10 +148,13 @@ const PrimaryButton = styled.button`
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  pointer-events: auto; /* Ensure buttons catch events */
 
   &:hover {
     background: var(--spotify-purple, #68369a);
     transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
   }
 `;
 
@@ -125,38 +171,31 @@ const SecondaryButton = styled.button`
   padding: 1rem 2rem;
   transition: all 0.3s ease;
   opacity: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  pointer-events: auto; /* Ensure buttons catch events */
 
   &:hover {
     background: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.4);
     transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
   }
 `;
 
-// Waveform container, wider and right-aligned
-const SoundWaveContainer = styled.div`
-  position: relative;
-  height: 280px;
-  width: 100%;
-  max-width: 400px;
+// Right content area - we'll keep this even though the wave is now in the background
+const RightContent = styled.div`
   display: flex;
+  justify-content: flex-end;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
-  cursor: pointer;
-  opacity: 0;
-  margin-left: auto;
+  pointer-events: none; /* Let events pass through */
 `;
 
-// Individual wave bar with better styling
-const WaveBar = styled.div`
-  width: 5px;
-  height: 50%;
-  border-radius: 8px;
-  transition: height 0.2s ease;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  background-color: rgba(255, 255, 255, 0.7);
-`;
+// Define a type for wave bar elements and wave parameters
+interface WaveBarElement extends HTMLElement {
+  height?: string;
+  marginTop?: string;
+  marginBottom?: string;
+}
 
 function HeroSection(): JSX.Element {
   // Create refs for animations
@@ -166,11 +205,312 @@ function HeroSection(): JSX.Element {
   const yearRef = useRef<HTMLDivElement>(null);
   const primaryButtonRef = useRef<HTMLButtonElement>(null);
   const secondaryButtonRef = useRef<HTMLButtonElement>(null);
-  const waveContainerRef = useRef<HTMLDivElement>(null);
+  const waveBackgroundRef = useRef<HTMLDivElement>(null);
   const waveBarsRef = useRef<HTMLDivElement[]>([]);
 
+  // Performance optimization - prevent excessive re-renders
+  const isAnimatingRef = useRef<boolean>(false);
+  const requestRef = useRef<number | null>(null);
+
+  // Define wave bar colors with more vibrant options and semi-transparency
+  const getWaveBarColor = (index: number, total: number) => {
+    // Create more vibrant colors with transparency
+    const position = index / total;
+    const opacity = 0.5; // Base opacity for background effect
+
+    // Ultra-simplified color spectrum - just 3 colors
+    if (position < 0.33) {
+      return `rgba(0, 210, 180, ${opacity})`;
+    }
+    if (position < 0.67) {
+      return `rgba(30, 120, 255, ${opacity})`;
+    }
+    return `rgba(200, 55, 180, ${opacity})`;
+  };
+
+  // Reset all animations to default state
+  const resetAllBars = () => {
+    // Cancel any ongoing animations
+    if (requestRef.current) {
+      cancelAnimationFrame(requestRef.current);
+      requestRef.current = null;
+    }
+
+    isAnimatingRef.current = false;
+
+    // Get all bars
+    const waveBars = document.querySelectorAll('.wave-bar');
+    if (waveBars.length === 0) return;
+
+    // Create a new animation using default parameters
+    animate(waveBars, {
+      height: (el: any, i: number) => {
+        const position = i / waveBars.length;
+        const centralFactor = 0.5 + Math.abs(position - 0.5);
+        return 5 + centralFactor * 10;
+      },
+      marginTop: (el: any, i: number) => {
+        const position = i / waveBars.length;
+        const centralFactor = 0.5 + Math.abs(position - 0.5);
+        const height = 5 + centralFactor * 10;
+        return -height / 2;
+      },
+      marginBottom: (el: any, i: number) => {
+        const position = i / waveBars.length;
+        const centralFactor = 0.5 + Math.abs(position - 0.5);
+        const height = 5 + centralFactor * 10;
+        return -height / 2;
+      },
+      opacity: 0.6,
+      easing: 'easeOutQuad',
+      duration: 400,
+    });
+  };
+
+  // Define the handleMouseMove callback with proper type for DOM events
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (isAnimatingRef.current || !waveBackgroundRef.current) return;
+    isAnimatingRef.current = true;
+
+    // Define animation parameters within the callback to avoid dependency issues
+    // Use requestAnimationFrame for better performance
+    requestRef.current = requestAnimationFrame(() => {
+      const container = waveBackgroundRef.current?.parentElement;
+      if (!container) {
+        isAnimatingRef.current = false;
+        return;
+      }
+
+      const waveBars = Array.from(
+        document.querySelectorAll('.wave-bar'),
+      ).filter((el): el is HTMLElement => el instanceof HTMLElement);
+      if (waveBars.length === 0) {
+        isAnimatingRef.current = false;
+        return;
+      }
+
+      // Get container dimensions and mouse position
+      const rect = container.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const containerWidth = rect.width;
+
+      // Calculate the mouse position ratio (0 to 1)
+      const positionRatioX = mouseX / containerWidth;
+
+      // Use anime.js to animate the bars
+      animate(waveBars, {
+        height: (el: any, i: number) => {
+          const position = i / waveBars.length;
+          const distance = Math.abs(position - positionRatioX);
+
+          if (distance < 0.15) {
+            const intensity = 1 - distance / 0.15;
+            return 5 + intensity * 80;
+          }
+          return parseFloat(getComputedStyle(el).height);
+        },
+        marginTop: (el: any, i: number) => {
+          const position = i / waveBars.length;
+          const distance = Math.abs(position - positionRatioX);
+
+          if (distance < 0.15) {
+            const intensity = 1 - distance / 0.15;
+            const height = 5 + intensity * 80;
+            return -height / 2;
+          }
+          return parseFloat(getComputedStyle(el).marginTop);
+        },
+        marginBottom: (el: any, i: number) => {
+          const position = i / waveBars.length;
+          const distance = Math.abs(position - positionRatioX);
+
+          if (distance < 0.15) {
+            const intensity = 1 - distance / 0.15;
+            const height = 5 + intensity * 80;
+            return -height / 2;
+          }
+          return parseFloat(getComputedStyle(el).marginBottom);
+        },
+        opacity: (el: any, i: number) => {
+          const position = i / waveBars.length;
+          const distance = Math.abs(position - positionRatioX);
+
+          if (distance < 0.15) {
+            const intensity = 1 - distance / 0.15;
+            return 0.6 + intensity * 0.2;
+          }
+          return 0.6;
+        },
+        duration: 250,
+        easing: 'easeOutQuad',
+      });
+
+      isAnimatingRef.current = false;
+    });
+  }, []);
+
+  // Simple ripple effect using anime.js
+  const createWaveRipple = useCallback((e: MouseEvent) => {
+    const container = waveBackgroundRef.current?.parentElement;
+    if (!container) return;
+
+    const waveBars = Array.from(document.querySelectorAll('.wave-bar'));
+    if (waveBars.length === 0) return;
+
+    // If we're already animating, cancel it
+    if (requestRef.current) {
+      cancelAnimationFrame(requestRef.current);
+    }
+
+    // Get container dimensions and mouse position
+    const rect = container.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const containerWidth = rect.width;
+    const clickPosition = mouseX / containerWidth;
+
+    // Create timeline for ripple animation
+    const duration = 1500;
+    const maxWaveHeight = 120;
+
+    // Create keyframes for a ripple effect that propagates outward
+    const keyframes = 10; // Number of animation keyframes
+    const rippleTimeline: Array<{
+      targets: HTMLElement[];
+      height: (target: any, i: number) => number;
+      marginTop: (target: any, i: number) => number;
+      marginBottom: (target: any, i: number) => number;
+      opacity: (target: any, i: number) => number;
+      duration: number;
+      easing: string;
+    }> = [];
+
+    for (let frame = 0; frame < keyframes; frame++) {
+      const progress = frame / (keyframes - 1);
+      const rippleRadius = progress * 0.8;
+
+      rippleTimeline.push({
+        targets: waveBars as HTMLElement[],
+        height: (el: HTMLElement, i: number) => {
+          const position = i / waveBars.length;
+          const distance = Math.abs(position - clickPosition);
+          const distanceFromRipple = rippleRadius - distance;
+
+          if (distanceFromRipple > -0.1 && distanceFromRipple < 0.2) {
+            const waveIntensity = 1 - Math.abs(distanceFromRipple - 0.05) * 10;
+            const normalizedIntensity = Math.max(0, Math.min(1, waveIntensity));
+            const heightFactor = normalizedIntensity ** 2 * maxWaveHeight;
+            return 5 + heightFactor;
+          }
+          return 5; // Default size
+        },
+        marginTop: (el: HTMLElement, i: number) => {
+          const position = i / waveBars.length;
+          const distance = Math.abs(position - clickPosition);
+          const distanceFromRipple = rippleRadius - distance;
+
+          if (distanceFromRipple > -0.1 && distanceFromRipple < 0.2) {
+            const waveIntensity = 1 - Math.abs(distanceFromRipple - 0.05) * 10;
+            const normalizedIntensity = Math.max(0, Math.min(1, waveIntensity));
+            const heightFactor = normalizedIntensity ** 2 * maxWaveHeight;
+            const height = 5 + heightFactor;
+            return -height / 2;
+          }
+          return -2.5; // Default margin
+        },
+        marginBottom: (el: HTMLElement, i: number) => {
+          const position = i / waveBars.length;
+          const distance = Math.abs(position - clickPosition);
+          const distanceFromRipple = rippleRadius - distance;
+
+          if (distanceFromRipple > -0.1 && distanceFromRipple < 0.2) {
+            const waveIntensity = 1 - Math.abs(distanceFromRipple - 0.05) * 10;
+            const normalizedIntensity = Math.max(0, Math.min(1, waveIntensity));
+            const heightFactor = normalizedIntensity ** 2 * maxWaveHeight;
+            const height = 5 + heightFactor;
+            return -height / 2;
+          }
+          return -2.5; // Default margin
+        },
+        opacity: (el: HTMLElement, i: number) => {
+          const position = i / waveBars.length;
+          const distance = Math.abs(position - clickPosition);
+          const distanceFromRipple = rippleRadius - distance;
+
+          if (distanceFromRipple > -0.1 && distanceFromRipple < 0.2) {
+            const waveIntensity = 1 - Math.abs(distanceFromRipple - 0.05) * 10;
+            const normalizedIntensity = Math.max(0, Math.min(1, waveIntensity));
+            return 0.6 + normalizedIntensity * 0.3;
+          }
+          return 0.6;
+        },
+        duration: duration / keyframes,
+        easing: 'easeOutQuad',
+      });
+    }
+
+    // Execute each frame in sequence
+    let currentFrame = 0;
+    const animateFrame = () => {
+      if (currentFrame < rippleTimeline.length) {
+        animate(rippleTimeline[currentFrame].targets, {
+          height: rippleTimeline[currentFrame].height,
+          marginTop: rippleTimeline[currentFrame].marginTop,
+          marginBottom: rippleTimeline[currentFrame].marginBottom,
+          opacity: rippleTimeline[currentFrame].opacity,
+          duration: rippleTimeline[currentFrame].duration,
+          easing: rippleTimeline[currentFrame].easing,
+        });
+
+        const frameIndex = currentFrame;
+        currentFrame = currentFrame + 1;
+
+        // Wait for a timeout before starting next frame
+        setTimeout(animateFrame, rippleTimeline[frameIndex].duration);
+      } else {
+        // Reset to default state after animation completes
+        if (requestRef.current) {
+          cancelAnimationFrame(requestRef.current);
+          requestRef.current = null;
+        }
+
+        isAnimatingRef.current = false;
+
+        // Get all bars and reset them to default state
+        const barElements = document.querySelectorAll('.wave-bar');
+        if (barElements.length === 0) return;
+
+        // Reset to default appearance
+        animate(barElements, {
+          height: (el: any, i: number) => {
+            const position = i / barElements.length;
+            const centralFactor = 0.5 + Math.abs(position - 0.5);
+            return 5 + centralFactor * 10;
+          },
+          marginTop: (el: any, i: number) => {
+            const position = i / barElements.length;
+            const centralFactor = 0.5 + Math.abs(position - 0.5);
+            const height = 5 + centralFactor * 10;
+            return -height / 2;
+          },
+          marginBottom: (el: any, i: number) => {
+            const position = i / barElements.length;
+            const centralFactor = 0.5 + Math.abs(position - 0.5);
+            const height = 5 + centralFactor * 10;
+            return -height / 2;
+          },
+          opacity: 0.6,
+          easing: 'easeOutQuad',
+          duration: 400,
+        });
+      }
+    };
+
+    // Start animation
+    animateFrame();
+  }, []);
+
   useEffect(() => {
-    // Animate title elements
+    // Create animation for each element
     if (titleRef.current) {
       animate(titleRef.current, {
         opacity: [0, 1],
@@ -180,264 +520,138 @@ function HeroSection(): JSX.Element {
       });
     }
 
-    // Animate underline
+    // Add underline animation
     if (underlineRef.current) {
       animate(underlineRef.current, {
         scaleX: [0, 1],
         opacity: [0, 1],
         duration: 800,
-        delay: 300,
-        easing: 'easeOutCubic',
+        easing: 'easeOutExpo',
+        delay: 200,
       });
     }
 
-    // Animate subtitle
+    // Add subtitle animation
     if (subtitleRef.current) {
       animate(subtitleRef.current, {
         opacity: [0, 1],
         translateY: [20, 0],
-        duration: 1000,
-        delay: 600,
+        duration: 600,
         easing: 'easeOutExpo',
+        delay: 400,
       });
     }
 
-    // Animate year
+    // Add year animation
     if (yearRef.current) {
       animate(yearRef.current, {
         opacity: [0, 1],
         translateY: [20, 0],
-        duration: 1000,
-        delay: 800,
+        duration: 600,
         easing: 'easeOutExpo',
+        delay: 600,
       });
     }
 
-    // Animate buttons
+    // Animate buttons with staggered timing
     const buttons = [
       primaryButtonRef.current,
       secondaryButtonRef.current,
-    ].filter(Boolean);
+    ].filter((button): button is HTMLButtonElement => button !== null);
+
     if (buttons.length > 0) {
       animate(buttons, {
         opacity: [0, 1],
         translateY: [20, 0],
-        duration: 800,
-        delay: stagger(200, { start: 1000 }),
+        duration: 600,
         easing: 'easeOutExpo',
+        delay: stagger(200, { start: 800 }),
       });
     }
 
-    // Animate waveform container
-    if (waveContainerRef.current) {
-      animate(waveContainerRef.current, {
+    // Animate wave background
+    if (waveBackgroundRef.current) {
+      animate(waveBackgroundRef.current, {
         opacity: [0, 1],
-        translateX: [50, 0],
-        scale: [0.8, 1],
         duration: 1000,
-        delay: 1200,
         easing: 'easeOutExpo',
+        delay: 1000,
       });
     }
 
-    // Create dynamic wave animation for bars
-    const waveBars = document.querySelectorAll('.wave-bar');
-    if (waveBars.length > 0) {
-      // Instead of using callback functions with types that don't match,
-      // we can define static values for different bars
-      const heightValues: string[][] = [];
-      const durationValues: number[] = [];
-      const delayValues: number[] = [];
+    // Initialize basic wave appearance
+    resetAllBars();
 
-      // Pre-calculate values for each bar - more varied for visual interest
-      for (let i = 0; i < waveBars.length; i++) {
-        // Create a more varied and interesting pattern
-        let baseHeight;
-        if (i % 4 === 0) {
-          baseHeight = 30 + (i % 7) * 8; // Shorter bars
-        } else if (i % 4 === 1) {
-          baseHeight = 45 + (i % 5) * 6; // Medium-short bars
-        } else if (i % 4 === 2) {
-          baseHeight = 60 + (i % 5) * 5; // Medium-tall bars
-        } else {
-          baseHeight = 70 + (i % 4) * 4; // Taller bars
-        }
+    // Setup event listeners with performance optimizations
+    const heroContainer = waveBackgroundRef.current?.parentElement;
+    if (heroContainer) {
+      heroContainer.addEventListener('mousemove', handleMouseMove, {
+        passive: true,
+      });
+      heroContainer.addEventListener('mouseleave', resetAllBars);
+      heroContainer.addEventListener('click', createWaveRipple);
+    }
 
-        heightValues.push([`${baseHeight}%`, `${baseHeight + 15}%`]);
-        durationValues.push(1400 + (i % 5) * 200);
-        delayValues.push(i * 30);
+    // Cleanup on unmount
+    return () => {
+      if (heroContainer) {
+        heroContainer.removeEventListener('mousemove', handleMouseMove);
+        heroContainer.removeEventListener('mouseleave', resetAllBars);
+        heroContainer.removeEventListener('click', createWaveRipple);
       }
 
-      waveBars.forEach((bar, i) => {
-        animate(bar, {
-          height: heightValues[i],
-          duration: durationValues[i],
-          easing: 'easeInOutSine',
-          delay: delayValues[i],
-          loop: true,
-          direction: 'alternate',
-        });
-      });
-    }
-
-    // Set up wave container interactivity
-    const waveContainer = waveContainerRef.current;
-    if (waveContainer) {
-      waveContainer.addEventListener('mousemove', handleWaveMouseMove);
-      waveContainer.addEventListener('mouseleave', resetWaveAnimation);
-      waveContainer.addEventListener('click', createWaveRipple);
-    }
-
-    // Cleanup function
-    return () => {
-      if (waveContainer) {
-        waveContainer.removeEventListener('mousemove', handleWaveMouseMove);
-        waveContainer.removeEventListener('mouseleave', resetWaveAnimation);
-        waveContainer.removeEventListener('click', createWaveRipple);
+      // Cancel any ongoing animations
+      if (requestRef.current) {
+        cancelAnimationFrame(requestRef.current);
       }
     };
-  }, []);
+  }, [handleMouseMove, createWaveRipple]);
 
-  // Handle mouse movement over wave bars
-  const handleWaveMouseMove = (e: MouseEvent) => {
-    const container = waveContainerRef.current;
-    if (!container) return;
-
-    const waveBars = Array.from(document.querySelectorAll('.wave-bar'));
-    if (waveBars.length === 0) return;
-
-    // Get container dimensions and mouse position
-    const rect = container.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-    const containerWidth = rect.width;
-    const containerHeight = rect.height;
-
-    // Calculate mouse position ratios (0 to 1)
-    const positionRatioX = mouseX / containerWidth;
-    const positionRatioY = 1 - mouseY / containerHeight; // Invert Y so top is 1
-
-    // Apply height changes based on mouse position
-    waveBars.forEach((bar, index) => {
-      const barPositionRatio = index / (waveBars.length - 1);
-
-      // Distance calculation with higher sensitivity
-      const distanceFromMouse = Math.abs(positionRatioX - barPositionRatio);
-      const maxDistance = 0.3; // Maximum influence distance (increased for better reaction)
-
-      if (distanceFromMouse < maxDistance) {
-        // Calculate intensity based on distance (closer = higher)
-        const intensity = 1 - distanceFromMouse / maxDistance;
-
-        // Factor in vertical position - higher mouse = taller bars
-        const heightFactor = 0.5 + positionRatioY * 0.5;
-
-        // Calculate dynamic height
-        const minHeight = 20; // Minimum height percentage
-        const maxHeight = 100; // Maximum height percentage
-        const range = maxHeight - minHeight;
-        const calculatedHeight = minHeight + range * intensity * heightFactor;
-
-        animate(bar, {
-          height: `${calculatedHeight}%`,
-          duration: 50, // Faster response
-          easing: 'easeOutQuad',
-        });
-      }
-    });
-  };
-
-  // Reset wave animation when mouse leaves
-  const resetWaveAnimation = () => {
-    const waveBars = document.querySelectorAll('.wave-bar');
-    if (waveBars.length === 0) return;
-
-    // Similar to the initial animation, pre-calculate values
-    // to avoid using functions with incompatible types
-    const heightValues: string[][] = [];
-    const durationValues: number[] = [];
-    const delayValues: number[] = [];
-
-    // Pre-calculate values for each bar - more varied for visual interest
-    for (let i = 0; i < waveBars.length; i++) {
-      // Create a more varied and interesting pattern
-      let baseHeight;
-      if (i % 4 === 0) {
-        baseHeight = 30 + (i % 7) * 8; // Shorter bars
-      } else if (i % 4 === 1) {
-        baseHeight = 45 + (i % 5) * 6; // Medium-short bars
-      } else if (i % 4 === 2) {
-        baseHeight = 60 + (i % 5) * 5; // Medium-tall bars
-      } else {
-        baseHeight = 70 + (i % 4) * 4; // Taller bars
-      }
-
-      heightValues.push([`${baseHeight}%`, `${baseHeight + 15}%`]);
-      durationValues.push(1400 + (i % 5) * 200);
-      delayValues.push(i * 30);
-    }
-
-    waveBars.forEach((bar, i) => {
-      animate(bar, {
-        height: heightValues[i],
-        duration: durationValues[i],
-        easing: 'easeInOutSine',
-        delay: delayValues[i],
-        loop: true,
-        direction: 'alternate',
-      });
-    });
-  };
-
-  // Create ripple effect on click
-  const createWaveRipple = (e: MouseEvent) => {
-    const container = waveContainerRef.current;
-    if (!container) return;
-
-    const waveBars = Array.from(document.querySelectorAll('.wave-bar'));
-    if (waveBars.length === 0) return;
-
-    // Get container dimensions and mouse position
-    const rect = container.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const containerWidth = rect.width;
-
-    // Calculate the click position ratio (0 to 1)
-    const clickRatio = mouseX / containerWidth;
-
-    // The clicked bar index (approximated)
-    const clickedBarIndex = Math.floor(clickRatio * waveBars.length);
-
-    // Create ripple animation
-    waveBars.forEach((bar, index) => {
-      // Calculate distance from clicked bar
-      const distance = Math.abs(index - clickedBarIndex);
-
-      // Animate with delay based on distance (ripple effect)
-      animate(bar, {
-        height: ['60%', '110%', '60%'],
-        duration: 800,
-        easing: 'easeOutElastic(1, 0.3)',
-        delay: distance * 30, // Ripple delay
-      });
-    });
-
-    // Reset the normal animation after the ripple
-    setTimeout(resetWaveAnimation, 1400);
-  };
-
-  // Define wave bar colors - Spotify-like gradient
-  const getWaveBarColor = (index: number) => {
-    const colors = [
-      'rgba(25, 70, 245, 0.9)', // Blue
-      'rgba(104, 54, 154, 0.9)', // Purple
-      'rgba(141, 221, 166, 0.9)', // Green
-    ];
-    return colors[index % colors.length];
-  };
+  // Drastically reduced number of wave bars for much better performance
+  const numWaveBars = 60; // Only half of the previous count
 
   return (
     <HeroContainer>
+      {/* Music waveform visualization as full background - extremely optimized */}
+      <WaveBackground ref={waveBackgroundRef}>
+        {Array.from({ length: numWaveBars }).map((_, i) => {
+          const uniqueId = `wave-bar-${i}`;
+
+          // Ultra-simplified initial height calculation
+          const position = i / numWaveBars;
+          const centralFactor = 0.5 + Math.abs(position - 0.5); // Simpler calculation
+          const initialHeight = 5 + centralFactor * 10; // Much smaller range
+          const halfHeight = initialHeight / 2;
+
+          return (
+            <WaveBar
+              key={uniqueId}
+              className="wave-bar"
+              ref={(el) => {
+                if (el) {
+                  // Create a new array if needed
+                  if (!waveBarsRef.current) {
+                    waveBarsRef.current = [];
+                  }
+                  // Ensure the array is large enough
+                  if (waveBarsRef.current.length <= i) {
+                    waveBarsRef.current.length = i + 1;
+                  }
+                  waveBarsRef.current[i] = el;
+                }
+              }}
+              style={{
+                backgroundColor: getWaveBarColor(i, numWaveBars),
+                height: `${initialHeight}px`,
+                marginTop: `-${halfHeight}px`,
+                marginBottom: `-${halfHeight}px`,
+                opacity: 0.6,
+              }}
+            />
+          );
+        })}
+      </WaveBackground>
+
       <ContentWrapper>
         <LeftContent>
           <MainTitle ref={titleRef}>IMPACT REPORT</MainTitle>
@@ -456,25 +670,9 @@ function HeroSection(): JSX.Element {
           </ButtonContainer>
         </LeftContent>
 
-        <SoundWaveContainer ref={waveContainerRef}>
-          {Array.from({ length: 24 }).map((_, i) => {
-            const uniqueId = `wave-bar-${i}-${Math.random()
-              .toString(36)
-              .substr(2, 5)}`;
-            return (
-              <WaveBar
-                key={uniqueId}
-                className="wave-bar"
-                ref={(el) => {
-                  if (el) waveBarsRef.current[i] = el;
-                }}
-                style={{
-                  backgroundColor: getWaveBarColor(i),
-                }}
-              />
-            );
-          })}
-        </SoundWaveContainer>
+        <RightContent>
+          {/* This section intentionally left empty for layout balance */}
+        </RightContent>
       </ContentWrapper>
     </HeroContainer>
   );

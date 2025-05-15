@@ -11,7 +11,7 @@
 export function darkenColor(color: string, percent: number): string {
   // Convert hex to RGB if needed
   let r: number, g: number, b: number;
-  
+
   if (color.startsWith('#')) {
     // Handle hex color
     const hex = color.substring(1);
@@ -20,7 +20,9 @@ export function darkenColor(color: string, percent: number): string {
     b = parseInt(hex.substr(4, 2), 16);
   } else if (color.startsWith('rgb')) {
     // Handle rgb/rgba color
-    const rgbMatch = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*\d+\.\d+)?\)$/);
+    const rgbMatch = color.match(
+      /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*\d+\.\d+)?\)$/,
+    );
     if (!rgbMatch) return color;
     r = parseInt(rgbMatch[1], 10);
     g = parseInt(rgbMatch[2], 10);
@@ -30,12 +32,14 @@ export function darkenColor(color: string, percent: number): string {
   }
 
   // Calculate darkened RGB values
-  r = Math.max(0, Math.floor(r * (100 - percent) / 100));
-  g = Math.max(0, Math.floor(g * (100 - percent) / 100));
-  b = Math.max(0, Math.floor(b * (100 - percent) / 100));
+  r = Math.max(0, Math.floor((r * (100 - percent)) / 100));
+  g = Math.max(0, Math.floor((g * (100 - percent)) / 100));
+  b = Math.max(0, Math.floor((b * (100 - percent)) / 100));
 
   // Convert back to hex
-  return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+  return `#${r.toString(16).padStart(2, '0')}${g
+    .toString(16)
+    .padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
 }
 
 /**
@@ -47,7 +51,7 @@ export function darkenColor(color: string, percent: number): string {
 export function lightenColor(color: string, percent: number): string {
   // Convert hex to RGB if needed
   let r: number, g: number, b: number;
-  
+
   if (color.startsWith('#')) {
     // Handle hex color
     const hex = color.substring(1);
@@ -56,7 +60,9 @@ export function lightenColor(color: string, percent: number): string {
     b = parseInt(hex.substr(4, 2), 16);
   } else if (color.startsWith('rgb')) {
     // Handle rgb/rgba color
-    const rgbMatch = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*\d+\.\d+)?\)$/);
+    const rgbMatch = color.match(
+      /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*\d+\.\d+)?\)$/,
+    );
     if (!rgbMatch) return color;
     r = parseInt(rgbMatch[1], 10);
     g = parseInt(rgbMatch[2], 10);
@@ -66,10 +72,12 @@ export function lightenColor(color: string, percent: number): string {
   }
 
   // Calculate lightened RGB values
-  r = Math.min(255, Math.floor(r + ((255 - r) * percent / 100)));
-  g = Math.min(255, Math.floor(g + ((255 - g) * percent / 100)));
-  b = Math.min(255, Math.floor(b + ((255 - b) * percent / 100)));
+  r = Math.min(255, Math.floor(r + ((255 - r) * percent) / 100));
+  g = Math.min(255, Math.floor(g + ((255 - g) * percent) / 100));
+  b = Math.min(255, Math.floor(b + ((255 - b) * percent) / 100));
 
   // Convert back to hex
-  return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
-} 
+  return `#${r.toString(16).padStart(2, '0')}${g
+    .toString(16)
+    .padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+}

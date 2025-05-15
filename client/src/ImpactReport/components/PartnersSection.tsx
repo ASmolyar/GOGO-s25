@@ -179,7 +179,7 @@ const partners: PartnersData = {
   ],
 };
 
-const PartnersSection: React.FC = () => {
+function PartnersSection(): JSX.Element {
   const [inView, setInView] = useState(false);
 
   useEffect(() => {
@@ -224,7 +224,7 @@ const PartnersSection: React.FC = () => {
       <SectionContainer>
         <SectionHeading>Our Partners & Supporters</SectionHeading>
         <SectionSubheading>
-          GOGO's work is made possible through the generous support of
+          GOGO&apos;s work is made possible through the generous support of
           foundations, corporations, and individuals who share our commitment to
           empowering youth through music.
         </SectionSubheading>
@@ -263,6 +263,6 @@ const PartnersSection: React.FC = () => {
       </SectionContainer>
     </PartnersSectionWrapper>
   );
-};
+}
 
 export default PartnersSection;

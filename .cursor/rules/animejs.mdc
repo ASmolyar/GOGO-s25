@@ -1,0 +1,24 @@
+---
+description: using animejs library
+globs: 
+alwaysApply: false
+---
+When using animejs as we do in this project, we are using animejs 4.0.1
+
+as such, there is no "anime" default export. as soon as you do import anime you are doing something wrong. Anime ONLY imports exposed methods. For example: import { animate, createTimeline } from 'animejs';
+
+The possible imports are 
+createTimer, 
+animate, 
+createTimeline, 
+createAnimatable (Efficiently animates target properties, making it an ideal replacement for animate() and utils.set() in situations where values change frequently, such as cursor events or animation loops.), 
+createDraggable,
+onScroll,
+createScope,
+stagger,
+and svg
+
+Please ask the user for info on documentation if not sure, as the user will be able to tell you better than you will be able to figure out by brute force trial and error
+
+
+

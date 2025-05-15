@@ -99,7 +99,8 @@ const Statement = styled.div`
   margin: 3rem 0;
   padding: 0 2rem;
   max-width: 1000px;
-  font-family: 'Century Gothic-Bold', 'Arial', sans-serif;
+  font-family: 'Century Gothic', 'Arial', sans-serif;
+  font-weight: bold;
   line-height: 1.5;
   position: relative;
   z-index: 2;

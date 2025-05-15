@@ -68,15 +68,15 @@ function Header(): JSX.Element {
           </button>
           <div className="logo-container">
             <div className="header-brand">
-              <img 
-                src={gogoWideLogo} 
-                alt="GOGO Logo" 
-                style={{ 
+              <img
+                src={gogoWideLogo}
+                alt="GOGO Logo"
+                style={{
                   height: '60px',
                   width: '180px',
                   objectFit: 'cover',
-                  objectPosition: 'center'
-                }} 
+                  objectPosition: 'center',
+                }}
               />
             </div>
           </div>
@@ -290,125 +290,6 @@ function Header(): JSX.Element {
             </div>
           </div>
         </nav>
-      </div>
-
-      {/* Playback Controls Similar to Spotify */}
-      <div className="now-playing-bar">
-        <div className="now-playing-left">
-          <div className="now-playing-cover">♫</div>
-          <div className="now-playing-info">
-            <div className="now-playing-title">Impact Story</div>
-            <div className="now-playing-artist">Guitars Over Guns</div>
-          </div>
-        </div>
-
-        <div className="now-playing-center">
-          <div className="playback-controls">
-            <button
-              type="button"
-              className="spotify-icon-button"
-              aria-label="Shuffle"
-            >
-              <svg viewBox="0 0 16 16" width="16" height="16">
-                <path d="M13.151.922a.75.75 0 10-1.06 1.06L13.109 3H11.16a3.75 3.75 0 00-2.873 1.34l-6.173 7.356A2.25 2.25 0 01.39 12.5H0V14h.391a3.75 3.75 0 002.873-1.34l6.173-7.356a2.25 2.25 0 011.724-.804h1.947l-1.017 1.018a.75.75 0 001.06 1.06L15.98 3.75 13.15.922zM.391 3.5H0V2h.391c1.109 0 2.16.49 2.873 1.34L4.89 5.277l-.979 1.167-1.796-2.14A2.25 2.25 0 00.39 3.5z" />
-              </svg>
-            </button>
-            <button
-              type="button"
-              className="spotify-icon-button"
-              aria-label="Previous"
-            >
-              <svg viewBox="0 0 16 16" width="16" height="16">
-                <path d="M3.3 1a.7.7 0 01.7.7v5.15l9.95-5.744a.7.7 0 011.05.606v12.575a.7.7 0 01-1.05.607L4 9.149V14.3a.7.7 0 01-.7.7H1.7a.7.7 0 01-.7-.7V1.7a.7.7 0 01.7-.7h1.6z" />
-              </svg>
-            </button>
-            <button
-              type="button"
-              className="playback-button play-pause"
-              aria-label="Play"
-            >
-              <svg viewBox="0 0 16 16" width="16" height="16">
-                <path d="M3 1.713a.7.7 0 011.05-.607l10.89 6.288a.7.7 0 010 1.212L4.05 14.894A.7.7 0 013 14.288V1.713z" />
-              </svg>
-            </button>
-            <button
-              type="button"
-              className="spotify-icon-button"
-              aria-label="Next"
-            >
-              <svg viewBox="0 0 16 16" width="16" height="16">
-                <path d="M12.7 1a.7.7 0 00-.7.7v5.15L2.05 1.107A.7.7 0 001 1.712v12.575a.7.7 0 001.05.607L12 9.149V14.3a.7.7 0 00.7.7h1.6a.7.7 0 00.7-.7V1.7a.7.7 0 00-.7-.7h-1.6z" />
-              </svg>
-            </button>
-            <button
-              type="button"
-              className="spotify-icon-button"
-              aria-label="Repeat"
-            >
-              <svg viewBox="0 0 16 16" width="16" height="16">
-                <path d="M0 4.75A3.75 3.75 0 013.75 1h8.5A3.75 3.75 0 0116 4.75v5a3.75 3.75 0 01-3.75 3.75H9.81l1.018 1.018a.75.75 0 11-1.06 1.06L6.939 12.75l2.829-2.828a.75.75 0 111.06 1.06L9.811 12h2.439a2.25 2.25 0 002.25-2.25v-5a2.25 2.25 0 00-2.25-2.25h-8.5A2.25 2.25 0 001.5 4.75v5A2.25 2.25 0 003.75 12H5v1.5H3.75A3.75 3.75 0 010 9.75v-5z" />
-              </svg>
-            </button>
-          </div>
-
-          <div className="playback-bar">
-            <div className="playback-time">0:00</div>
-            <div className="progress-bar">
-              <div className="progress-bar-bg" />
-              <div className="progress-bar-fg" />
-            </div>
-            <div className="playback-time">3:45</div>
-          </div>
-        </div>
-
-        <div className="now-playing-right">
-          <div
-            className="volume-control"
-            onClick={(e) => {
-              // This would handle volume adjustment based on click position
-              // For now it's just a demonstration UI element
-              const container = e.currentTarget.querySelector(
-                '.progress-bar-container',
-              );
-              if (container) {
-                const rect = container.getBoundingClientRect();
-                const clickX = e.clientX - rect.left;
-                const percentage = Math.min(
-                  Math.max(clickX / rect.width, 0),
-                  1,
-                );
-                console.log(
-                  `Volume would be set to: ${Math.round(percentage * 100)}%`,
-                );
-                // In a real implementation, this would set the volume
-              }
-            }}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                // Toggle mute in a real implementation
-                console.log('Volume would be toggled (mute/unmute)');
-              } else if (e.key === 'ArrowRight') {
-                console.log('Volume would increase');
-              } else if (e.key === 'ArrowLeft') {
-                console.log('Volume would decrease');
-              }
-            }}
-            role="button"
-            tabIndex={0}
-            aria-label="Volume control"
-          >
-            <div className="volume-icon">
-              <svg viewBox="0 0 16 16" width="16" height="16">
-                <path d="M9.741.85a.75.75 0 01.375.65v13a.75.75 0 01-1.125.65l-6.925-4a3.642 3.642 0 01-1.33-4.967 3.639 3.639 0 011.33-1.332l6.925-4a.75.75 0 01.75 0zm-6.924 5.3a2.139 2.139 0 000 3.7l5.8 3.35V2.8l-5.8 3.35zm8.683 4.29V5.56a2.75 2.75 0 010 4.88z" />
-                <path d="M11.5 13.614a5.752 5.752 0 000-11.228v1.55a4.252 4.252 0 010 8.127v1.55z" />
-              </svg>
-            </div>
-            <div className="progress-bar-container" style={{ width: '100px' }}>
-              <div className="progress-bar-fill" style={{ width: '70%' }} />
-              <div className="progress-bar-handle" style={{ left: '70%' }} />
-            </div>
-          </div>
-        </div>
       </div>
 
       {menuOpen && (

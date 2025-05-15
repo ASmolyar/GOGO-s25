@@ -1,296 +1,421 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import styled from 'styled-components';
-import COLORS from '../../assets/colors.ts';
+import { animate, stagger } from 'animejs';
+import COLORS from '../../assets/colors';
 
-const AchievementsSectionWrapper = styled.section`
+// Styled components for the Spotify-inspired GOGO achievements section
+const AchievementsContainer = styled.section`
   padding: 5rem 0;
+  background: linear-gradient(to bottom, #0e0e0e, #191919);
   position: relative;
-  background: linear-gradient(180deg, #232328 0%, #171717 100%);
   overflow: hidden;
 `;
 
-const SectionContainer = styled.div`
+const SpotifyPattern = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.03;
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.1) 1px,
+    transparent 1px
+  );
+  background-size: 20px 20px;
+  pointer-events: none;
+  z-index: 1;
+`;
+
+const ContentContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
-  width: 100%;
+  position: relative;
+  z-index: 2;
 `;
 
-const SectionHeading = styled.h2`
-  font-size: 2.5rem;
-  font-weight: 800;
-  margin-bottom: 1.5rem;
+const SectionHeader = styled.div`
   text-align: center;
-  color: ${COLORS.gogo_blue};
-`;
-
-const TimelineContainer = styled.div`
+  margin-bottom: 3.5rem;
   position: relative;
-  margin: 4rem 0;
-
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 50%;
-    width: 4px;
-    background: linear-gradient(
-      to bottom,
-      ${COLORS.gogo_blue},
-      ${COLORS.gogo_purple},
-      ${COLORS.gogo_pink}
-    );
-    border-radius: 4px;
-    transform: translateX(-50%);
-    z-index: 1;
-  }
-
-  @media (max-width: 768px) {
-    &:before {
-      left: 30px;
-    }
-  }
 `;
 
-interface TimelineItemProps {
-  isLeft: boolean;
-}
-
-const TimelineItem = styled.div<TimelineItemProps>`
-  display: flex;
-  justify-content: ${(props) => (props.isLeft ? 'flex-end' : 'flex-start')};
-  padding-bottom: 4rem;
-  position: relative;
-  width: 100%;
-
-  &:last-child {
-    padding-bottom: 0;
-  }
-
-  @media (max-width: 768px) {
-    justify-content: flex-start;
-    padding-left: 80px;
-  }
+const SectionTitle = styled.h2`
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: white;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(
+    to right,
+    ${COLORS.gogo_teal},
+    ${COLORS.gogo_blue}
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
 `;
 
-const TimelineContent = styled.div`
-  background: rgba(35, 35, 40, 0.7);
+const SectionSubtitle = styled.p`
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+`;
+
+const AchievementsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+`;
+
+const AchievementCard = styled.div`
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 12px;
-  padding: 1.5rem;
-  width: 45%;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  padding: 2rem;
+  transition: all 0.4s ease;
   border: 1px solid rgba(255, 255, 255, 0.05);
   position: relative;
+  overflow: hidden;
 
-  &:before {
-    content: '';
-    position: absolute;
-    top: 24px;
-    width: 25px;
-    height: 2px;
-    background: ${COLORS.gogo_blue};
+  &:hover {
+    transform: translateY(-8px);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.1);
   }
 
-  @media (max-width: 768px) {
-    width: 100%;
-
-    &:before {
-      left: -50px;
-    }
+  &:hover .achievement-bg {
+    opacity: 0.2;
+    transform: scale(1.05);
   }
 `;
 
-const TimelineContentLeft = styled(TimelineContent)`
-  &:before {
-    right: -25px;
-  }
-
-  @media (max-width: 768px) {
-    &:before {
-      right: auto;
-      left: -50px;
-    }
-  }
-`;
-
-const TimelineContentRight = styled(TimelineContent)`
-  &:before {
-    left: -25px;
-  }
-`;
-
-const TimelineDot = styled.div`
+const AchievementBackground = styled.div`
   position: absolute;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: ${(props) => props.color || COLORS.gogo_blue};
-  border: 4px solid #171717;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 2;
-
-  @media (max-width: 768px) {
-    left: 30px;
-    transform: translateX(-50%);
-  }
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(25, 70, 245, 0.15),
+    rgba(190, 43, 147, 0.15)
+  );
+  opacity: 0;
+  transition: all 0.6s ease;
+  z-index: 0;
+  border-radius: 12px;
 `;
 
-const TimelineYear = styled.div`
-  position: absolute;
-  left: 50%;
-  top: 55px;
-  transform: translateX(-50%);
-  color: white;
-  font-weight: bold;
+const AchievementContent = styled.div`
+  position: relative;
+  z-index: 1;
+`;
+
+const AchievementYear = styled.div`
+  display: inline-block;
   font-size: 0.9rem;
-  z-index: 2;
-
-  @media (max-width: 768px) {
-    left: 30px;
-    transform: translateX(-50%);
-  }
+  color: ${COLORS.gogo_teal};
+  margin-bottom: 1rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  background: rgba(177, 235, 242, 0.1);
 `;
 
 const AchievementTitle = styled.h3`
-  font-size: 1.4rem;
-  margin-bottom: 0.8rem;
-  color: ${COLORS.gogo_yellow};
-  font-weight: 600;
+  font-size: 1.5rem;
+  color: white;
+  margin-bottom: 1rem;
+  font-weight: 700;
 `;
 
 const AchievementDescription = styled.p`
   font-size: 1rem;
   line-height: 1.6;
-  color: #e0e0e0;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 1.5rem;
 `;
 
-const AchievementImage = styled.div`
-  margin-top: 1rem;
-  height: 150px;
-  border-radius: 8px;
-  background-color: rgba(25, 25, 30, 0.6);
+const AchievementStats = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 3rem;
-  overflow: hidden;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
 `;
 
-// Achievement data
-const achievements = [
+const AchievementStat = styled.div`
+  flex: 1;
+`;
+
+const StatValue = styled.div`
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: ${COLORS.gogo_yellow};
+  margin-bottom: 0.25rem;
+`;
+
+const StatLabel = styled.div`
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+`;
+
+const MediaLink = styled.a`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 0.75rem 1.25rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+
+  &:hover {
+    background: rgba(25, 70, 245, 0.4);
+    transform: translateY(-2px);
+  }
+`;
+
+const BottomCta = styled.div`
+  text-align: center;
+  margin-top: 4rem;
+`;
+
+const SpotifyButton = styled.a`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: ${COLORS.gogo_blue};
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.9rem 2rem;
+  border-radius: 500px;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(25, 70, 245, 0.3);
+
+  &:hover {
+    transform: scale(1.05);
+    background: #2953fa;
+    box-shadow: 0 12px 25px rgba(25, 70, 245, 0.4);
+  }
+`;
+
+// Data for achievements
+const achievementsData = [
   {
-    year: 2008,
-    title: 'GOGO Founded in Miami',
+    id: 1,
+    year: '2023',
+    title: 'Expanded to Nashville',
     description:
-      'Established first program with 15 students in Liberty City, Miami.',
-    icon: '🎸',
-    color: COLORS.gogo_blue,
+      'Launched our first programs in Nashville, Tennessee, bringing music mentorship to a new community of students.',
+    stats: [
+      { value: '120+', label: 'New Students' },
+      { value: '8', label: 'New Mentors' },
+    ],
+    mediaLink: 'View Launch Event',
+    backgroundColor: 'rgba(104, 54, 154, 0.1)', // Purple
   },
   {
-    year: 2014,
+    id: 2,
+    year: '2022',
+    title: 'Mentorship Excellence Award',
+    description:
+      'Recognized by the National Mentoring Partnership for our innovative approaches to arts-based mentorship programs.',
+    stats: [
+      { value: '93%', label: 'Student Satisfaction' },
+      { value: '#1', label: 'Program Rating' },
+    ],
+    mediaLink: 'Read the Story',
+    backgroundColor: 'rgba(190, 43, 147, 0.1)', // Pink
+  },
+  {
+    id: 3,
+    year: '2021',
+    title: 'Virtual Studio Launch',
+    description:
+      'Developed our virtual recording studio platform to continue music education during the pandemic, ensuring students stayed connected.',
+    stats: [
+      { value: '850+', label: 'Remote Sessions' },
+      { value: '24', label: 'Online Concerts' },
+    ],
+    mediaLink: 'Explore Platform',
+    backgroundColor: 'rgba(25, 70, 245, 0.1)', // Blue
+  },
+  {
+    id: 4,
+    year: '2020',
+    title: 'First Album Release',
+    description:
+      'Released "Rising Voices," a collaborative album featuring original music created by our students and mentors across all locations.',
+    stats: [
+      { value: '18', label: 'Original Tracks' },
+      { value: '42K', label: 'Streams' },
+    ],
+    mediaLink: 'Listen Now',
+    backgroundColor: 'rgba(141, 221, 166, 0.1)', // Green
+  },
+  {
+    id: 5,
+    year: '2019',
     title: 'Chicago Expansion',
     description:
-      'Opened first program site in Chicago with 30 students across two locations.',
-    icon: '🏙️',
-    color: COLORS.gogo_purple,
+      'Opened three new program sites in Chicago, partnering with local schools to bring music education to underserved neighborhoods.',
+    stats: [
+      { value: '210+', label: 'New Students' },
+      { value: '12', label: 'New Mentors' },
+    ],
+    mediaLink: 'View Gallery',
+    backgroundColor: 'rgba(233, 187, 77, 0.1)', // Yellow
   },
   {
-    year: 2016,
-    title: 'First National Recognition',
+    id: 6,
+    year: '2018',
+    title: '10-Year Anniversary Concert',
     description:
-      'Named as Top 10 Music Education Nonprofits by National Arts Association.',
-    icon: '🏆',
-    color: COLORS.gogo_yellow,
-  },
-  {
-    year: 2019,
-    title: '5,000th Student Milestone',
-    description: 'Celebrated serving our 5,000th student across all programs.',
-    icon: '🎓',
-    color: COLORS.gogo_green,
-  },
-  {
-    year: 2021,
-    title: 'Los Angeles Launch',
-    description:
-      'Expanded to the West Coast with three new program sites in LA.',
-    icon: '🌊',
-    color: COLORS.gogo_pink,
-  },
-  {
-    year: 2023,
-    title: '10,000+ Students Reached',
-    description:
-      'Surpassed 10,000 students served since founding, with 85% reporting improved academic performance.',
-    icon: '📈',
-    color: COLORS.gogo_teal,
+      'Celebrated a decade of impact with a special concert featuring current students, alumni, and professional musician supporters.',
+    stats: [
+      { value: '2.5K', label: 'Attendees' },
+      { value: '120', label: 'Performers' },
+    ],
+    mediaLink: 'Watch Highlights',
+    backgroundColor: 'rgba(177, 235, 242, 0.1)', // Teal
   },
 ];
 
-const AchievementsSection: React.FC = () => {
-  const [inView, setInView] = useState(false);
+function AchievementsSection(): JSX.Element {
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+  const titleRef = useRef<HTMLHeadingElement | null>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  // Use useMemo to prevent recreating these objects on every render
+  const titleAnimationParams = useMemo(
+    () => ({
+      opacity: [0, 1],
+      translateY: [30, 0],
+      duration: 800,
+      easing: 'easeOutExpo',
+    }),
+    [],
+  );
+
+  const cardsAnimationParams = useMemo(
+    () => ({
+      opacity: [0, 1],
+      translateY: [50, 0],
+      scale: [0.92, 1],
+      delay: stagger(100),
+      duration: 800,
+      easing: 'easeOutExpo',
+    }),
+    [],
+  );
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          // Animate title when section enters viewport
+          if (titleRef.current) {
+            animate(titleRef.current, titleAnimationParams);
+          }
+
+          // Staggered animation for cards
+          const validCardRefs = cardRefs.current.filter(Boolean);
+          if (validCardRefs.length > 0) {
+            animate(
+              validCardRefs.filter(Boolean) as HTMLDivElement[],
+              cardsAnimationParams,
+            );
+          }
         }
       },
       { threshold: 0.1 },
     );
 
-    const section = document.querySelector('.achievements-section');
-    if (section) observer.observe(section);
+    // Store reference to the current section ref
+    const currentSectionRef = sectionRef.current;
+
+    if (currentSectionRef) {
+      observer.observe(currentSectionRef);
+    }
 
     return () => {
-      if (section) observer.unobserve(section);
+      observer.disconnect();
     };
-  }, []);
+  }, [cardsAnimationParams, titleAnimationParams]);
 
   return (
-    <AchievementsSectionWrapper className="achievements-section">
-      <SectionContainer>
-        <SectionHeading>Key Milestones</SectionHeading>
+    <AchievementsContainer ref={sectionRef}>
+      <SpotifyPattern />
+      <ContentContainer>
+        <SectionHeader>
+          <SectionTitle ref={titleRef}>Our Achievements</SectionTitle>
+          <SectionSubtitle>
+            Milestones that showcase our commitment to empowering youth through
+            music and mentorship
+          </SectionSubtitle>
+        </SectionHeader>
 
-        <TimelineContainer>
-          {achievements.map((achievement, index) => {
-            const isLeft = index % 2 === 0;
-            const ContentComponent = isLeft
-              ? TimelineContentLeft
-              : TimelineContentRight;
+        <AchievementsGrid>
+          {achievementsData.map((achievement, index) => (
+            <AchievementCard
+              key={`achievement-${achievement.id}-${achievement.year}`}
+              ref={(el) => {
+                cardRefs.current[index] = el;
+              }}
+              style={{ opacity: 0 }}
+            >
+              <AchievementBackground
+                className="achievement-bg"
+                style={{ background: achievement.backgroundColor }}
+              />
+              <AchievementContent>
+                <AchievementYear>{achievement.year}</AchievementYear>
+                <AchievementTitle>{achievement.title}</AchievementTitle>
+                <AchievementDescription>
+                  {achievement.description}
+                </AchievementDescription>
 
-            return (
-              <TimelineItem
-                key={`achievement-${index}`}
-                isLeft={isLeft}
-                style={{
-                  opacity: inView ? 1 : 0,
-                  transform: inView ? 'translateY(0)' : 'translateY(50px)',
-                  transition: `opacity 0.6s ease ${
-                    index * 0.2
-                  }s, transform 0.6s ease ${index * 0.2}s`,
-                }}
-              >
-                <TimelineDot color={achievement.color} />
-                <TimelineYear>{achievement.year}</TimelineYear>
-                <ContentComponent>
-                  <AchievementTitle>{achievement.title}</AchievementTitle>
-                  <AchievementDescription>
-                    {achievement.description}
-                  </AchievementDescription>
-                  <AchievementImage>{achievement.icon}</AchievementImage>
-                </ContentComponent>
-              </TimelineItem>
-            );
-          })}
-        </TimelineContainer>
-      </SectionContainer>
-    </AchievementsSectionWrapper>
+                <AchievementStats>
+                  {achievement.stats.map((stat, i) => (
+                    <AchievementStat
+                      key={`stat-${achievement.id}-${stat.label}`}
+                    >
+                      <StatValue>{stat.value}</StatValue>
+                      <StatLabel>{stat.label}</StatLabel>
+                    </AchievementStat>
+                  ))}
+                </AchievementStats>
+
+                <MediaLink href="#">
+                  <span className="play-icon">▶</span>
+                  {achievement.mediaLink}
+                </MediaLink>
+              </AchievementContent>
+            </AchievementCard>
+          ))}
+        </AchievementsGrid>
+
+        <BottomCta>
+          <SpotifyButton href="/impact">
+            <span>Explore Our Full Impact Story</span>
+            <span>→</span>
+          </SpotifyButton>
+        </BottomCta>
+      </ContentContainer>
+    </AchievementsContainer>
   );
-};
+}
 
 export default AchievementsSection;

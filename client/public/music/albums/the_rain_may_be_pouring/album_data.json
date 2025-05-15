@@ -1,0 +1,256 @@
+{
+  "albums": [
+    {
+      "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+      "name": "The Rain May Be Pouring",
+      "album_url": "https://open.spotify.com/album/4dkhXFnrDTnwvr9Iy5hEEW",
+      "type": "album",
+      "cover": "/music/albums/the_rain_may_be_pouring/cover.jpg",
+      "date": "2021-04-21",
+      "artists": [
+        {
+          "artist_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+          "name": "Lee-Yahna Lawson"
+        },
+        {
+          "artist_id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+          "name": "Justine Garcia"
+        },
+        {
+          "artist_id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+          "name": "Starve Marve"
+        },
+        {
+          "artist_id": "d4e5f6a7-b8c9-0123-defg-2345678901234",
+          "name": "F.A.B.L.E"
+        },
+        {
+          "artist_id": "e5f6a7b8-c9d0-1234-efgh-3456789012345",
+          "name": "'Kechi"
+        },
+        {
+          "artist_id": "f6a7b8c9-d0e1-2345-fghi-45678901234567",
+          "name": "Tif Boom"
+        },
+        {
+          "artist_id": "a7b8c9d0-e1f2-3456-ghij-5678901234567",
+          "name": "Mish"
+        },
+        {
+          "artist_id": "b8c9d0e1-f2a3-4567-hijk-6789012345678",
+          "name": "C.A.M."
+        },
+        {
+          "artist_id": "c9d0e1f2-a3b4-5678-ijkl-7890123456789",
+          "name": "RonDon Keyz"
+        },
+        {
+          "artist_id": "d0e1f2a3-b4c5-6789-jklm-8901234567890",
+          "name": "Rios"
+        },
+        {
+          "artist_id": "e1f2a3b4-c5d6-7890-klmn-9012345678901",
+          "name": "Corinne Stevie"
+        },
+        {
+          "artist_id": "f2a3b4c5-d6e7-8901-lmno-0123456789012",
+          "name": "Lyrical Grenade"
+        },
+        {
+          "artist_id": "a3b4c5d6-e7f8-9012-mnop-1234567890123",
+          "name": "Kenzy Lafrance"
+        },
+        {
+          "artist_id": "b4c5d6e7-f8a9-0123-nopq-2345678901234",
+          "name": "Desiree Jaha"
+        },
+        {
+          "artist_id": "c5d6e7f8-a9b0-1234-opqr-3456789012345",
+          "name": "Inez Barlatier"
+        },
+        {
+          "artist_id": "d6e7f8a9-b0c1-2345-pqrs-4567890123456",
+          "name": "St. James Valsin"
+        }
+      ],
+      "songs": [
+        {
+          "song_id": "f8a9b0c1-d2e3-4567-rstu-6789012345678",
+          "title": "This Is Nothing New",
+          "audio_file": "/music/albums/the_rain_may_be_pouring/this_is_nothing_new.mp3",
+          "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+          "artists": [
+            {
+              "artist_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+              "name": "Lee-Yahna Lawson"
+            }
+          ]
+        },
+        {
+          "song_id": "a9b0c1d2-e3f4-5678-stuv-7890123456789",
+          "title": "Quarantine Song",
+          "audio_file": "/music/albums/the_rain_may_be_pouring/quarantine_song.mp3",
+          "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+          "artists": [
+            {
+              "artist_id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+              "name": "Justine Garcia"
+            }
+          ]
+        },
+        {
+          "song_id": "b0c1d2e3-f4a5-6789-tuvw-8901234567890",
+          "title": "Company",
+          "audio_file": "/music/albums/the_rain_may_be_pouring/company.mp3",
+          "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+          "artists": [
+            {
+              "artist_id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+              "name": "Starve Marve"
+            }
+          ]
+        },
+        {
+          "song_id": "c1d2e3f4-a5b6-7890-uvwx-9012345678901",
+          "title": "Neighborhood",
+          "audio_file": "/music/albums/the_rain_may_be_pouring/neighborhood.mp3",
+          "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+          "artists": [
+            {
+              "artist_id": "d4e5f6a7-b8c9-0123-defg-2345678901234",
+              "name": "F.A.B.L.E"
+            },
+            {
+              "artist_id": "e5f6a7b8-c9d0-1234-efgh-3456789012345",
+              "name": "'Kechi"
+            }
+          ]
+        },
+        {
+          "song_id": "d2e3f4a5-b6c7-8901-vwxy-0123456789012",
+          "title": "Heaven's Footsteps",
+          "audio_file": "/music/albums/the_rain_may_be_pouring/heavens_footsteps.mp3",
+          "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+          "artists": [
+            {
+              "artist_id": "f6a7b8c9-d0e1-2345-fghi-45678901234567",
+              "name": "Tif Boom"
+            }
+          ]
+        },
+        {
+          "song_id": "e3f4a5b6-c7d8-9012-wxyz-1234567890123",
+          "title": "Homesick",
+          "audio_file": "/music/albums/the_rain_may_be_pouring/homesick.mp3",
+          "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+          "artists": [
+            {
+              "artist_id": "a7b8c9d0-e1f2-3456-ghij-5678901234567",
+              "name": "Mish"
+            }
+          ]
+        },
+        {
+          "song_id": "f4a5b6c7-d8e9-0123-xyza-2345678901234",
+          "title": "Loud Silence",
+          "audio_file": "/music/albums/the_rain_may_be_pouring/loud_silence.mp3",
+          "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+          "artists": [
+            {
+              "artist_id": "b8c9d0e1-f2a3-4567-hijk-6789012345678",
+              "name": "C.A.M."
+            }
+          ]
+        },
+        {
+          "song_id": "a5b6c7d8-e9f0-1234-yzab-3456789012345",
+          "title": "Crazy",
+          "audio_file": "/music/albums/the_rain_may_be_pouring/crazy.mp3",
+          "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+          "artists": [
+            {
+              "artist_id": "c9d0e1f2-a3b4-5678-ijkl-7890123456789",
+              "name": "RonDon Keyz"
+            }
+          ]
+        },
+        {
+          "song_id": "b6c7d8e9-f0a1-2345-zabc-4567890123456",
+          "title": "Pieces",
+          "audio_file": "/music/albums/the_rain_may_be_pouring/pieces.mp3",
+          "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+          "artists": [
+            {
+              "artist_id": "d0e1f2a3-b4c5-6789-jklm-8901234567890",
+              "name": "Rios"
+            }
+          ]
+        },
+        {
+          "song_id": "c7d8e9f0-a1b2-3456-abcd-5678901234567",
+          "title": "Breathe Through the Pain",
+          "audio_file": "/music/albums/the_rain_may_be_pouring/breathe_through_the_pain.mp3",
+          "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+          "artists": [
+            {
+              "artist_id": "e1f2a3b4-c5d6-7890-klmn-9012345678901",
+              "name": "Corinne Stevie"
+            }
+          ]
+        },
+        {
+          "song_id": "d8e9f0a1-b2c3-4567-bcde-6789012345678",
+          "title": "The Truth Is Trouble",
+          "audio_file": "/music/albums/the_rain_may_be_pouring/the_truth_is_trouble.mp3",
+          "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+          "artists": [
+            {
+              "artist_id": "f2a3b4c5-d6e7-8901-lmno-0123456789012",
+              "name": "Lyrical Grenade"
+            }
+          ]
+        },
+        {
+          "song_id": "e9f0a1b2-c3d4-5678-cdef-7890123456789",
+          "title": "It's Come to This...",
+          "audio_file": "/music/albums/the_rain_may_be_pouring/its_come_to_this.mp3",
+          "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+          "artists": [
+            {
+              "artist_id": "a3b4c5d6-e7f8-9012-mnop-1234567890123",
+              "name": "Kenzy Lafrance"
+            }
+          ]
+        },
+        {
+          "song_id": "f0a1b2c3-d4e5-6789-defg-8901234567890",
+          "title": "Hurricane",
+          "audio_file": "/music/albums/the_rain_may_be_pouring/hurricane.mp3",
+          "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+          "artists": [
+            {
+              "artist_id": "b4c5d6e7-f8a9-0123-nopq-2345678901234",
+              "name": "Desiree Jaha"
+            }
+          ]
+        },
+        {
+          "song_id": "a1b2c3d4-e5f6-7890-efgh-9012345678901",
+          "title": "Prosper",
+          "audio_file": "/music/albums/the_rain_may_be_pouring/prosper.mp3",
+          "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
+          "artists": [
+            {
+              "artist_id": "c5d6e7f8-a9b0-1234-opqr-3456789012345",
+              "name": "Inez Barlatier"
+            },
+            {
+              "artist_id": "d6e7f8a9-b0c1-2345-pqrs-4567890123456",
+              "name": "St. James Valsin"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+} 

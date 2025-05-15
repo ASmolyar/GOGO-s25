@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useParams, useNavigate } from 'react-router-dom';
 import COLORS from '../../assets/colors';
 
 // Internal Track interface for the music catalog
@@ -27,12 +26,14 @@ interface MusicCatalog {
 }
 
 interface AlbumPageProps {
+  albumId: string;
   onPlayTrack: (track: {
     id: string;
     title: string;
     artist: string;
     cover: string;
     duration: string;
+    audioSrc?: string;
   }) => void;
 }
 
@@ -71,7 +72,7 @@ const HeaderContent = styled.div`
 const AlbumCover = styled.div<{ imageUrl: string }>`
   width: 232px;
   height: 232px;
-  background-image: url(${props => props.imageUrl});
+  background-image: url(${(props) => props.imageUrl});
   background-size: cover;
   background-position: center;
   box-shadow: 0 4px 60px rgba(0, 0, 0, 0.5);
@@ -229,9 +230,7 @@ const VerifiedIcon = () => (
   </svg>
 );
 
-const AlbumPage: React.FC<AlbumPageProps> = ({ onPlayTrack }) => {
-  const { albumId } = useParams<{ albumId: string }>();
-  const navigate = useNavigate();
+const AlbumPage: React.FC<AlbumPageProps> = ({ albumId, onPlayTrack }) => {
   const [catalog, setCatalog] = useState<MusicCatalog | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -248,7 +247,7 @@ const AlbumPage: React.FC<AlbumPageProps> = ({ onPlayTrack }) => {
         }
         const data = await response.json();
         setCatalog(data);
-        
+
         // Find the album based on the albumId
         const foundAlbum = data.albums.find((a: Album) => a.id === albumId);
         if (foundAlbum) {
@@ -277,57 +276,32 @@ const AlbumPage: React.FC<AlbumPageProps> = ({ onPlayTrack }) => {
   }, [albumId]);
 
   const handlePlayTrack = (track: CatalogTrack) => {
-    if (!album) return;
-    
-    // Call the onPlayTrack prop to update the now playing bar
-    onPlayTrack({
-      id: track.id,
-      title: track.title,
-      artist: track.artist,
-      cover: album.coverImage,
-      duration: track.duration
-    });
-    
-    // Handle local audio player
-    if (audioRef.current) {
-      // If the same track is clicked, toggle play/pause
-      if (currentlyPlaying === track.file) {
-        if (audioRef.current.paused) {
-          audioRef.current.play();
-        } else {
-          audioRef.current.pause();
-        }
-      } else {
-        // Play a new track
-        audioRef.current.src = track.file;
-        audioRef.current.play();
-        setCurrentlyPlaying(track.file);
-      }
+    // Set the currently playing track ID
+    setCurrentlyPlaying(track.file);
+
+    // Call the parent component's handler with the track info
+    if (album) {
+      onPlayTrack({
+        id: track.id,
+        title: track.title,
+        artist: track.artist,
+        cover: album.coverImage,
+        duration: track.duration,
+        audioSrc: track.file,
+      });
     }
   };
 
   if (loading) {
-    return (
-      <LoadingContainer>
-        Loading album...
-      </LoadingContainer>
-    );
+    return <LoadingContainer>Loading album...</LoadingContainer>;
   }
 
   if (error) {
-    return (
-      <ErrorContainer>
-        {error}
-      </ErrorContainer>
-    );
+    return <ErrorContainer>{error}</ErrorContainer>;
   }
 
   if (!album) {
-    return (
-      <NotFoundContainer>
-        Album not found. <a href="/music">Return to music library</a>
-      </NotFoundContainer>
-    );
+    return <ErrorContainer>Album not found.</ErrorContainer>;
   }
 
   return (
@@ -337,34 +311,41 @@ const AlbumPage: React.FC<AlbumPageProps> = ({ onPlayTrack }) => {
         <HeaderContent>
           <AlbumCover imageUrl={album.coverImage} />
           <AlbumInfo>
-            <AlbumType>Album</AlbumType>
+            <AlbumType>ALBUM</AlbumType>
             <AlbumTitle>{album.title}</AlbumTitle>
             <AlbumDescription>{album.description}</AlbumDescription>
-            <AlbumMeta>
-              <span>{album.tracks.length} songs • </span>
-              <AlbumYear>{album.year}</AlbumYear>
-            </AlbumMeta>
+            <AlbumYear>
+              {album.year} • {album.tracks.length} songs
+            </AlbumYear>
             <HeaderControls>
-              <GreenPlayButton onClick={() => {
-                if (album.tracks.length > 0) {
-                  handlePlayTrack(album.tracks[0]);
-                }
-              }}>▶</GreenPlayButton>
+              <GreenPlayButton
+                onClick={() => {
+                  if (album.tracks.length > 0) {
+                    handlePlayTrack(album.tracks[0]);
+                  }
+                }}
+              >
+                ▶
+              </GreenPlayButton>
             </HeaderControls>
           </AlbumInfo>
         </HeaderContent>
       </HeaderContainer>
-      
+
       <TracksContainer>
         <TracksHeader>
           <TracksHeaderCell>#</TracksHeaderCell>
           <TracksHeaderCell>Title</TracksHeaderCell>
-          <TracksHeaderCell style={{ textAlign: 'right' }}>Duration</TracksHeaderCell>
+          <TracksHeaderCell style={{ textAlign: 'right' }}>
+            Duration
+          </TracksHeaderCell>
         </TracksHeader>
-        
+
         {album.tracks.map((track, index) => (
           <TrackRow key={track.id} onClick={() => handlePlayTrack(track)}>
-            <TrackNumber>{currentlyPlaying === track.file ? '▶' : index + 1}</TrackNumber>
+            <TrackNumber>
+              {currentlyPlaying === track.file ? '▶' : index + 1}
+            </TrackNumber>
             <TrackInfo>
               <TrackTitle>{track.title}</TrackTitle>
               <TrackArtist>{track.artist}</TrackArtist>

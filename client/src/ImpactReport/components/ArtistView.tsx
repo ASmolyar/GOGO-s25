@@ -1,29 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
 import COLORS from '../../assets/colors.ts';
+import { Song, Album, Artist as MusicArtist } from '../types/music';
 
-// Types
-interface Track {
-  id: string;
-  title: string;
-  plays: string;
-  duration: string;
-  artist: string;
-  cover: string;
-}
-
-interface Artist {
+// UI Artist type that extends our data model Artist
+interface UIArtist {
   id: string;
   name: string;
   image: string;
   monthlyListeners: string;
   description: string;
-  popularTracks: Track[];
 }
 
-interface ArtistProps {
-  artist: Artist;
-  onPlayTrack?: (track: Track) => void;
+interface ArtistViewProps {
+  artist: UIArtist;
+  onPlayTrack?: (song: Song, album: Album) => void;
 }
 
 // Styled components
@@ -282,61 +273,21 @@ function MoreIcon() {
 }
 
 // Default props for demo
-const defaultArtist: Artist = {
+const defaultArtist: UIArtist = {
   id: 'caetano-veloso',
   name: 'Caetano Veloso',
   image: 'https://i.scdn.co/image/ab6761610000e5eb0130d3f78e4348990cbb987b',
   monthlyListeners: '4,355,363',
   description:
     'A true heavyweight, Caetano Veloso is a pop musician, political activist and intellectual who was also a driving force behind Tropicália, the late-1960s arts movement that influenced literature, film, visual arts and music in Brazil.',
-  popularTracks: [
-    {
-      id: 'cv-1',
-      title: 'Chuvos De Verão - Remastered 2006',
-      plays: '17,844,557',
-      duration: '4:10',
-      artist: 'Caetano Veloso',
-      cover: 'https://i.scdn.co/image/ab6761610000e5eb0130d3f78e4348990cbb987b',
-    },
-    {
-      id: 'cv-2',
-      title: 'Sozinho',
-      plays: '15,622,418',
-      duration: '3:47',
-      artist: 'Caetano Veloso',
-      cover: 'https://i.scdn.co/image/ab6761610000e5eb0130d3f78e4348990cbb987b',
-    },
-    {
-      id: 'cv-3',
-      title: 'Leãozinho',
-      plays: '14,376,809',
-      duration: '2:30',
-      artist: 'Caetano Veloso',
-      cover: 'https://i.scdn.co/image/ab6761610000e5eb0130d3f78e4348990cbb987b',
-    },
-    {
-      id: 'cv-4',
-      title: 'Você É Linda',
-      plays: '12,933,254',
-      duration: '3:58',
-      artist: 'Caetano Veloso',
-      cover: 'https://i.scdn.co/image/ab6761610000e5eb0130d3f78e4348990cbb987b',
-    },
-    {
-      id: 'cv-5',
-      title: 'Lua e Estrela',
-      plays: '9,876,543',
-      duration: '3:21',
-      artist: 'Caetano Veloso',
-      cover: 'https://i.scdn.co/image/ab6761610000e5eb0130d3f78e4348990cbb987b',
-    },
-  ],
 };
 
-function ArtistView({
-  artist = defaultArtist,
-  onPlayTrack,
-}: ArtistProps): JSX.Element {
+function ArtistView({ artist, onPlayTrack }: ArtistViewProps): JSX.Element {
+  // Mock handler for play button - in a real implementation would get songs from the API
+  const handlePlayArtist = () => {
+    console.log('Playing artist songs');
+  };
+
   return (
     <ArtistContainer>
       <ArtistHeader>
@@ -346,14 +297,14 @@ function ArtistView({
           <ArtistImage image={artist.image} />
           <ArtistInfo>
             <VerifiedBadge>
-              <VerifiedIcon />
-              Verified Artist
+              <VerifiedIcon /> Verified Artist
             </VerifiedBadge>
             <ArtistName>{artist.name}</ArtistName>
             <ArtistStats>
               <Stat>{artist.monthlyListeners} monthly listeners</Stat>
             </ArtistStats>
             <ArtistControls>
+              <PlayButton onClick={handlePlayArtist}>▶</PlayButton>
               <FollowButton>Follow</FollowButton>
               <MoreButton>
                 <MoreIcon />
@@ -363,33 +314,10 @@ function ArtistView({
         </ArtistContent>
       </ArtistHeader>
 
-      <SectionTitle>Popular</SectionTitle>
-      <TracksTable>
-        <TrackHeader>
-          <HeaderCell>#</HeaderCell>
-          <HeaderCell>Title</HeaderCell>
-          <HeaderCell>Plays</HeaderCell>
-          <HeaderCell>Duration</HeaderCell>
-        </TrackHeader>
-
-        {artist.popularTracks.map((track, index) => (
-          <TrackRow
-            key={track.id}
-            style={{ cursor: 'pointer' }}
-            onClick={() => onPlayTrack && onPlayTrack(track)}
-          >
-            <TrackNumber>{index + 1}</TrackNumber>
-            <TrackTitle>{track.title}</TrackTitle>
-            <TrackPlays>{track.plays}</TrackPlays>
-            <TrackDuration>{track.duration}</TrackDuration>
-          </TrackRow>
-        ))}
-      </TracksTable>
-
-      <AboutSection>
-        <AboutTitle>About</AboutTitle>
-        <AboutText>{artist.description}</AboutText>
-      </AboutSection>
+      <SectionTitle>About</SectionTitle>
+      <p style={{ color: '#b3b3b3', lineHeight: 1.6, maxWidth: '800px' }}>
+        {artist.description}
+      </p>
     </ArtistContainer>
   );
 }

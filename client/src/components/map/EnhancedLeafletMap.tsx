@@ -50,8 +50,8 @@ const MapOverlay = styled.div`
   align-items: center;
   cursor: pointer;
   transition: opacity 0.3s ease;
-  opacity: ${props => (props.isVisible ? 1 : 0)};
-  pointer-events: ${props => (props.isVisible ? 'auto' : 'none')};
+  opacity: ${(props) => (props.isVisible ? 1 : 0)};
+  pointer-events: ${(props) => (props.isVisible ? 'auto' : 'none')};
 `;
 
 const OverlayMessage = styled.div`
@@ -71,7 +71,7 @@ const OverlayButton = styled.button`
   font-weight: bold;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   transition: transform 0.2s ease, background-color 0.2s ease;
-  
+
   &:hover {
     background: ${COLORS.gogo_purple};
     transform: scale(1.05);
@@ -239,7 +239,10 @@ function EnhancedLeafletMap() {
   };
 
   // Function to create a marker icon for a specific location type
-  const createLocationMarkerIcon = (type = 'default', color = COLORS.gogo_blue) => {
+  const createLocationMarkerIcon = (
+    type = 'default',
+    color = COLORS.gogo_blue,
+  ) => {
     const getIconPath = () => {
       switch (type) {
         case LocationTypes.SCHOOL:
@@ -323,16 +326,16 @@ function EnhancedLeafletMap() {
     const container = document.createElement('div');
     container.style.padding = '15px';
     container.style.maxWidth = '250px';
-    
+
     const title = document.createElement('h3');
     title.textContent = location.name;
     title.style.color = regionColor || COLORS.gogo_blue;
     title.style.margin = '0 0 8px 0';
     title.style.fontSize = '18px';
     title.style.fontWeight = 'bold';
-    
+
     container.appendChild(title);
-    
+
     if (location.type) {
       const typeElem = document.createElement('div');
       typeElem.textContent = location.type.replace('-', ' ');
@@ -342,7 +345,7 @@ function EnhancedLeafletMap() {
       typeElem.style.textTransform = 'uppercase';
       container.appendChild(typeElem);
     }
-    
+
     if (location.description) {
       const descElem = document.createElement('p');
       descElem.textContent = location.description;
@@ -350,39 +353,41 @@ function EnhancedLeafletMap() {
       descElem.style.lineHeight = '1.4';
       container.appendChild(descElem);
     }
-    
+
     if (location.programs && location.programs.length > 0) {
       const programsTitle = document.createElement('div');
       programsTitle.textContent = 'Programs';
       programsTitle.style.fontWeight = 'bold';
       programsTitle.style.marginTop = '10px';
       programsTitle.style.marginBottom = '5px';
-      
+
       const programsList = document.createElement('ul');
       programsList.style.margin = '0 0 10px 0';
       programsList.style.paddingLeft = '20px';
-      
-      location.programs.forEach(program => {
+
+      location.programs.forEach((program) => {
         const listItem = document.createElement('li');
         listItem.textContent = program;
         listItem.style.margin = '3px 0';
         programsList.appendChild(listItem);
       });
-      
+
       container.appendChild(programsTitle);
       container.appendChild(programsList);
     }
-    
+
     if (location.supportedBy && location.supportedBy.length > 0) {
       const supportElem = document.createElement('div');
-      supportElem.textContent = `Supported by: ${location.supportedBy.join(', ')}`;
+      supportElem.textContent = `Supported by: ${location.supportedBy.join(
+        ', ',
+      )}`;
       supportElem.style.fontStyle = 'italic';
       supportElem.style.fontSize = '12px';
       supportElem.style.marginTop = '10px';
       supportElem.style.color = '#aaa';
       container.appendChild(supportElem);
     }
-    
+
     return container;
   };
 
@@ -391,19 +396,19 @@ function EnhancedLeafletMap() {
     const container = document.createElement('div');
     container.style.padding = '15px';
     container.style.maxWidth = '250px';
-    
+
     const title = document.createElement('h3');
     title.textContent = region.name;
     title.style.color = region.color || COLORS.gogo_blue;
     title.style.margin = '0 0 8px 0';
     title.style.fontSize = '18px';
     title.style.fontWeight = 'bold';
-    
+
     const countElem = document.createElement('div');
     countElem.textContent = `${region.sublocations.length} locations`;
     countElem.style.fontSize = '14px';
     countElem.style.marginBottom = '10px';
-    
+
     const button = document.createElement('button');
     button.textContent = `Explore ${region.name}`;
     button.style.background = region.color || COLORS.gogo_blue;
@@ -415,7 +420,7 @@ function EnhancedLeafletMap() {
     button.style.marginTop = '10px';
     button.style.width = '100%';
     button.style.fontWeight = 'bold';
-    
+
     // Add event listener to the button
     button.addEventListener('click', () => {
       // Close the popup
@@ -423,10 +428,10 @@ function EnhancedLeafletMap() {
       // Select the region - this will trigger the useEffect
       setSelectedRegion(region);
     });
-    
+
     container.appendChild(title);
     container.appendChild(countElem);
-    
+
     if (region.description) {
       const descElem = document.createElement('p');
       descElem.textContent = region.description;
@@ -434,58 +439,66 @@ function EnhancedLeafletMap() {
       descElem.style.lineHeight = '1.4';
       container.appendChild(descElem);
     }
-    
+
     container.appendChild(button);
-    
+
     return container;
   };
 
   // Function to initialize the map with regions
   const initializeMapWithRegions = (map) => {
     // Add all region markers
-    regions.filter(region => region.id !== 'summer-programs').forEach(region => {
-      const marker = L.marker(region.centerCoordinates, {
-        icon: createRegionMarkerIcon(region.color || COLORS.gogo_blue, region.name),
-      }).addTo(map);
-      
-      // Add a tooltip
-      const tooltip = L.tooltip({
-        direction: 'top',
-        offset: [0, -10],
-        opacity: 0.9,
-        permanent: true,
+    regions
+      .filter((region) => region.id !== 'summer-programs')
+      .forEach((region) => {
+        const marker = L.marker(region.centerCoordinates, {
+          icon: createRegionMarkerIcon(
+            region.color || COLORS.gogo_blue,
+            region.name,
+          ),
+        }).addTo(map);
+
+        // Add a tooltip
+        const tooltip = L.tooltip({
+          direction: 'top',
+          offset: [0, -10],
+          opacity: 0.9,
+          permanent: true,
+        });
+
+        tooltip.setContent(region.name);
+        marker.bindTooltip(tooltip);
+
+        // Add a popup
+        const popup = L.popup({
+          className: 'custom-popup',
+          maxWidth: 300,
+          closeButton: true,
+        });
+
+        popup.setContent(createPopupContentForRegion(region));
+        marker.bindPopup(popup);
       });
-      
-      tooltip.setContent(region.name);
-      marker.bindTooltip(tooltip);
-      
-      // Add a popup
-      const popup = L.popup({
-        className: 'custom-popup',
-        maxWidth: 300,
-        closeButton: true,
-      });
-      
-      popup.setContent(createPopupContentForRegion(region));
-      marker.bindPopup(popup);
-    });
   };
 
   // Function to initialize the map with sublocations for a specific region
   const initializeMapWithSublocations = (map, region) => {
     // Add all sublocation markers
-    region.sublocations.forEach(location => {
+    region.sublocations.forEach((location) => {
       const marker = L.marker(location.coordinates, {
-        icon: createLocationMarkerIcon(location.type || 'default', region.color),
+        icon: createLocationMarkerIcon(
+          location.type || 'default',
+          region.color,
+        ),
       }).addTo(map);
-      
+
       // Add a popup
       const popup = L.popup({
         className: 'custom-popup',
         maxWidth: 300,
         closeButton: true,
       });
-      
+
       popup.setContent(createPopupContentForLocation(location, region.color));
       marker.bindPopup(popup);
     });
@@ -494,12 +507,12 @@ function EnhancedLeafletMap() {
   // Add function to show boundary message temporarily
   const showBoundaryMessageTemporarily = () => {
     setShowBoundaryMessage(true);
-    
+
     // Clear any existing timeout
     if (boundaryMessageTimeoutRef.current) {
       clearTimeout(boundaryMessageTimeoutRef.current);
     }
-    
+
     // Set a new timeout to hide the message after 2 seconds
     boundaryMessageTimeoutRef.current = setTimeout(() => {
       setShowBoundaryMessage(false);
@@ -538,32 +551,35 @@ function EnhancedLeafletMap() {
         doubleClickZoom: !showOverlay,
         boxZoom: !showOverlay,
         keyboard: !showOverlay,
-        zoomControl: false // Always disable the zoom control
+        zoomControl: false, // Always disable the zoom control
       }).setView(
         selectedRegion.centerCoordinates,
-        selectedRegion.defaultZoom || 10
+        selectedRegion.defaultZoom || 10,
       );
 
       // Set bounds if available
       if (selectedRegion.maxBounds) {
-        map.setMaxBounds(L.latLngBounds(
-          selectedRegion.maxBounds[0],
-          selectedRegion.maxBounds[1]
-        ));
-        
+        map.setMaxBounds(
+          L.latLngBounds(
+            selectedRegion.maxBounds[0],
+            selectedRegion.maxBounds[1],
+          ),
+        );
+
         // Add event listener for when user hits the map boundary (only if overlay is not shown)
         if (!showOverlay) {
-          map.on('drag', function() {
+          map.on('drag', function () {
             // Check if current view is at the bounds
             const bounds = map.getBounds();
             const maxBounds = map.options.maxBounds;
-            
-            if (maxBounds && (
-              bounds.getSouth() <= maxBounds.getSouth() || 
-              bounds.getNorth() >= maxBounds.getNorth() || 
-              bounds.getWest() <= maxBounds.getWest() || 
-              bounds.getEast() >= maxBounds.getEast()
-            )) {
+
+            if (
+              maxBounds &&
+              (bounds.getSouth() <= maxBounds.getSouth() ||
+                bounds.getNorth() >= maxBounds.getNorth() ||
+                bounds.getWest() <= maxBounds.getWest() ||
+                bounds.getEast() >= maxBounds.getEast())
+            ) {
               showBoundaryMessageTemporarily();
             }
           });
@@ -576,15 +592,15 @@ function EnhancedLeafletMap() {
 
       // Initialize map with location markers for the selected region
       initializeMapWithSublocations(map, selectedRegion);
-      
+
       // Add zoom event listener to detect when user zooms out of region view
       if (!showOverlay) {
-        map.on('zoomend', function() {
+        map.on('zoomend', function () {
           const currentZoom = map.getZoom();
           // Define a threshold - if the user zooms out far enough, return to nationwide view
           // Typically 3-4 levels below the region's default zoom is a good threshold
           const zoomThreshold = Math.max(selectedRegion.minZoom || 5, 4);
-          
+
           if (currentZoom <= zoomThreshold) {
             // User has zoomed out far enough, return to nationwide view
             handleExitRegion();
@@ -601,16 +617,16 @@ function EnhancedLeafletMap() {
         doubleClickZoom: !showOverlay,
         boxZoom: !showOverlay,
         keyboard: !showOverlay,
-        zoomControl: false // Always disable the zoom control
+        zoomControl: false, // Always disable the zoom control
       }).setView([39.8283, -98.5795], 4);
-      
+
       map.setMinZoom(4);
       map.setMaxZoom(4);
-      
+
       // Set USA bounds
       const usaBounds = L.latLngBounds(
         L.latLng(24.396308, -125.0), // Southwest corner of US
-        L.latLng(49.384358, -66.93457) // Northeast corner of US
+        L.latLng(49.384358, -66.93457), // Northeast corner of US
       );
       map.setMaxBounds(usaBounds.pad(0.1)); // Add some padding
 
@@ -619,10 +635,14 @@ function EnhancedLeafletMap() {
     }
 
     // Add tile layer
-    L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      maxZoom: 19,
-    }).addTo(map);
+    L.tileLayer(
+      'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}{r}.png',
+      {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19,
+      },
+    ).addTo(map);
 
     // Store map reference
     leafletMapRef.current = map;
@@ -700,12 +720,12 @@ function EnhancedLeafletMap() {
       if (style.parentNode) {
         document.head.removeChild(style);
       }
-      
+
       // Clear any pending timeout
       if (boundaryMessageTimeoutRef.current) {
         clearTimeout(boundaryMessageTimeoutRef.current);
       }
-      
+
       if (leafletMapRef.current) {
         // Remove any event listeners
         leafletMapRef.current.off();
@@ -723,14 +743,14 @@ function EnhancedLeafletMap() {
       clearTimeout(boundaryMessageTimeoutRef.current);
       setShowBoundaryMessage(false);
     }
-    
+
     setSelectedRegion(null);
   };
 
   // Handle clicking on the overlay
   const handleOverlayClick = () => {
     setShowOverlay(false);
-    
+
     // Enable map interactions when overlay is removed
     if (leafletMapRef.current) {
       leafletMapRef.current.dragging.enable();
@@ -744,19 +764,18 @@ function EnhancedLeafletMap() {
 
   return (
     <MapContainer>
-      <div 
-        ref={mapRef} 
-        style={{ width: '100%', height: '100%' }}
-      />
+      <div ref={mapRef} style={{ width: '100%', height: '100%' }} />
       {/* Stats Panel */}
       <StatsPanel style={{ display: showOverlay ? 'none' : 'block' }}>
         {selectedRegion ? (
           <>
-            <strong>{selectedRegion.name}</strong>: {selectedRegion.sublocations.length} locations
+            <strong>{selectedRegion.name}</strong>:{' '}
+            {selectedRegion.sublocations.length} locations
           </>
         ) : (
           <>
-            <strong>GOGO Impact</strong>: {totalLocations} locations in {regions.length - 1} regions
+            <strong>GOGO Impact</strong>: {totalLocations} locations in{' '}
+            {regions.length - 1} regions
           </>
         )}
       </StatsPanel>
@@ -764,9 +783,14 @@ function EnhancedLeafletMap() {
       {/* Instructions Panel */}
       <InstructionsPanel style={{ display: showOverlay ? 'none' : 'block' }}>
         {selectedRegion ? (
-          <>Explore {selectedRegion.name}. Click on markers to see location details.</>
+          <>
+            Explore {selectedRegion.name}. Click on markers to see location
+            details.
+          </>
         ) : (
-          <>Click on any region marker to explore GOGO's locations in that area.</>
+          <>
+            Click on any region marker to explore GOGO's locations in that area.
+          </>
         )}
       </InstructionsPanel>
 
@@ -783,10 +807,7 @@ function EnhancedLeafletMap() {
       </BoundaryMessage>
 
       {/* Add the overlay that will blur the map until clicked */}
-      <MapOverlay 
-        isVisible={showOverlay} 
-        onClick={handleOverlayClick}
-      >
+      <MapOverlay isVisible={showOverlay} onClick={handleOverlayClick}>
         <OverlayMessage>Interactive Map Available</OverlayMessage>
         <OverlayButton>Click to Explore</OverlayButton>
       </MapOverlay>
@@ -794,4 +815,4 @@ function EnhancedLeafletMap() {
   );
 }
 
-export default EnhancedLeafletMap; 
+export default EnhancedLeafletMap;

@@ -69,7 +69,7 @@ function PlainLeafletMap() {
       title.style.margin = '5px 0';
       title.style.color = COLORS.gogo_blue;
       
-      const description = document.createElement('p');
+      const description = document.createElement('div');
       description.textContent = location.description;
       description.style.margin = '5px 0';
       

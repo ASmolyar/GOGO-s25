@@ -1,100 +1,92 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { animate, stagger } from 'animejs';
 import COLORS from '../../assets/colors';
-
-// Internal Track interface for the music catalog
-interface CatalogTrack {
-  id: string;
-  title: string;
-  artist: string;
-  duration: string;
-  file: string;
-}
-
-// Album interface using CatalogTrack
-interface Album {
-  id: string;
-  title: string;
-  description: string;
-  coverImage: string;
-  year: string;
-  tracks: CatalogTrack[];
-}
-
-// External Track interface for the Now Playing bar
-interface PlaybackTrack {
-  id: string;
-  title: string;
-  artist: string;
-  cover: string;
-  duration: string;
-  audioSrc?: string;
-}
-
-interface MusicCatalog {
-  albums: Album[];
-}
+import { Album, Song, Artist } from '../types/music';
+import { getAlbums, getAlbumById } from '../services/musicService';
 
 interface MusicLibraryProps {
   onArtistClick: (artistId: string) => void;
-  onPlayTrack: (track: PlaybackTrack) => void;
+  onAlbumClick: (albumId: string) => void;
+  onPlayTrack: (song: Song, album: Album) => void;
+  currentlyPlayingId?: string | null;
+  isPlaying?: boolean;
 }
 
-// Styled components
+// Helper function for image URL formatting
+const formatImageUrl = (url: string): string => {
+  if (!url) return '';
+  if (url.startsWith('http') || url.startsWith('/')) return url;
+  return `/${url}`;
+};
+
+// Helper function to safely get artist names from an album
+const getArtistNames = (artists?: Artist[]): string => {
+  if (!artists || !Array.isArray(artists) || artists.length === 0) {
+    return 'Various Artists';
+  }
+  return artists.map((artist) => artist.name || 'Unknown Artist').join(', ');
+};
+
+// Styled components - optimized for Impact Report
 const MusicLibraryContainer = styled.div`
   width: 100%;
-  max-width: 1800px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 24px 32px;
 `;
 
 const PageSection = styled.div`
-  margin-bottom: 40px;
+  margin-bottom: 3.5rem;
+  opacity: 0; // Start hidden for animation
 `;
 
 const SectionHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 1.5rem;
 `;
 
-const SectionTitle = styled.h2`
-  font-size: 24px;
+const SectionTitle = styled.h3`
+  font-size: 1.8rem;
   font-weight: 700;
   color: white;
   margin: 0;
+  letter-spacing: -0.01em;
 `;
 
 const CardGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 24px;
+  gap: 1.5rem;
 `;
 
 const Card = styled.div`
-  background: #181818;
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 8px;
-  padding: 16px;
+  padding: 1rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  opacity: 0; // Start hidden for animation
 
   &:hover {
-    background: #282828;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-5px);
   }
 `;
 
 const CardCover = styled.div<{ url: string }>`
   width: 100%;
   aspect-ratio: 1/1;
-  border-radius: 4px;
-  background-image: url(${(props) => props.url});
+  border-radius: 6px;
+  background-image: ${(props) => `url(${formatImageUrl(props.url)})`};
   background-size: cover;
   background-position: center;
-  margin-bottom: 16px;
+  margin-bottom: 1rem;
   position: relative;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
 
   &::after {
     content: '';
@@ -103,8 +95,8 @@ const CardCover = styled.div<{ url: string }>`
     left: 0;
     right: 0;
     height: 50%;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent);
-    border-radius: 4px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+    border-radius: 6px;
     opacity: 0;
     transition: opacity 0.3s ease;
   }
@@ -118,11 +110,11 @@ const PlayButton = styled.div`
   position: absolute;
   bottom: 8px;
   right: 8px;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background: #1db954;
-  color: black;
+  background: ${COLORS.gogo_blue};
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -130,7 +122,7 @@ const PlayButton = styled.div`
   transform: translateY(8px);
   transition: all 0.3s ease;
   z-index: 2;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 
   ${Card}:hover & {
     opacity: 1;
@@ -139,23 +131,23 @@ const PlayButton = styled.div`
 
   &:hover {
     transform: scale(1.1) !important;
-    background: #1ed760;
+    background: ${COLORS.gogo_purple};
   }
 `;
 
-const CardTitle = styled.h3`
-  font-size: 16px;
-  font-weight: 700;
+const CardTitle = styled.h4`
+  font-size: 1rem;
+  font-weight: 600;
   color: white;
-  margin: 0 0 8px 0;
+  margin: 0 0 0.25rem 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 `;
 
 const CardDescription = styled.p`
-  font-size: 14px;
-  color: #b3b3b3;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -168,135 +160,255 @@ const NoAlbumsMessage = styled.div`
   text-align: center;
   padding: 3rem;
   font-size: 1.2rem;
-  color: #b3b3b3;
+  color: rgba(255, 255, 255, 0.6);
 `;
 
-// Featured Album Section
+// Featured Album Section - more emphasis for Impact Report
 const FeaturedAlbumSection = styled.div`
-  margin-bottom: 48px;
-  padding: 24px;
+  margin-bottom: 2rem;
+  padding: 2rem;
   background: linear-gradient(
     135deg,
-    #121212 0%,
-    #1e1e1e 50%,
-    ${COLORS.gogo_blue}22 100%
+    rgba(25, 70, 245, 0.2) 0%,
+    rgba(190, 43, 147, 0.2) 100%
   );
-  border-radius: 8px;
+  border-radius: 12px;
   display: flex;
-  gap: 24px;
+  gap: 2rem;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
 `;
 
 const FeaturedAlbumCover = styled.div<{ image: string }>`
-  width: 232px;
-  height: 232px;
-  border-radius: 4px;
-  background-image: url(${(props) => props.image});
+  width: 180px;
+  height: 180px;
+  border-radius: 8px;
+  background-image: ${(props) => `url(${formatImageUrl(props.image)})`};
   background-size: cover;
   background-position: center;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
   flex-shrink: 0;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 `;
 
 const FeaturedAlbumInfo = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  flex: 1;
 `;
 
 const FeaturedAlbumBadge = styled.div`
-  background-color: ${COLORS.gogo_blue};
-  color: white;
-  font-size: 12px;
-  font-weight: 700;
-  padding: 4px 8px;
-  border-radius: 4px;
   display: inline-block;
-  margin-bottom: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  background: ${COLORS.gogo_green};
+  color: #121212;
+  font-size: 0.8rem;
+  font-weight: bold;
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  margin-bottom: 0.75rem;
+  align-self: flex-start;
 `;
 
-const FeaturedAlbumTitle = styled.h2`
-  font-size: 32px;
-  font-weight: 900;
+const FeaturedAlbumTitle = styled.h3`
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin: 0 0 0.25rem 0;
   color: white;
-  margin: 0 0 8px 0;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: ${COLORS.gogo_blue};
+  }
 `;
 
-const FeaturedAlbumArtist = styled.h3`
-  font-size: 18px;
-  font-weight: 700;
-  color: #b3b3b3;
-  margin: 0 0 16px 0;
+const FeaturedAlbumArtist = styled.h4`
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 0 1rem 0;
+  font-weight: 600;
 `;
 
 const FeaturedAlbumDescription = styled.p`
-  font-size: 14px;
-  color: #b3b3b3;
-  margin: 0 0 24px 0;
+  font-size: 1rem;
   line-height: 1.5;
-  max-width: 700px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 1.5rem;
 `;
 
 const GreenPlayButton = styled.button`
-  width: 56px;
-  height: 56px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background-color: #1db954;
+  background-color: ${COLORS.gogo_blue};
   border: none;
-  color: black;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 24px;
+  font-size: 1.2rem;
+  box-shadow: 0 8px 16px rgba(25, 70, 245, 0.4);
+  transition: all 0.3s ease;
 
   &:hover {
-    transform: scale(1.05);
-    background-color: #1ed760;
+    transform: scale(1.1);
+    background-color: ${COLORS.gogo_purple};
+    box-shadow: 0 10px 20px rgba(25, 70, 245, 0.6);
   }
 `;
 
-function VerifiedIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="#3D91F4">
-      <path d="M12 1a11 11 0 1 0 0 22 11 11 0 0 0 0-22zm5.045 8.866L11.357 16.9l-4.4-3.396a.75.75 0 1 1 .914-1.182l3.417 2.639 4.968-6.276a.749.749 0 0 1 1.185.918l-.003.004a.752.752 0 0 1-.136.177l-.258.326z" />
-    </svg>
-  );
-}
+const ViewAlbumButton = styled.button`
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  padding: 0.6rem 1.2rem;
+  color: white;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
 
-// Main component
+  &:hover {
+    border-color: white;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+  }
+`;
+
 function MusicLibrary({
   onArtistClick,
+  onAlbumClick,
   onPlayTrack,
+  currentlyPlayingId,
+  isPlaying,
 }: MusicLibraryProps): JSX.Element {
-  const [catalog, setCatalog] = useState<MusicCatalog | null>(null);
+  const [albums, setAlbums] = useState<Album[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
   const navigate = useNavigate();
 
+  // Refs for animation
+  const featuredSectionRef = useRef<HTMLDivElement>(null);
+  const albumsSectionRef = useRef<HTMLDivElement>(null);
+  const albumCardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
   useEffect(() => {
-    const fetchCatalog = async () => {
+    const fetchAlbums = async () => {
       try {
-        const response = await fetch('/music/catalog.json');
-        if (!response.ok) {
-          throw new Error('Failed to load music catalog');
+        setLoading(true);
+        // Get all albums
+        const fetchedAlbums = await getAlbums();
+        if (fetchedAlbums.length > 0) {
+          // Debug album cover paths
+          console.log('Albums loaded:', fetchedAlbums);
+
+          // Make sure album covers have absolute paths
+          const albumsWithFormattedCovers = fetchedAlbums.map((album) => {
+            // Ensure artists array is always defined
+            const artists = album.artists || [];
+
+            // If cover doesn't start with http or /, add leading /
+            if (
+              album.cover &&
+              !album.cover.startsWith('http') &&
+              !album.cover.startsWith('/')
+            ) {
+              return {
+                ...album,
+                cover: `/${album.cover}`,
+                artists,
+              };
+            }
+            // Handle the case where cover is undefined
+            if (!album.cover) {
+              return {
+                ...album,
+                cover: '/music/albums/default-cover.jpg', // Default cover image
+                artists,
+              };
+            }
+            return {
+              ...album,
+              artists,
+            };
+          });
+
+          setAlbums(albumsWithFormattedCovers);
+        } else {
+          throw new Error('No albums found in the music catalog');
         }
-        const data = await response.json();
-        setCatalog(data);
+
+        // After albums load, animate the sections
+        setTimeout(() => {
+          // Animate featured section
+          if (featuredSectionRef.current) {
+            try {
+              animate(featuredSectionRef.current, {
+                opacity: [0, 1],
+                translateY: [30, 0],
+                duration: 800,
+                easing: 'easeOutExpo',
+              });
+            } catch (error) {
+              console.error('Error animating featured section:', error);
+            }
+          }
+
+          // Animate albums section with delay
+          if (albumsSectionRef.current) {
+            try {
+              animate(albumsSectionRef.current, {
+                opacity: [0, 1],
+                translateY: [30, 0],
+                duration: 800,
+                delay: 200,
+                easing: 'easeOutExpo',
+              });
+            } catch (error) {
+              console.error('Error animating albums section:', error);
+            }
+          }
+
+          // Animate album cards with stagger effect
+          const validAlbumRefs = albumCardRefs.current.filter(
+            (ref): ref is HTMLDivElement => ref !== null,
+          );
+          if (validAlbumRefs.length > 0) {
+            try {
+              animate(validAlbumRefs, {
+                opacity: [0, 1],
+                translateY: [20, 0],
+                scale: [0.95, 1],
+                duration: 600,
+                delay: stagger(50),
+                easing: 'easeOutCubic',
+              });
+            } catch (error) {
+              console.error('Error animating album cards:', error);
+            }
+          }
+        }, 300);
       } catch (err) {
-        console.error('Error loading music catalog:', err);
+        console.error('Error loading music albums:', err);
         setError('Could not load the music catalog. Please try again later.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCatalog();
+    fetchAlbums();
 
     // Initialize audio element
     audioRef.current = new Audio();
@@ -310,42 +422,40 @@ function MusicLibrary({
     };
   }, []);
 
-  const handlePlayTrack = (track: CatalogTrack, albumCover: string) => {
-    // Call the onPlayTrack prop to update the now playing bar
-    onPlayTrack({
-      id: track.id,
-      title: track.title,
-      artist: track.artist,
-      cover: albumCover,
-      duration: track.duration,
-    });
+  const handleAlbumClick = (albumId: string) => {
+    // Just pass the album ID to the parent component handler
+    onAlbumClick(albumId);
+  };
 
-    // Continue to handle local audio player if needed
-    if (audioRef.current) {
-      // If the same track is clicked, toggle play/pause
-      if (currentlyPlaying === track.file) {
-        if (audioRef.current.paused) {
-          audioRef.current.play();
-        } else {
-          audioRef.current.pause();
-        }
-      } else {
-        // Play a new track
-        audioRef.current.src = track.file;
-        audioRef.current.play();
-        setCurrentlyPlaying(track.file);
-      }
+  const handlePlayAlbum = (album: Album) => {
+    if (album && album.songs && album.songs.length > 0) {
+      const firstSong = album.songs[0];
+      // Call the onPlayTrack prop to update the now playing bar
+      onPlayTrack(firstSong, album);
     }
   };
 
-  const handleAlbumClick = (albumId: string) => {
-    navigate(`/music/album/${albumId}`);
+  // Reference setter for card animations
+  const setCardRef = (el: HTMLDivElement | null, index: number) => {
+    if (el) {
+      // Ensure the array has enough space
+      while (albumCardRefs.current.length <= index) {
+        albumCardRefs.current.push(null);
+      }
+      albumCardRefs.current[index] = el;
+    }
   };
 
   if (loading) {
     return (
       <MusicLibraryContainer>
-        <div style={{ textAlign: 'center', padding: '3rem' }}>
+        <div
+          style={{
+            textAlign: 'center',
+            padding: '3rem',
+            color: 'rgba(255, 255, 255, 0.7)',
+          }}
+        >
           Loading music catalog...
         </div>
       </MusicLibraryContainer>
@@ -355,14 +465,20 @@ function MusicLibrary({
   if (error) {
     return (
       <MusicLibraryContainer>
-        <div style={{ textAlign: 'center', padding: '3rem', color: 'red' }}>
+        <div
+          style={{
+            textAlign: 'center',
+            padding: '3rem',
+            color: COLORS.gogo_pink,
+          }}
+        >
           {error}
         </div>
       </MusicLibraryContainer>
     );
   }
 
-  if (!catalog || catalog.albums.length === 0) {
+  if (albums.length === 0) {
     return (
       <MusicLibraryContainer>
         <NoAlbumsMessage>No albums found in the music catalog.</NoAlbumsMessage>
@@ -370,118 +486,87 @@ function MusicLibrary({
     );
   }
 
+  // Use the first album as the featured album
+  const featuredAlbum = albums[0];
+
+  // Get a formatted date string for the album
+  const albumDate = new Date(featuredAlbum.date);
+  const formattedDate = albumDate.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
   return (
     <MusicLibraryContainer>
       {/* Featured Album Banner */}
-      <PageSection>
+      <PageSection ref={featuredSectionRef}>
+        <SectionHeader>
+          <SectionTitle>Featured Album</SectionTitle>
+        </SectionHeader>
+
         <FeaturedAlbumSection>
-          <FeaturedAlbumCover
-            image="/music/albums/The Rain May Be Pouring (Guitars over Guns)/cover.jpg"
-            onClick={() => handleAlbumClick('the_rain_may_be_pouring')}
-            style={{ cursor: 'pointer' }}
-          />
+          <FeaturedAlbumCover image={featuredAlbum.cover} />
           <FeaturedAlbumInfo>
-            <FeaturedAlbumBadge>Featured Album</FeaturedAlbumBadge>
-            <FeaturedAlbumTitle
-              onClick={() => handleAlbumClick('the_rain_may_be_pouring')}
-              style={{ cursor: 'pointer' }}
+            <CardTitle style={{ fontSize: '2rem' }}>
+              {featuredAlbum.name}
+            </CardTitle>
+            <CardDescription
+              style={{ fontSize: '1.2rem', marginBottom: '1rem' }}
             >
-              The Rain May Be Pouring
-            </FeaturedAlbumTitle>
-            <FeaturedAlbumArtist>Guitars Over Guns</FeaturedAlbumArtist>
-            <FeaturedAlbumDescription>
-              Original pieces created by students and mentors from the Guitars
-              Over Guns program, showcasing their talent, creativity, and
-              musical growth.
-            </FeaturedAlbumDescription>
-            <div style={{ display: 'flex', gap: '16px' }}>
+              {getArtistNames(featuredAlbum.artists)}
+            </CardDescription>
+            <CardDescription style={{ marginBottom: '1.5rem' }}>
+              Released: {formattedDate}
+            </CardDescription>
+            <div style={{ display: 'flex', gap: '1rem' }}>
               <GreenPlayButton
                 onClick={(e) => {
                   e.stopPropagation();
-                  const album = catalog.albums.find(
-                    (a) => a.id === 'the_rain_may_be_pouring',
-                  );
-                  if (album && album.tracks.length > 0) {
-                    handlePlayTrack(album.tracks[0], album.coverImage);
-                  }
+                  handlePlayAlbum(featuredAlbum);
                 }}
-                style={{ width: '48px', height: '48px' }}
               >
                 ▶
               </GreenPlayButton>
-              <button
-                type="button"
-                onClick={() => handleAlbumClick('the_rain_may_be_pouring')}
-                style={{
-                  background: 'transparent',
-                  border: '1px solid rgba(255, 255, 255, 0.3)',
-                  borderRadius: '4px',
-                  padding: '8px 16px',
-                  color: 'white',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  fontWeight: 'bold',
-                }}
+              <ViewAlbumButton
+                onClick={() => handleAlbumClick(featuredAlbum.album_id)}
               >
-                VIEW ALBUM
-              </button>
+                View Album
+              </ViewAlbumButton>
             </div>
           </FeaturedAlbumInfo>
         </FeaturedAlbumSection>
       </PageSection>
-
-      {/* Albums section that auto-populates from catalog */}
-      <PageSection>
+      ;{/* Albums Section */}
+      <PageSection ref={albumsSectionRef}>
         <SectionHeader>
-          <SectionTitle>Our Albums</SectionTitle>
+          <SectionTitle>Albums</SectionTitle>
         </SectionHeader>
 
         <CardGrid>
-          {catalog.albums.map((album) => (
-            <Card key={album.id} onClick={() => handleAlbumClick(album.id)}>
-              <CardCover url={album.coverImage}>
+          {albums.map((album, index) => (
+            <Card
+              key={album.album_id}
+              ref={(el) => setCardRef(el, index)}
+              onClick={() => handleAlbumClick(album.album_id)}
+            >
+              <CardCover url={album.cover}>
                 <PlayButton
                   onClick={(e) => {
-                    e.stopPropagation(); // Prevent navigating to album page
-                    if (album.tracks.length > 0) {
-                      handlePlayTrack(album.tracks[0], album.coverImage);
-                    }
+                    e.stopPropagation();
+                    handlePlayAlbum(album);
                   }}
                 >
                   ▶
                 </PlayButton>
               </CardCover>
-              <CardTitle>{album.title}</CardTitle>
-              <CardDescription>{album.description}</CardDescription>
+              <CardTitle>{album.name}</CardTitle>
+              <CardDescription>{getArtistNames(album.artists)}</CardDescription>
             </Card>
           ))}
         </CardGrid>
       </PageSection>
-
-      {/* Artist section with hyperlinks */}
-      <PageSection>
-        <SectionHeader>
-          <SectionTitle>GOGO Artists</SectionTitle>
-        </SectionHeader>
-
-        <CardGrid>
-          <Card onClick={() => onArtistClick('caetano-veloso')}>
-            <CardCover url="https://i.scdn.co/image/ab6761610000e5eb23960da5fab496188f9d5054" />
-            <CardTitle>Caetano Veloso</CardTitle>
-            <CardDescription>Artist</CardDescription>
-          </Card>
-          <Card onClick={() => onArtistClick('gogo-students')}>
-            <CardCover url="/music/artists/gogo_students.jpg" />
-            <CardTitle>GOGO Student Ensemble</CardTitle>
-            <CardDescription>Artist</CardDescription>
-          </Card>
-          <Card onClick={() => onArtistClick('gogo-mentors')}>
-            <CardCover url="/music/artists/gogo_mentors.jpg" />
-            <CardTitle>GOGO Mentor Collective</CardTitle>
-            <CardDescription>Artist</CardDescription>
-          </Card>
-        </CardGrid>
-      </PageSection>
+      ; ;;
     </MusicLibraryContainer>
   );
 }

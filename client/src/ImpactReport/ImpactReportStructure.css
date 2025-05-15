@@ -24,6 +24,14 @@ body {
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  position: relative;
+}
+
+html {
+  scroll-padding-top: 80px; /* Prevents scrolling behind the header */
+  scroll-padding-bottom: 90px; /* Prevents scrolling behind the now playing bar */
+  scroll-behavior: smooth;
 }
 
 .impact-report {
@@ -32,12 +40,16 @@ body {
   padding: 0;
   background: linear-gradient(to bottom, #111111, var(--spotify-black) 20%);
   overflow-x: hidden;
+  position: relative;
+  min-height: 100vh;
+  padding-bottom: 90px; /* Ensure content doesn't go behind the now playing bar */
 }
 
 section {
   margin: 0;
   padding: 80px max(5vw, 20px);
   position: relative;
+  scroll-margin-top: 80px; /* Match header height so anchors don't scroll behind header */
 }
 
 section h2 {
@@ -1606,7 +1618,12 @@ body.has-spotify-header {
 }
 
 .main-content {
-  padding-top: 64px; /* Match the header height */
+  padding-top: 80px; /* Match exactly the header height */
+  padding-bottom: 90px; /* Match the now-playing bar height */
+  min-height: calc(100vh - 170px); /* 100vh - (header height + now-playing bar height) */
+  position: relative;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 /* Add playlist track-like items */
@@ -1817,6 +1834,7 @@ body.has-spotify-header {
   z-index: 999;
   display: flex;
   padding: 0 16px;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.5);
 }
 
 .now-playing-left, 
