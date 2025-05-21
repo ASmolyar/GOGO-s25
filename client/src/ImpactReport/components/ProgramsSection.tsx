@@ -8,6 +8,9 @@ const shimmer = keyframes`
   0% {
     background-position: -100% 0;
   }
+  50% {
+    background-position: 50% 0;
+  }
   100% {
     background-position: 200% 0;
   }
@@ -139,14 +142,15 @@ const SectionTitle = styled.h2`
   display: inline-block;
   background: linear-gradient(
     to right,
-    ${COLORS.gogo_blue},
-    ${COLORS.gogo_purple},
-    ${COLORS.gogo_pink}
+    ${COLORS.gogo_blue} 0%,
+    ${COLORS.gogo_purple} 33%,
+    ${COLORS.gogo_pink} 67%,
+    ${COLORS.gogo_blue} 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: ${shimmer} 5s linear infinite;
+  animation: ${shimmer} 8s ease-in-out infinite;
 `;
 
 const UnderlineEffect = styled.div`
@@ -159,13 +163,13 @@ const UnderlineEffect = styled.div`
   border-radius: 2px;
   background: linear-gradient(
     90deg,
-    ${COLORS.gogo_blue},
-    ${COLORS.gogo_purple},
-    ${COLORS.gogo_teal},
-    ${COLORS.gogo_blue}
+    ${COLORS.gogo_blue} 0%,
+    ${COLORS.gogo_purple} 33%,
+    ${COLORS.gogo_teal} 67%,
+    ${COLORS.gogo_blue} 100%
   );
   background-size: 300% 100%;
-  animation: ${shimmer} 3s linear infinite;
+  animation: ${shimmer} 6s ease-in-out infinite;
 `;
 
 const SectionSubtitle = styled.p`

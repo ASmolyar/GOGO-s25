@@ -303,14 +303,24 @@ const MusicPlayerBar = () => {
         onPrevious={previousTrack}
         onSeek={seek}
         onToggleModal={() => {
-          // If currently hidden, show in picture-in-picture mode
+          console.log(
+            '[NowPlayingBar] Toggle modal clicked, current state:',
+            modalState,
+          );
+
+          // Fix the state logic to ensure proper toggling
           if (modalState === 'hidden') {
+            console.log('[NowPlayingBar] Setting from hidden to pip');
             setModalState('pip');
           } else if (modalState === 'minimized') {
+            console.log('[NowPlayingBar] Setting from minimized to pip');
+            setModalState('pip');
+          } else if (modalState === 'full') {
+            console.log('[NowPlayingBar] Setting from full to pip');
             setModalState('pip');
           } else {
-            // Otherwise toggle between minimized and normal
-            setModalState(modalState === 'pip' ? 'full' : 'pip');
+            console.log('[NowPlayingBar] Setting from pip to full');
+            setModalState('full');
           }
         }}
       />
@@ -616,47 +626,6 @@ function ImpactReportPage() {
         <div ref={testimonialRef}>
           <TestimonialSection />
         </div>
-
-        <div ref={musicRef}>
-          <MusicSectionWrapper>
-            <MusicSectionContainer>
-              <MusicSectionHeader>
-                <MusicSectionTitle>Student Music Library</MusicSectionTitle>
-                <MusicSectionDescription>
-                  Explore the music created by our talented GOGO students. These
-                  tracks showcase the creativity, skill development, and
-                  artistic expression that our programs foster.
-                </MusicSectionDescription>
-
-                {/* Test button to initialize player - only shown in development mode */}
-                {process.env.NODE_ENV === 'development' &&
-                  !isMusicInitialized && (
-                    <button
-                      onClick={initMusicPlayer}
-                      style={{
-                        background: COLORS.gogo_blue,
-                        color: 'white',
-                        border: 'none',
-                        padding: '10px 20px',
-                        borderRadius: '20px',
-                        marginTop: '20px',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      Initialize Music Player (Dev Only)
-                    </button>
-                  )}
-              </MusicSectionHeader>
-
-              <MusicLibrary
-                onArtistClick={handleArtistClick}
-                onAlbumClick={handleAlbumClick}
-                onPlayTrack={handlePlayTrack}
-              />
-            </MusicSectionContainer>
-          </MusicSectionWrapper>
-        </div>
-
         <div ref={locationsRef}>
           <LocationsSection />
         </div>

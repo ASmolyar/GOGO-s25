@@ -1,5 +1,7 @@
 import React from 'react';
-import { Typography, Grid } from '@mui/material';
+import { Typography, Grid, Button, Box } from '@mui/material';
+import { Link } from 'react-router-dom';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import ScreenGrid from '../components/ScreenGrid.tsx';
 import UserTable from './UserTable.tsx';
 import InviteUserButton from '../components/buttons/InviteUserButton.tsx';
@@ -14,8 +16,21 @@ function AdminDashboardPage() {
       <Grid item>
         <Typography variant="h2">Welcome to the Admin Dashboard</Typography>
       </Grid>
-      <Grid item container width="60vw" justifyContent="flex-end">
-        <InviteUserButton />
+      <Grid item container width="60vw" justifyContent="flex-end" spacing={2}>
+        <Grid item>
+          <Button
+            variant="contained"
+            color="primary"
+            component={Link}
+            to="/album-upload"
+            startIcon={<CloudUploadIcon />}
+          >
+            Upload Album
+          </Button>
+        </Grid>
+        <Grid item>
+          <InviteUserButton />
+        </Grid>
       </Grid>
       <Grid item>
         <div style={{ height: '60vh', width: '60vw' }}>

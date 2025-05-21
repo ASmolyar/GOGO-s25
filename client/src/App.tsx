@@ -21,6 +21,7 @@ import MusicPage from './ImpactReport/MusicPage.tsx';
 import ArtistView from './ImpactReport/components/ArtistView.tsx';
 import MapDemo from './components/map/MapDemo';
 import Impact from './components/impact';
+import AlbumUploadPage from './AdminDashboard/AlbumUploadPage.tsx';
 import './assets/fonts/fonts.css';
 
 function App() {
@@ -52,41 +53,24 @@ function App() {
             />
           </Route>
           <Route path="/invite/:token" element={<InviteRegisterPage />} />
-          {/* Public route for map demo */}
-          <Route path="/map-demo" element={<MapDemo />} />
+          <Route path="/album-upload" element={<AlbumUploadPage />} />
+          <Route path="/impact-report" element={<ImpactReportPage />} />
           {/* Routes accessed only if user is authenticated */}
           <Route element={<ProtectedRoutesWrapper />}>
             <Route path="/home" element={<HomePage />} />
-            <Route path="/map" element={<MapDemo />} />
           </Route>
           <Route element={<AdminRoutesWrapper />}>
             <Route path="/users" element={<AdminDashboardPage />} />
           </Route>
-
           {/* Impact Report (Spotify-style) route */}
-          <Route path="/impact-report" element={<ImpactReportPage />} />
-
-          {/* Music Library routes */}
-          <Route path="/music">
-            <Route index element={<MusicPage />} />
-            <Route path="artist/:id" element={<MusicPage />} />
-            <Route path="album/:albumId" element={<MusicPage />} />
-          </Route>
-
-          {/* Map route */}
-          <Route path="/map" element={<MapDemo />} />
 
           {/* Route which redirects to a different page depending on if the user is an authenticated or not by utilizing the DynamicRedirect component */}
           <Route
             path="/"
             element={<DynamicRedirect unAuthPath="/login" authPath="/home" />}
           />
-
           {/* Route which is accessed if no other route is matched */}
           <Route path="*" element={<NotFoundPage />} />
-
-          {/* New route for Impact component */}
-          <Route path="/impact" element={<Impact />} />
         </Routes>
       </div>
     </div>

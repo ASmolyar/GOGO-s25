@@ -12,28 +12,71 @@ const formatImageUrl = (url: string): string => {
   return `/${url}`;
 };
 
+// Helper function to safely get artist names
+const getArtistNames = (artists?: any[]): string => {
+  if (!artists || !Array.isArray(artists) || artists.length === 0) {
+    return 'Various Artists';
+  }
+  return artists.map((artist) => artist.name || 'Unknown Artist').join(', ');
+};
+
 interface AlbumViewProps {
   albumId: string;
   onPlayTrack: (song: Song, album: Album) => void;
   onBackClick: () => void;
   currentlyPlayingId?: string | null;
   isPlaying?: boolean;
+  modalState?: 'full' | 'pip' | 'minimized' | 'hidden';
 }
 
-// Styled components
-const AlbumViewContainer = styled.div`
+// Updated container to be responsive to the modal state
+const AlbumViewContainer = styled.div<{ isPip?: boolean }>`
   display: grid;
-  grid-template-columns: 1fr 300px;
+  grid-template-columns: ${(props) => (props.isPip ? '1fr' : '1fr 300px')};
   gap: 24px;
   width: 100%;
+  height: ${(props) => (props.isPip ? 'auto' : 'calc(100vh - 110px)')};
+  overflow-y: auto;
+  padding: 0 10px 20px 0;
+  position: relative;
+
+  /* Style for fullscreen scrollable area */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+  }
 
   @media (max-width: 992px) {
     grid-template-columns: 1fr;
   }
 `;
 
+// Wrap the main container to handle full height
+const AlbumViewWrapper = styled.div<{ isFullScreen?: boolean }>`
+  width: 100%;
+  height: ${(props) => (props.isFullScreen ? '100vh' : 'auto')};
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Prevent scrolling on the wrapper */
+`;
+
 const MainContent = styled.div`
   flex: 1;
+  position: relative;
 `;
 
 const AlbumHeader = styled.div`
@@ -41,6 +84,7 @@ const AlbumHeader = styled.div`
   padding: 32px 0;
   gap: 24px;
   margin-bottom: 32px;
+  position: relative;
 `;
 
 const AlbumCover = styled.div<{ imageUrl: string }>`
@@ -78,7 +122,7 @@ const AlbumTitle = styled.h1`
 const ArtistDisplay = styled.div`
   font-size: 16px;
   font-weight: 500;
-  color: white;
+  color: rgba(255, 255, 255, 0.7);
   margin-bottom: 8px;
 `;
 
@@ -126,6 +170,9 @@ const BackButton = styled.button`
   font-weight: 600;
   cursor: pointer;
   padding: 8px 0;
+  margin-bottom: 10px;
+  z-index: 10;
+  position: relative;
   transition: all 0.2s ease;
 
   &:hover {
@@ -303,6 +350,37 @@ const ErrorContainer = styled.div`
   color: #ff5555;
 `;
 
+// New prominent return button that will be visible in all modes
+const ReturnButton = styled.button<{ isFullScreen?: boolean }>`
+  position: absolute;
+  top: ${(props) => (props.isFullScreen ? '20px' : '10px')};
+  right: ${(props) => (props.isFullScreen ? '20px' : '10px')};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: ${COLORS.gogo_blue};
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 100;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+
+  &:hover {
+    background: ${COLORS.gogo_purple};
+    transform: scale(1.05);
+  }
+
+  svg {
+    transform: rotate(180deg);
+  }
+`;
+
 function ArrowLeftIcon() {
   return (
     <svg
@@ -350,6 +428,7 @@ const AlbumView = ({
   onBackClick,
   currentlyPlayingId,
   isPlaying,
+  modalState = 'full',
 }: AlbumViewProps): JSX.Element => {
   const [album, setAlbum] = useState<Album | null>(null);
   const [loading, setLoading] = useState(true);
@@ -362,6 +441,10 @@ const AlbumView = ({
   const tracksRef = useRef<HTMLDivElement>(null);
   const trackRowRefs = useRef<(HTMLDivElement | null)[]>([]);
   const sidebarRef = useRef<HTMLDivElement>(null);
+
+  // Check if we're in PIP mode
+  const isPip = modalState === 'pip';
+  const isFullScreen = modalState === 'full';
 
   useEffect(() => {
     const fetchAlbum = async () => {
@@ -496,81 +579,91 @@ const AlbumView = ({
     day: 'numeric',
   });
 
-  // Get all artists from album
-  const artistNames = album.artists.map((artist) => artist.name).join(', ');
-
   // Get total number of songs and duration
   const songCount = album.songs.length;
+  const totalDuration = album.songs.reduce(
+    (total, song) => total + (song.duration || 0),
+    0,
+  );
 
   return (
-    <AlbumViewContainer>
-      <MainContent>
-        <BackButton onClick={onBackClick}>
-          <ArrowLeftIcon /> Back
-        </BackButton>
+    <AlbumViewWrapper isFullScreen={isFullScreen}>
+      {/* Prominent return button always visible */}
+      <ReturnButton
+        onClick={onBackClick}
+        title="Return to Music Library"
+        isFullScreen={isFullScreen}
+      >
+        <ArrowLeftIcon /> Return to Library
+      </ReturnButton>
 
-        <AlbumHeader ref={headerRef}>
-          <AlbumCover imageUrl={album.cover} />
-          <AlbumInfo>
-            <AlbumType>{album.type.toUpperCase()}</AlbumType>
-            <AlbumTitle>{album.name}</AlbumTitle>
-            <ArtistDisplay>{artistNames}</ArtistDisplay>
-            <AlbumMeta>
-              {formattedDate} • {songCount} songs
-            </AlbumMeta>
-            <Controls>
-              <PlayButton onClick={handlePlayAlbum}>▶</PlayButton>
-            </Controls>
-          </AlbumInfo>
-        </AlbumHeader>
-
-        <TracksContainer ref={tracksRef}>
-          <TracksHeader>
-            <HeaderCell>#</HeaderCell>
-            <HeaderCell>TITLE</HeaderCell>
-            <HeaderCell>ARTIST</HeaderCell>
-            <HeaderCell style={{ textAlign: 'right' }}>DURATION</HeaderCell>
-          </TracksHeader>
-
-          {album.songs.map((song, index) => (
-            <TrackRow
-              key={song.song_id}
-              ref={(el) => setTrackRowRef(el, index)}
-              isActive={currentlyPlayingId === song.song_id}
-              onClick={() => handlePlaySong(song)}
-              onMouseEnter={() => setHoveredTrack(song.song_id)}
-              onMouseLeave={() => setHoveredTrack(null)}
-            >
-              <TrackNumber isActive={currentlyPlayingId === song.song_id}>
-                {currentlyPlayingId === song.song_id ? (
-                  isPlaying ? (
+      <AlbumViewContainer isPip={isPip}>
+        <MainContent>
+          <AlbumHeader ref={headerRef}>
+            <AlbumCover imageUrl={album.cover} />
+            <AlbumInfo>
+              {/* More compact header in PIP mode */}
+              {!isPip && <AlbumType>Album</AlbumType>}
+              <AlbumTitle style={isPip ? { fontSize: '2.5rem' } : {}}>
+                {album.name}
+              </AlbumTitle>
+              {/* Only show artist name in full mode */}
+              {!isPip ? (
+                <ArtistDisplay>{getArtistNames(album.artists)}</ArtistDisplay>
+              ) : null}
+              <AlbumMeta>
+                {formattedDate} • {songCount} songs •{' '}
+                {formatDuration(totalDuration)}
+              </AlbumMeta>
+              <Controls>
+                <PlayButton onClick={handlePlayAlbum} title="Play Album">
+                  {currentlyPlayingId && isPlaying ? (
                     <PauseIcon />
                   ) : (
                     <PlayIcon />
-                  )
-                ) : hoveredTrack === song.song_id ? (
-                  <PlayIcon />
-                ) : (
-                  index + 1
-                )}
-              </TrackNumber>
-              <TrackInfo>
-                <TrackTitle isActive={currentlyPlayingId === song.song_id}>
-                  {song.title}
-                </TrackTitle>
-              </TrackInfo>
-              <TrackArtist>
-                {song.artists.map((artist) => artist.name).join(', ')}
-              </TrackArtist>
-              <TrackDuration>{formatDuration(song.duration)}</TrackDuration>
-            </TrackRow>
-          ))}
-        </TracksContainer>
-      </MainContent>
+                  )}
+                </PlayButton>
+              </Controls>
+            </AlbumInfo>
+          </AlbumHeader>
 
-      <SidebarContainer ref={sidebarRef}>
-        {selectedSong && (
-          <>
+          <TracksContainer ref={tracksRef}>
+            <TracksHeader>
+              <HeaderCell>#</HeaderCell>
+              <HeaderCell>Title</HeaderCell>
+              <HeaderCell>Artist</HeaderCell>
+              <HeaderCell style={{ textAlign: 'right' }}>Duration</HeaderCell>
+            </TracksHeader>
+
+            {album.songs.map((song, index) => {
+              const isCurrentlyPlaying = song.song_id === currentlyPlayingId;
+
+              return (
+                <TrackRow
+                  key={song.song_id}
+                  ref={(el) => setTrackRowRef(el, index)}
+                  isActive={isCurrentlyPlaying}
+                  onClick={() => handlePlaySong(song)}
+                >
+                  <TrackNumber isActive={isCurrentlyPlaying}>
+                    {index + 1}
+                  </TrackNumber>
+                  <TrackInfo>
+                    <TrackTitle isActive={isCurrentlyPlaying}>
+                      {song.title}
+                    </TrackTitle>
+                  </TrackInfo>
+                  <TrackArtist>{getArtistNames(song.artists)}</TrackArtist>
+                  <TrackDuration>{formatDuration(song.duration)}</TrackDuration>
+                </TrackRow>
+              );
+            })}
+          </TracksContainer>
+        </MainContent>
+
+        {/* Only show sidebar in full mode */}
+        {!isPip && selectedSong && (
+          <SidebarContainer ref={sidebarRef}>
             <NowPlayingHeader>Now Playing</NowPlayingHeader>
             <CurrentTrackInfo>
               <CurrentTrackCover url={album.cover} />
@@ -604,10 +697,10 @@ const AlbumView = ({
                 </CreditItem>
               </CreditsList>
             </CreditsSection>
-          </>
+          </SidebarContainer>
         )}
-      </SidebarContainer>
-    </AlbumViewContainer>
+      </AlbumViewContainer>
+    </AlbumViewWrapper>
   );
 };
 

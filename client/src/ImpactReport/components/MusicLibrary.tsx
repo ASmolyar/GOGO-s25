@@ -7,11 +7,12 @@ import { Album, Song, Artist } from '../types/music';
 import { getAlbums, getAlbumById } from '../services/musicService';
 
 interface MusicLibraryProps {
-  onArtistClick: (artistId: string) => void;
   onAlbumClick: (albumId: string) => void;
   onPlayTrack: (song: Song, album: Album) => void;
+  onArtistClick?: (artistId: string) => void;
   currentlyPlayingId?: string | null;
   isPlaying?: boolean;
+  modalState?: 'full' | 'pip' | 'minimized' | 'hidden';
 }
 
 // Helper function for image URL formatting
@@ -156,6 +157,11 @@ const CardDescription = styled.p`
   text-overflow: ellipsis;
 `;
 
+const ArtistText = styled.span`
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+`;
+
 const NoAlbumsMessage = styled.div`
   text-align: center;
   padding: 3rem;
@@ -287,11 +293,12 @@ const ViewAlbumButton = styled.button`
 `;
 
 function MusicLibrary({
-  onArtistClick,
   onAlbumClick,
   onPlayTrack,
   currentlyPlayingId,
   isPlaying,
+  onArtistClick,
+  modalState = 'full',
 }: MusicLibraryProps): JSX.Element {
   const [albums, setAlbums] = useState<Album[]>([]);
   const [loading, setLoading] = useState(true);
@@ -299,10 +306,21 @@ function MusicLibrary({
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
   const navigate = useNavigate();
 
+  // Move the useMemo hook here, before any conditional returns
+  // It will use an empty array if albums is empty
+  const featuredAlbum = React.useMemo(() => {
+    if (albums.length === 0) return null;
+    const randomIndex = Math.floor(Math.random() * albums.length);
+    return albums[randomIndex];
+  }, [albums]);
+
   // Refs for animation
   const featuredSectionRef = useRef<HTMLDivElement>(null);
   const albumsSectionRef = useRef<HTMLDivElement>(null);
   const albumCardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  // Check if we're in PIP mode
+  const isPip = modalState === 'pip';
 
   useEffect(() => {
     const fetchAlbums = async () => {
@@ -486,11 +504,8 @@ function MusicLibrary({
     );
   }
 
-  // Use the first album as the featured album
-  const featuredAlbum = albums[0];
-
   // Get a formatted date string for the album
-  const albumDate = new Date(featuredAlbum.date);
+  const albumDate = new Date(featuredAlbum!.date);
   const formattedDate = albumDate.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
@@ -499,49 +514,55 @@ function MusicLibrary({
 
   return (
     <MusicLibraryContainer>
-      {/* Featured Album Banner */}
-      <PageSection ref={featuredSectionRef}>
-        <SectionHeader>
-          <SectionTitle>Featured Album</SectionTitle>
-        </SectionHeader>
+      {/* Featured Album Banner - only show in full mode */}
+      {!isPip && featuredAlbum && (
+        <PageSection ref={featuredSectionRef}>
+          <SectionHeader>
+            <SectionTitle>Featured Album</SectionTitle>
+          </SectionHeader>
 
-        <FeaturedAlbumSection>
-          <FeaturedAlbumCover image={featuredAlbum.cover} />
-          <FeaturedAlbumInfo>
-            <CardTitle style={{ fontSize: '2rem' }}>
-              {featuredAlbum.name}
-            </CardTitle>
-            <CardDescription
-              style={{ fontSize: '1.2rem', marginBottom: '1rem' }}
-            >
-              {getArtistNames(featuredAlbum.artists)}
-            </CardDescription>
-            <CardDescription style={{ marginBottom: '1.5rem' }}>
-              Released: {formattedDate}
-            </CardDescription>
-            <div style={{ display: 'flex', gap: '1rem' }}>
-              <GreenPlayButton
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handlePlayAlbum(featuredAlbum);
-                }}
-              >
-                ▶
-              </GreenPlayButton>
-              <ViewAlbumButton
-                onClick={() => handleAlbumClick(featuredAlbum.album_id)}
-              >
-                View Album
-              </ViewAlbumButton>
-            </div>
-          </FeaturedAlbumInfo>
-        </FeaturedAlbumSection>
-      </PageSection>
-      ;{/* Albums Section */}
-      <PageSection ref={albumsSectionRef}>
-        <SectionHeader>
-          <SectionTitle>Albums</SectionTitle>
-        </SectionHeader>
+          <FeaturedAlbumSection>
+            <FeaturedAlbumCover image={featuredAlbum.cover} />
+            <FeaturedAlbumInfo>
+              <CardTitle style={{ fontSize: '2rem' }}>
+                {featuredAlbum.name}
+              </CardTitle>
+              <ArtistText style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>
+                {getArtistNames(featuredAlbum.artists)}
+              </ArtistText>
+              <CardDescription style={{ marginBottom: '1.5rem' }}>
+                Released: {formattedDate}
+              </CardDescription>
+              <div style={{ display: 'flex', gap: '1rem' }}>
+                <GreenPlayButton
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handlePlayAlbum(featuredAlbum);
+                  }}
+                >
+                  ▶
+                </GreenPlayButton>
+                <ViewAlbumButton
+                  onClick={() => handleAlbumClick(featuredAlbum.album_id)}
+                >
+                  View Album
+                </ViewAlbumButton>
+              </div>
+            </FeaturedAlbumInfo>
+          </FeaturedAlbumSection>
+        </PageSection>
+      )}
+
+      {/* Albums Section - always show */}
+      <PageSection
+        ref={albumsSectionRef}
+        style={isPip ? { marginTop: '10px' } : {}}
+      >
+        {!isPip && (
+          <SectionHeader>
+            <SectionTitle>Albums</SectionTitle>
+          </SectionHeader>
+        )}
 
         <CardGrid>
           {albums.map((album, index) => (
@@ -561,12 +582,10 @@ function MusicLibrary({
                 </PlayButton>
               </CardCover>
               <CardTitle>{album.name}</CardTitle>
-              <CardDescription>{getArtistNames(album.artists)}</CardDescription>
             </Card>
           ))}
         </CardGrid>
       </PageSection>
-      ; ;;
     </MusicLibraryContainer>
   );
 }

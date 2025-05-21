@@ -19,6 +19,9 @@ const shimmer = keyframes`
   0% {
     background-position: -100% 0;
   }
+  50% {
+    background-position: 50% 0;
+  }
   100% {
     background-position: 200% 0;
   }
@@ -106,14 +109,15 @@ const SectionHeading = styled.h2`
   text-align: center;
   background: linear-gradient(
     to right,
-    ${COLORS.gogo_blue},
-    ${COLORS.gogo_purple},
-    ${COLORS.gogo_pink}
+    ${COLORS.gogo_blue} 0%,
+    ${COLORS.gogo_purple} 33%,
+    ${COLORS.gogo_pink} 67%,
+    ${COLORS.gogo_blue} 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: ${shimmer} 5s linear infinite;
+  animation: ${shimmer} 8s ease-in-out infinite;
 `;
 
 const SectionSubheading = styled.p`

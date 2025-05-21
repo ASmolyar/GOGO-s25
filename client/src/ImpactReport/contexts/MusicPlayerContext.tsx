@@ -202,7 +202,27 @@ export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({
     state: 'full' | 'pip' | 'minimized' | 'hidden',
   ) => {
     console.log(`Modal state changing: ${modalState} -> ${state}`);
-    setModalState(state);
+
+    // Add extra debugging to track if state is actually changing
+    console.log('[Debug] Previous state object:', {
+      modalState,
+      isStateEqual: modalState === state,
+      stateValue: state,
+    });
+
+    // Force state change even if it appears to be the same value
+    if (modalState === state) {
+      console.log(
+        '[Debug] Forcing state update even though values appear the same',
+      );
+      // Use a different approach to ensure the state updates
+      setModalState((prevState) => {
+        console.log('[Debug] Inside state setter, prevState:', prevState);
+        return state;
+      });
+    } else {
+      setModalState(state);
+    }
   };
 
   // Update audio src when currentSong changes

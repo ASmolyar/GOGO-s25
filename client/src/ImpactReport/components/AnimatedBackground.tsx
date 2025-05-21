@@ -30,10 +30,10 @@ const BackgroundContainer = styled.div<{ opacity?: number }>`
 const GradientBackground = styled(BackgroundContainer)`
   background: linear-gradient(
     135deg,
-    ${COLORS.gogo_blue},
-    ${COLORS.gogo_purple},
-    ${COLORS.gogo_pink},
-    ${COLORS.gogo_blue}
+    ${COLORS.gogo_blue} 0%,
+    ${COLORS.gogo_purple} 33%,
+    ${COLORS.gogo_pink} 67%,
+    ${COLORS.gogo_blue} 100%
   );
   background-size: 400% 400%;
   animation: ${gradientFlow} 15s ease infinite;

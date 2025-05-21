@@ -443,23 +443,27 @@ const NowPlayingBar = ({
   return (
     <NowPlayingBarContainer className="now-playing-bar-container">
       <NowPlayingLeft>
-        {currentSong && currentAlbum && (
-          <>
-            <CoverArt image={currentAlbum.cover} />
-            <SongInfo>
-              <SongTitle>{currentSong.title}</SongTitle>
-              <SongArtist>
-                {getArtistNames(currentSong, currentAlbum)}
-              </SongArtist>
-            </SongInfo>
-            <LikeButton
-              className={liked ? 'active' : ''}
-              onClick={() => setLiked(!liked)}
-              aria-label={liked ? 'Unlike' : 'Like'}
-            >
-              <HeartIcon />
-            </LikeButton>
-          </>
+        <CoverArt
+          image={currentAlbum?.cover || '/music/albums/default-cover.jpg'}
+          onClick={onToggleModal}
+          style={{ cursor: 'pointer' }}
+        />
+        <SongInfo>
+          <SongTitle>{currentSong?.title || 'No song selected'}</SongTitle>
+          <SongArtist>
+            {currentSong
+              ? getArtistNames(currentSong, currentAlbum)
+              : 'Select a track to play'}
+          </SongArtist>
+        </SongInfo>
+        {currentSong && (
+          <LikeButton
+            className={liked ? 'active' : ''}
+            onClick={() => setLiked(!liked)}
+            aria-label={liked ? 'Unlike' : 'Like'}
+          >
+            <HeartIcon />
+          </LikeButton>
         )}
       </NowPlayingLeft>
 
