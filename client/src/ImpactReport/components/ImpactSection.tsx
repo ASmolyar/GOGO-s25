@@ -49,9 +49,40 @@ const countUp = keyframes`
   }
 `;
 
+// Add these new keyframes at the top with other animations
+const blobAnimation = keyframes`
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+`;
+
+const blobAnimation2 = keyframes`
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(-30px, 50px) scale(0.9);
+  }
+  66% {
+    transform: translate(20px, -20px) scale(1.1);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+`;
+
 // New styled components for updated sections
 const ImpactContainer = styled.section`
-  padding: 6rem 0;
+  padding: 3rem 0;
   background: linear-gradient(180deg, #171717 0%, #121212 100%);
   position: relative;
   overflow: hidden;
@@ -120,7 +151,7 @@ const GradientBg = styled.div`
 
 const SectionHeader = styled.div`
   text-align: center;
-  margin-bottom: 4rem;
+  margin-bottom: 2rem;
   position: relative;
 `;
 
@@ -129,16 +160,6 @@ const SectionTitle = styled.h2`
   font-weight: 900;
   color: white;
   margin-bottom: 1.5rem;
-  background: linear-gradient(
-    to right,
-    ${COLORS.gogo_blue},
-    ${COLORS.gogo_purple},
-    ${COLORS.gogo_pink}
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-size: 200% auto;
-  animation: ${ambientShift} 5s ease infinite;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 `;
 
@@ -152,11 +173,55 @@ const Subtitle = styled.div`
   margin-right: auto;
 `;
 
+const StatsTitle = styled.h3`
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: white;
+  margin-bottom: 2.5rem;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+`;
+
 const StatsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
-  margin-bottom: 5rem;
+  margin-bottom: 3rem;
+  position: relative;
+  overflow: hidden;
+  padding: 3rem 2rem;
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  text-align: center;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 20% 20%, ${COLORS.gogo_purple}22 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, ${COLORS.gogo_blue}22 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, ${COLORS.gogo_teal}22 0%, transparent 50%);
+    z-index: 0;
+  }
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+      radial-gradient(circle at 30% 30%, ${COLORS.gogo_pink}15 0%, transparent 40%),
+      radial-gradient(circle at 70% 70%, ${COLORS.gogo_yellow}15 0%, transparent 40%);
+    z-index: 0;
+  }
 `;
 
 const StatItem = styled.div`
@@ -169,56 +234,15 @@ const StatItem = styled.div`
   transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 1;
+  text-align: center;
 
   &:hover {
     transform: translateY(-10px) scale(1.03);
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
     background: rgba(255, 255, 255, 0.08);
     border-color: rgba(255, 255, 255, 0.1);
-  }
-
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(
-      circle at center,
-      rgba(255, 255, 255, 0.1) 0%,
-      transparent 70%
-    );
-    opacity: 0;
-    transition: opacity 0.5s ease;
-    z-index: 0;
-  }
-
-  &:hover:before {
-    opacity: 1;
-  }
-
-  &:after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.2),
-      transparent
-    );
-    transform: translateX(-100%);
-    transition: transform 0.5s ease;
-  }
-
-  &:hover:after {
-    transform: translateX(100%);
   }
 `;
 
@@ -372,96 +396,30 @@ const shimmerEffect = keyframes`
   }
 `;
 
-const YearHighlight = styled.div`
-  background: linear-gradient(
-    120deg,
-    ${COLORS.gogo_purple}22,
-    ${COLORS.gogo_blue}22,
-    ${COLORS.gogo_teal}22,
-    ${COLORS.gogo_purple}22
-  );
-  background-size: 200% 100%;
-  animation: ${shimmerEffect} 8s ease infinite;
-  border-radius: 16px;
-  padding: 3rem 2rem;
-  margin: 4rem 0;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.2);
-    z-index: 0;
-  }
+const Blob = styled.div<{ color: string; size: string; top: string; left: string; delay: string }>`
+  position: absolute;
+  width: ${props => props.size};
+  height: ${props => props.size};
+  background: ${props => props.color};
+  border-radius: 50%;
+  filter: blur(20px);
+  opacity: 0.3;
+  top: ${props => props.top};
+  left: ${props => props.left};
+  animation: ${blobAnimation} 15s ease-in-out infinite;
+  animation-delay: ${props => props.delay};
+  z-index: 0;
 `;
 
-const YearTitle = styled.h3`
-  font-size: 2.2rem;
-  font-weight: 900;
-  color: white;
-  margin-bottom: 2.5rem;
-  text-align: center;
-  position: relative;
-  z-index: 1;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-`;
-
-const YearStatsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2.5rem;
-  position: relative;
-  z-index: 1;
-`;
-
-const YearStatItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  background: rgba(0, 0, 0, 0.2);
-  padding: 1.5rem;
-  border-radius: 12px;
-  transition: all 0.3s ease;
-
-  &:hover {
-    transform: translateY(-5px);
-    background: rgba(0, 0, 0, 0.3);
-  }
-`;
-
-const YearStatValue = styled.span`
-  font-size: 3.5rem;
-  font-weight: 900;
-  color: ${COLORS.gogo_yellow};
-  margin-bottom: 0.5rem;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-  position: relative;
-
-  .number {
-    display: inline-block;
-    opacity: 0;
-    transform: translateY(10px);
-    animation: ${countUp} 0.3s forwards;
-  }
-`;
-
-const YearStatLabel = styled.span`
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.9);
-  line-height: 1.4;
+const Blob2 = styled(Blob)`
+  animation: ${blobAnimation2} 20s ease-in-out infinite;
 `;
 
 function ImpactSection(): JSX.Element {
   const [inView, setInView] = useState(false);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [counting, setCounting] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
   // Create refs for each impact stat
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -469,7 +427,7 @@ function ImpactSection(): JSX.Element {
   const statRefs = useRef<(HTMLDivElement | null)[]>([]);
   const progressRefs = useRef<(SVGCircleElement | null)[]>([]);
   const percentageRefs = useRef<(HTMLHeadingElement | null)[]>([]);
-  const yearStatsRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const measureRef = useRef(null);
 
   // Define impact data with useMemo to avoid recreating it on every render
   const impactData = useMemo(
@@ -508,28 +466,6 @@ function ImpactSection(): JSX.Element {
         description:
           'of students reported that their mentor encourages them to envision their future',
         color: '#6dae84', // Green
-      },
-    ],
-    [],
-  );
-
-  const yearStats = useMemo(
-    () => [
-      {
-        value: 3500,
-        label: 'Students supported through our programs',
-      },
-      {
-        value: 95,
-        label: 'Percentage of students who remained in school',
-      },
-      {
-        value: 120,
-        label: 'Mentor-led music and art sessions',
-      },
-      {
-        value: 42,
-        label: 'Community performances organized',
       },
     ],
     [],
@@ -590,19 +526,6 @@ function ImpactSection(): JSX.Element {
               });
             }
           }, 400);
-
-          // Animate year stats after a delay
-          setTimeout(() => {
-            if (yearStatsRefs.current.length > 0) {
-              animate(yearStatsRefs.current.filter(Boolean), {
-                opacity: [0, 1],
-                translateY: [30, 0],
-                delay: stagger(150),
-                duration: 800,
-                easing: 'easeOutCubic',
-              });
-            }
-          }, 1200);
         }
       },
       { threshold: 0.2 },
@@ -629,7 +552,7 @@ function ImpactSection(): JSX.Element {
       .split('')
       .map((digit, i) => (
         <span
-          key={`digit-${value}-${i}-${digit}`}
+          key={`${value}-digit-${digit}-${Math.random()}`}
           className="number"
           style={{ animationDelay: `${i * 0.1 + 0.3}s` }}
         >
@@ -638,77 +561,84 @@ function ImpactSection(): JSX.Element {
       ));
   };
 
+  useEffect(() => {
+    const observer = new window.IntersectionObserver(
+      ([entry]) => {
+        setExpanded(entry.isIntersecting);
+      },
+      { threshold: 0.5 }
+    );
+    if (measureRef.current) observer.observe(measureRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <ImpactContainer ref={sectionRef}>
-      <SectionContainer>
-        <SectionHeader ref={headerRef} style={{ opacity: 0 }}>
-          <SectionTitle>Our Impact</SectionTitle>
-          <Subtitle>During the 2023-24 program year...</Subtitle>
-        </SectionHeader>
+    <>
+      <ImpactContainer ref={sectionRef}>
+        <SectionContainer>
+          <SectionHeader ref={headerRef}>
+            <SectionTitle>Our Impact</SectionTitle>
+          </SectionHeader>
 
-        <StatsGrid>
-          {impactData.map((item, index) => (
-            <StatItem
-              key={item.id}
-              ref={(el) => {
-                statRefs.current[index] = el;
-              }}
-              style={{ opacity: 0 }}
-              onMouseEnter={() => setActiveIndex(index)}
-              onMouseLeave={() => setActiveIndex(null)}
-            >
-              <PercentageCircle>
-                <svg viewBox="0 0 140 140" width="140" height="140">
-                  <circle
-                    cx="70"
-                    cy="70"
-                    r="60"
-                    fill="none"
-                    stroke="rgba(255, 255, 255, 0.1)"
-                    strokeWidth="8"
-                  />
-                  <circle
-                    cx="70"
-                    cy="70"
-                    r="60"
-                    fill="none"
-                    stroke={item.color}
-                    strokeWidth="8"
-                    strokeDasharray="339.292"
-                    strokeDashoffset={339.292} // Start at 0% progress
-                    ref={(el) => {
-                      progressRefs.current[index] = el;
-                    }}
-                    transform="rotate(-90 70 70)"
-                  />
-                </svg>
-                <PercentageText>
-                  <span className="percent">%</span>
-                  <span className="number">{item.percentage}</span>
-                </PercentageText>
-              </PercentageCircle>
-              <StatDescription>{item.description}</StatDescription>
-            </StatItem>
-          ))}
-        </StatsGrid>
-
-        <YearHighlight>
-          <YearTitle>2024-2025 At a Glance</YearTitle>
-          <YearStatsGrid>
-            {yearStats.map((stat, index) => (
-              <YearStatItem
-                key={`year-stat-${stat.value}`}
+          <StatsGrid>
+            <Blob color={COLORS.gogo_purple} size="300px" top="10%" left="10%" delay="0s" />
+            <Blob2 color={COLORS.gogo_blue} size="250px" top="60%" left="70%" delay="-5s" />
+            <Blob color={COLORS.gogo_teal} size="200px" top="40%" left="40%" delay="-2s" />
+            <Blob2 color={COLORS.gogo_pink} size="280px" top="20%" left="80%" delay="-7s" />
+            <Blob color={COLORS.gogo_yellow} size="220px" top="70%" left="20%" delay="-3s" />
+            <StatsTitle>IN 2023-2024...</StatsTitle>
+            {impactData.map((item, index) => (
+              <StatItem
+                key={item.id}
                 ref={(el) => {
-                  yearStatsRefs.current[index] = el;
+                  statRefs.current[index] = el;
                 }}
+                style={{ opacity: 0 }}
+                onMouseEnter={() => setActiveIndex(index)}
+                onMouseLeave={() => setActiveIndex(null)}
               >
-                <YearStatValue>{renderCounter(stat.value)}</YearStatValue>
-                <YearStatLabel>{stat.label}</YearStatLabel>
-              </YearStatItem>
+                <PercentageCircle>
+                  <svg viewBox="0 0 140 140" width="140" height="140">
+                    <circle
+                      cx="70"
+                      cy="70"
+                      r="60"
+                      fill="none"
+                      stroke="rgba(255, 255, 255, 0.1)"
+                      strokeWidth="8"
+                    />
+                    <circle
+                      cx="70"
+                      cy="70"
+                      r="60"
+                      fill="none"
+                      stroke={item.color}
+                      strokeWidth="8"
+                      strokeDasharray="339.292"
+                      strokeDashoffset={339.292}
+                      ref={(el) => {
+                        progressRefs.current[index] = el;
+                      }}
+                      transform="rotate(-90 70 70)"
+                    />
+                  </svg>
+                  <PercentageText>
+                    <span className="percent">%</span>
+                    <span className="number">{item.percentage}</span>
+                  </PercentageText>
+                </PercentageCircle>
+                <StatDescription>{item.description}</StatDescription>
+              </StatItem>
             ))}
-          </YearStatsGrid>
-        </YearHighlight>
+          </StatsGrid>
+        </SectionContainer>
+      </ImpactContainer>
 
+      {/* Animated expand section for 'How do we measure impact?' */}
+      <div
+        ref={measureRef}
+        className={`measure-impact-section${expanded ? ' expanded' : ''}`}
+      >
         <SubsectionTitle>How do we measure impact?</SubsectionTitle>
         <StatDescription style={{ maxWidth: '800px', margin: '0 auto 2rem' }}>
           Guitars Over Guns mentees complete biannual surveys using Hello
@@ -727,34 +657,37 @@ function ImpactSection(): JSX.Element {
           and creative capacities of our young people, we create space for each
           student to work hard and own their path in life.
         </StatDescription>
-
-        <SubsectionTitle>Measurement &amp; Evaluation Tools</SubsectionTitle>
-        <MeasurementList
-          style={{ maxWidth: '800px', margin: '0 auto 2rem' }}
-          className="measurement-item"
-        >
-          <MeasurementItem>
-            Hello Insight SEL &amp; Positive Youth Development Evaluation
-            Platform
-          </MeasurementItem>
-          <MeasurementItem>
-            Student, Parent, and Partner Satisfaction Surveys
-          </MeasurementItem>
-          <MeasurementItem>Quarterly Artistic Progress Reports</MeasurementItem>
-          <MeasurementItem>Academic Achievement Data</MeasurementItem>
-        </MeasurementList>
-
-        <SubsectionTitle>Measurement Methods</SubsectionTitle>
-        <MeasurementList
-          style={{ maxWidth: '800px', margin: '0 auto' }}
-          className="measurement-item"
-        >
-          <MeasurementItem>Hello Insight</MeasurementItem>
-          <MeasurementItem>Artistic scale measurement</MeasurementItem>
-          <MeasurementItem>Academic achievement data</MeasurementItem>
-        </MeasurementList>
-      </SectionContainer>
-    </ImpactContainer>
+        <div className="measurement-flex-row">
+          <div className="measurement-col">
+            <h4 style={{ textAlign: 'center', marginBottom: '1rem' }}>Measurement Methods</h4>
+            <MeasurementList
+              style={{ maxWidth: '350px', margin: '0 auto 2rem' }}
+              className="measurement-item"
+            >
+              <MeasurementItem>Hello Insight</MeasurementItem>
+              <MeasurementItem>Artistic scale measurement</MeasurementItem>
+              <MeasurementItem>Academic achievement data</MeasurementItem>
+            </MeasurementList>
+          </div>
+          <div className="measurement-col">
+            <h4 style={{ textAlign: 'center', marginBottom: '1rem' }}>Measurement &amp; Evaluation Tools</h4>
+            <MeasurementList
+              style={{ maxWidth: '350px', margin: '0 auto 2rem' }}
+              className="measurement-item"
+            >
+              <MeasurementItem>
+                Hello Insight SEL &amp; Positive Youth Development Evaluation Platform
+              </MeasurementItem>
+              <MeasurementItem>
+                Student, Parent, and Partner Satisfaction Surveys
+              </MeasurementItem>
+              <MeasurementItem>Quarterly Artistic Progress Reports</MeasurementItem>
+              <MeasurementItem>Academic Achievement Data</MeasurementItem>
+            </MeasurementList>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
 
