@@ -254,7 +254,7 @@ const achievementsData = [
   {
     id: 4,
     year: '2020',
-    title: 'MWellness Program',
+    title: 'M-Power Program',
     description:
       'Grew our M-Power mental wellness department nationally with the addition of Wellness Mentors in Miami and Chicago, new partnerships with local universities’ social work intern programs, and the implementation of Youth Mental Health First Aid certification for our mentors and staff.',
     stats: [

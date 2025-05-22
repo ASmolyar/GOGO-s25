@@ -10,6 +10,7 @@ import App from './App.tsx';
 import { AlertProvider } from './util/context/AlertContext.tsx';
 import { store, persistor } from './util/redux/store.ts';
 import theme from './assets/theme.ts';
+import { Population } from './ImpactReport/components';
 
 const container = document.getElementById('root');
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
