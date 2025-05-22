@@ -1,4 +1,10 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, {
+  useRef,
+  useEffect,
+  useState,
+  useCallback,
+  useReducer,
+} from 'react';
 import styled from 'styled-components';
 import { animate, createDraggable } from 'animejs';
 import { useMusicPlayer } from '../contexts/MusicPlayerContext';
@@ -12,15 +18,246 @@ type ViewMode = 'library' | 'album';
 
 // Define types for anime.js draggable
 interface DraggableInstance {
-  // Remove the properties that might not exist on the actual instance
-  enable?: () => void;
-  disable?: () => void;
+  enable: () => void;
+  disable: () => void;
   refresh: () => void;
-  // These might not exist, so make them optional
-  setX?: (value: number) => void;
-  setY?: (value: number) => void;
+  setX: (value: number) => void;
+  setY: (value: number) => void;
   // The actual returned type from createDraggable
   [key: string]: any;
+}
+
+// Define modal state reducer and actions
+interface ModalStateData {
+  view: ModalState;
+  previousView: ModalState | null;
+  mode: ViewMode;
+  selectedAlbumId: string | null;
+  refreshCounter: number;
+  hasMinimizedOnce: boolean;
+}
+
+type ModalAction =
+  | { type: 'ENTER_FULLSCREEN' }
+  | { type: 'ENTER_PIP' }
+  | { type: 'MINIMIZE' }
+  | { type: 'HIDE' }
+  | { type: 'SET_MODE'; mode: ViewMode }
+  | { type: 'SET_ALBUM'; albumId: string | null }
+  | { type: 'REFRESH_CONTENT' }
+  | { type: 'FIRST_MINIMIZE' };
+
+// Modal state reducer
+function modalReducer(
+  state: ModalStateData,
+  action: ModalAction,
+): ModalStateData {
+  switch (action.type) {
+    case 'ENTER_FULLSCREEN':
+      return {
+        ...state,
+        view: 'full',
+        previousView: state.view,
+      };
+    case 'ENTER_PIP':
+      return {
+        ...state,
+        view: 'pip',
+        previousView: state.view,
+      };
+    case 'MINIMIZE':
+      if (!state.hasMinimizedOnce) {
+        return {
+          ...state,
+          view: 'minimized',
+          previousView: state.view,
+          refreshCounter: state.refreshCounter + 1,
+          hasMinimizedOnce: true,
+        };
+      }
+      return {
+        ...state,
+        view: 'minimized',
+        previousView: state.view,
+      };
+    case 'HIDE':
+      return {
+        ...state,
+        view: 'hidden',
+        previousView: state.view,
+      };
+    case 'SET_MODE':
+      return {
+        ...state,
+        mode: action.mode,
+      };
+    case 'SET_ALBUM':
+      return {
+        ...state,
+        selectedAlbumId: action.albumId,
+      };
+    case 'REFRESH_CONTENT':
+      return {
+        ...state,
+        refreshCounter: state.refreshCounter + 1,
+      };
+    case 'FIRST_MINIMIZE':
+      return {
+        ...state,
+        view: 'minimized',
+        previousView: state.view,
+        refreshCounter: state.refreshCounter + 1,
+        hasMinimizedOnce: true,
+      };
+    default:
+      return state;
+  }
+}
+
+// Custom hook for draggable functionality
+function useDraggable(
+  elementRef: React.RefObject<HTMLElement>,
+  triggerRef: React.RefObject<HTMLElement>,
+  options: Record<string, any> = {},
+) {
+  const [isDraggable, setIsDraggable] = useState(false);
+  const instanceRef = useRef<DraggableInstance | null>(null);
+  const initializationTimer = useRef<number | null>(null);
+
+  const enableDragging = useCallback(() => {
+    // Clear any pending initialization
+    if (initializationTimer.current) {
+      clearTimeout(initializationTimer.current);
+    }
+
+    if (instanceRef.current) {
+      instanceRef.current.enable();
+      console.log('[Draggable] Instance enabled');
+    } else {
+      setIsDraggable(true);
+    }
+  }, []);
+
+  const disableDragging = useCallback(() => {
+    // Clear any pending initialization
+    if (initializationTimer.current) {
+      clearTimeout(initializationTimer.current);
+    }
+
+    if (instanceRef.current) {
+      instanceRef.current.disable();
+      console.log('[Draggable] Instance disabled');
+    }
+
+    setIsDraggable(false);
+  }, []);
+
+  const reinitializeDraggable = useCallback(() => {
+    // Clear any pending initialization
+    if (initializationTimer.current) {
+      clearTimeout(initializationTimer.current);
+      initializationTimer.current = null;
+    }
+
+    if (!elementRef.current || !triggerRef.current) return;
+
+    // Disable current instance first if it exists
+    if (instanceRef.current) {
+      instanceRef.current.disable();
+      instanceRef.current = null;
+    }
+
+    // Schedule initialization with a short delay to ensure DOM has updated
+    initializationTimer.current = window.setTimeout(() => {
+      try {
+        if (elementRef.current && triggerRef.current) {
+          instanceRef.current = createDraggable(elementRef.current, {
+            trigger: triggerRef.current,
+            ...options,
+          });
+          console.log('[Draggable] Instance initialized');
+
+          // Enable if needed
+          if (isDraggable && instanceRef.current) {
+            instanceRef.current.enable();
+          }
+        }
+      } catch (error) {
+        console.error('[Draggable] Error creating instance:', error);
+      }
+      initializationTimer.current = null;
+    }, 100);
+  }, [elementRef, triggerRef, options, isDraggable]);
+
+  // Initialize or clean up draggable based on isDraggable state
+  useEffect(() => {
+    if (isDraggable) {
+      reinitializeDraggable();
+    } else if (instanceRef.current) {
+      instanceRef.current.disable();
+    }
+
+    return () => {
+      // Clean up on unmount
+      if (initializationTimer.current) {
+        clearTimeout(initializationTimer.current);
+      }
+
+      if (instanceRef.current) {
+        instanceRef.current.disable();
+        instanceRef.current = null;
+      }
+    };
+  }, [isDraggable, reinitializeDraggable]);
+
+  // Add methods to set positions using the draggable instance
+  const setX = useCallback(
+    (x: number) => {
+      if (instanceRef.current) {
+        instanceRef.current.setX(x);
+        console.log(`[Draggable] Setting X to ${x}`);
+      } else if (elementRef.current) {
+        // Fallback if instance is not available
+        elementRef.current.style.left = `${x}px`;
+        console.log(`[Draggable] Fallback setting X to ${x}`);
+      }
+    },
+    [elementRef],
+  );
+
+  const setY = useCallback(
+    (y: number) => {
+      if (instanceRef.current) {
+        instanceRef.current.setY(y);
+        console.log(`[Draggable] Setting Y to ${y}`);
+      } else if (elementRef.current) {
+        // Fallback if instance is not available
+        elementRef.current.style.top = `${y}px`;
+        console.log(`[Draggable] Fallback setting Y to ${y}`);
+      }
+    },
+    [elementRef],
+  );
+
+  const setSize = useCallback(
+    (width: number, height: number) => {
+      if (elementRef.current) {
+        elementRef.current.style.width = `${width}px`;
+        elementRef.current.style.height = `${height}px`;
+      }
+    },
+    [elementRef],
+  );
+
+  return {
+    isDraggable,
+    enableDragging,
+    disableDragging,
+    reinitializeDraggable,
+    setX,
+    setY,
+    setSize,
+  };
 }
 
 // Styled components
@@ -311,252 +548,347 @@ function MusicNoteIcon() {
 
 // Main component
 function DraggableMusicModal() {
+  // Music player context
   const {
     currentSong,
     currentAlbum,
     isPlaying,
-    modalState,
-    setModalState,
+    modalState: contextModalState,
+    setModalState: setContextModalState,
     playSong,
   } = useMusicPlayer();
 
-  // Component state
-  const [mode, setMode] = useState<ViewMode>('library');
-  const [selectedAlbumId, setSelectedAlbumId] = useState<string | null>(null);
-
-  // Use a ref to track if this is the first render
-  const isFirstRender = useRef(true);
-
-  // Use ref to track previous modal state for position restoration
-  const previousModalState = useRef<ModalState>(modalState);
-
-  // Track local modal state to debug issues
-  const [localModalState, setLocalModalState] =
-    useState<ModalState>(modalState);
-
-  // Update local state when context state changes
-  useEffect(() => {
-    console.log('[Debug] modalState updated from context:', modalState);
-    setLocalModalState(modalState);
-  }, [modalState]);
-
-  // Track draggable instance
-  const draggableInstance = useRef<DraggableInstance | null>(null);
-
-  // Create refs
+  // Refs
   const modalRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const minimizeButtonRef = useRef<HTMLButtonElement>(null);
+  const isFirstRender = useRef(true);
+  const isUpdatingState = useRef(false);
+  const lastStateChangeTime = useRef(Date.now());
 
-  // Track if there was a failed drag attempt
-  // We don't need to track drag issues separately
+  // Use reducer for state management
+  const [state, dispatch] = useReducer(modalReducer, {
+    view: contextModalState,
+    previousView: null,
+    mode: 'library',
+    selectedAlbumId: null,
+    refreshCounter: 0,
+    hasMinimizedOnce: false,
+  });
 
-  // Define the bottom right position function
+  // Handle state changes with debouncing to prevent rapid transitions
+  const safeDispatch = useCallback((action: ModalAction) => {
+    const now = Date.now();
+    const timeSinceLastChange = now - lastStateChangeTime.current;
+
+    // Prevent rapid state changes (debounce by 300ms)
+    if (timeSinceLastChange < 300) {
+      console.log('[State] Debouncing rapid state change');
+      return;
+    }
+
+    // Set flags to track state updates
+    isUpdatingState.current = true;
+    lastStateChangeTime.current = now;
+
+    // Dispatch the action
+    dispatch(action);
+
+    // Reset update flag after a delay
+    setTimeout(() => {
+      isUpdatingState.current = false;
+    }, 300);
+  }, []);
+
+  // ONE-WAY sync: Only sync FROM context TO local state, not the other way
+  useEffect(() => {
+    // Skip if we're already updating to avoid loops
+    if (isUpdatingState.current) {
+      console.log('[State] Skipping context sync during local update');
+      return;
+    }
+
+    // Only update if there's an actual difference
+    if (contextModalState !== state.view) {
+      console.log(`[State] Syncing from context: ${contextModalState}`);
+
+      switch (contextModalState) {
+        case 'full':
+          dispatch({ type: 'ENTER_FULLSCREEN' });
+          break;
+        case 'pip':
+          dispatch({ type: 'ENTER_PIP' });
+          break;
+        case 'minimized':
+          dispatch({ type: 'MINIMIZE' });
+          break;
+        case 'hidden':
+          dispatch({ type: 'HIDE' });
+          break;
+      }
+    }
+  }, [contextModalState, state.view]);
+
+  // When local state changes, update the context
+  useEffect(() => {
+    // Skip initial render to avoid unnecessary updates
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    // Skip if we're handling a context-initiated change
+    if (state.view === contextModalState) {
+      return;
+    }
+
+    console.log(`[State] Updating context: ${state.view}`);
+    setContextModalState(state.view);
+  }, [state.view, setContextModalState, contextModalState]);
+
+  // Use custom draggable hook
+  const {
+    isDraggable,
+    enableDragging,
+    disableDragging,
+    reinitializeDraggable,
+    setX,
+    setY,
+    setSize,
+  } = useDraggable(modalRef, headerRef, { container: document.body });
+
+  // Position calculation helper
   const getBottomRightPosition = useCallback(() => {
     const rightPos = Math.max(window.innerWidth - 650, 20);
     const bottomPos = Math.max(window.innerHeight - 500, 20);
     return { x: rightPos, y: bottomPos };
   }, []);
 
-  // Helper to reinitialize draggable
-  const reinitializeDraggable = useCallback(() => {
-    console.log('[Draggable] Reinitializing draggable instance');
-    if (draggableInstance.current) {
-      try {
-        // Try to disable first
-        if (typeof draggableInstance.current.disable === 'function') {
-          draggableInstance.current.disable();
-        }
-        draggableInstance.current = null;
-      } catch (error) {
-        console.error('[Draggable] Error disabling old instance:', error);
-      }
+  const getCenterPosition = useCallback(() => {
+    const modalWidth = 600;
+    const modalHeight = 450;
+    const x = Math.max(0, (window.innerWidth - modalWidth) / 2);
+    const y = Math.max(0, (window.innerHeight - modalHeight) / 3);
+    return { x, y };
+  }, []);
+
+  // Modal position and styling helpers
+  const applyPipStyles = useCallback(() => {
+    if (!modalRef.current) return;
+
+    const position = getCenterPosition();
+
+    // Set size first
+    setSize(600, 450);
+
+    // Use the setX/setY methods for positioning
+    setX(position.x);
+    setY(position.y);
+
+    // Additional styling that doesn't affect position
+    if (modalRef.current) {
+      modalRef.current.style.bottom = 'auto';
+      modalRef.current.style.right = 'auto';
+      modalRef.current.style.borderRadius = '8px';
     }
 
-    try {
-      if (modalRef.current && headerRef.current) {
-        // Position at bottom right
-        const position = getBottomRightPosition();
-        modalRef.current.style.left = `${position.x}px`;
-        modalRef.current.style.top = `${position.y}px`;
-        modalRef.current.style.right = 'auto';
-        modalRef.current.style.bottom = 'auto';
+    // Force a reflow
+    const pipReflowTrigger = modalRef.current.offsetHeight;
+  }, [getCenterPosition, setSize, setX, setY]);
 
-        // Allow the modal to be dragged across the entire screen
-        // Calculate the actual available space for dragging
-        const maxX = window.innerWidth - modalRef.current.offsetWidth;
-        const maxY = window.innerHeight - modalRef.current.offsetHeight;
+  const applyFullscreenStyles = useCallback(() => {
+    if (!modalRef.current) return;
 
-        console.log('[Draggable] Available drag area:', { maxX, maxY });
+    // For fullscreen, we want to disable dragging first
+    disableDragging();
 
-        // Create the draggable instance with container boundaries set to window size
-        // This prevents the modal from going off-screen
-        draggableInstance.current = createDraggable(modalRef.current, {
-          trigger: headerRef.current,
-          container: document.body, // Use document.body as the container to restrict to viewport
-        });
-
-        console.log('[Draggable] New draggable instance created');
-      }
-    } catch (error) {
-      console.error('[Draggable] Error creating draggable instance:', error);
-      console.error(
-        '[Draggable] Error details:',
-        error instanceof Error ? error.message : error,
-      );
+    // Directly modify the styles for fullscreen
+    if (modalRef.current) {
+      modalRef.current.style.width = '100vw';
+      modalRef.current.style.height = '100vh';
+      modalRef.current.style.top = '0';
+      modalRef.current.style.left = '0';
+      modalRef.current.style.borderRadius = '0';
     }
-  }, [getBottomRightPosition, modalRef, headerRef]);
 
-  // Only prevent main page scrolling when in fullscreen mode, while allowing scrolling inside the modal
+    // Force a reflow
+    const fullscreenReflowTrigger = modalRef.current.offsetHeight;
+  }, [disableDragging]);
+
+  const applyMinimizedStyles = useCallback(() => {
+    if (!modalRef.current) return;
+
+    // For minimized state, disable dragging first
+    disableDragging();
+
+    // For minimized state, just modify the styles directly
+    if (modalRef.current) {
+      modalRef.current.style.width = '240px';
+      modalRef.current.style.height = '40px';
+      modalRef.current.style.top = 'auto';
+      modalRef.current.style.left = 'auto';
+      modalRef.current.style.position = 'fixed';
+      modalRef.current.style.bottom = '150px';
+      modalRef.current.style.right = '20px';
+      modalRef.current.style.borderRadius = '8px';
+    }
+
+    // Force a reflow
+    const minimizedReflowTrigger = modalRef.current.offsetHeight;
+  }, [disableDragging]);
+
+  // First minimize is now tracked in reducer state
+
+  const handleMinimize = useCallback(() => {
+    // Use the reducer's state to track first minimize
+    if (!state.hasMinimizedOnce) {
+      console.log('[Action] First minimize - using special action');
+      // For the first minimize, use our special action
+      safeDispatch({ type: 'FIRST_MINIMIZE' });
+    } else {
+      // For subsequent minimizes, use the regular action
+      safeDispatch({ type: 'MINIMIZE' });
+    }
+
+    // Apply minimized styles immediately for smoother transition
+    applyMinimizedStyles();
+  }, [safeDispatch, applyMinimizedStyles, state.hasMinimizedOnce]);
+
+  // Prevent scrolling on all containers when in fullscreen mode
   useEffect(() => {
-    if (modalState === 'full') {
-      // Just use a simple approach to prevent background scrolling
-      // This allows scrolling inside the modal content but prevents page scrolling
+    if (state.view === 'full') {
+      // Disable scrolling on document body
       document.body.style.overflow = 'hidden';
 
-      // Make sure the modal content itself is scrollable
-      if (modalRef.current) {
-        const modalContent = modalRef.current.querySelector(
-          '[data-modal-content]',
-        );
-        if (modalContent) {
-          (modalContent as HTMLElement).style.overflowY = 'auto';
-        }
+      // Also disable scrolling on the fullpage scroll container if it exists
+      const fullpageContainer = document.querySelector(
+        '.fullpage-scroll-container',
+      );
+      if (fullpageContainer) {
+        (fullpageContainer as HTMLElement).style.overflow = 'hidden';
+      }
+
+      // Disable scrolling on the impact-report container if it exists
+      const impactReport = document.querySelector('.impact-report');
+      if (impactReport) {
+        (impactReport as HTMLElement).style.overflow = 'hidden';
       }
 
       return () => {
-        // Re-enable scrolling when fullscreen mode ends
+        // Restore scrolling on body
         document.body.style.overflow = '';
-      };
-    } else {
-      // Ensure scrolling is enabled when not in fullscreen
-      document.body.style.overflow = '';
-    }
-  }, [modalState, modalRef]);
 
-  // Make the modal start in fullscreen mode
+        // Restore scrolling on fullpage container
+        if (fullpageContainer) {
+          (fullpageContainer as HTMLElement).style.overflow = 'scroll';
+        }
+
+        // Restore scrolling on impact report
+        if (impactReport) {
+          (impactReport as HTMLElement).style.overflow = '';
+        }
+      };
+    }
+
+    // Ensure scrolling is enabled when not in fullscreen
+    document.body.style.overflow = '';
+
+    // Re-enable fullpage container scrolling
+    const fullpageContainer = document.querySelector(
+      '.fullpage-scroll-container',
+    );
+    if (fullpageContainer) {
+      (fullpageContainer as HTMLElement).style.overflow = 'scroll';
+    }
+
+    // Restore impact report overflow
+    const impactReport = document.querySelector('.impact-report');
+    if (impactReport) {
+      (impactReport as HTMLElement).style.overflow = '';
+    }
+
+    return undefined;
+  }, [state.view]);
+
+  // Make the modal start in fullscreen mode on first render
   useEffect(() => {
-    // Only run on first render
-    if (
-      isFirstRender.current &&
-      modalState !== 'hidden' &&
-      modalState !== 'full'
-    ) {
-      setModalState('full');
+    // Use a ref so this only runs once regardless of state changes
+    if (isFirstRender.current && state.view !== 'hidden') {
+      // If not already in fullscreen, change to fullscreen
+      if (state.view !== 'full') {
+        console.log('[State] First render - initializing to fullscreen');
+        // Use direct dispatch, not safeDispatch, for initialization
+        dispatch({ type: 'ENTER_FULLSCREEN' });
+        // Apply fullscreen styles immediately
+        setTimeout(applyFullscreenStyles, 50);
+      }
+      // Mark first render as complete
       isFirstRender.current = false;
     }
-  }, [modalState, setModalState]);
+  }, [state.view, applyFullscreenStyles]);
 
-  // Define a type guard to check if modalState is 'full'
-  const isFullScreen = (state: ModalState): state is 'full' => state === 'full';
-
-  // Force a redraw of the modal when switching to fullscreen
+  // Manage draggable behavior based on modal state
   useEffect(() => {
-    if (modalState === 'full' && modalRef.current) {
-      // Force reflow
-      modalRef.current.style.display = 'none';
-      // Trigger reflow without using void
-      const height = modalRef.current.offsetHeight;
-      modalRef.current.style.display = '';
-    }
-  }, [modalState]);
+    if (state.view === 'pip') {
+      // Position the modal first
+      applyPipStyles();
 
-  // Initialize draggable for pip mode only (not minimized)
-  useEffect(() => {
-    // Only set up draggable for pip mode, not minimized
-    if (modalState === 'pip' && modalRef.current) {
-      // Wait for the state transition animation to complete
+      // Then enable dragging with a delay to ensure styles are applied
       setTimeout(() => {
-        console.log(`[Draggable] Initializing draggable in ${modalState} mode`);
+        enableDragging();
+        console.log('[Modal] Enabled dragging for PiP mode');
+      }, 100);
+    } else {
+      // For non-pip modes, always disable dragging
+      disableDragging();
+      console.log(`[Modal] Disabled dragging for ${state.view} mode`);
 
-        // Position the modal in the bottom right
-        const position = getBottomRightPosition();
-        if (modalRef.current) {
-          modalRef.current.style.left = `${position.x}px`;
-          modalRef.current.style.top = `${position.y}px`;
-          modalRef.current.style.right = 'auto';
-          modalRef.current.style.bottom = 'auto';
-        }
-
-        if (!draggableInstance.current) {
-          reinitializeDraggable();
-        } else {
-          // Refresh the existing instance
-          try {
-            draggableInstance.current.refresh();
-          } catch (error) {
-            console.error('[Draggable] Error refreshing instance:', error);
-            reinitializeDraggable();
-          }
-        }
-      }, 200);
-    } else if (modalState === 'minimized' && draggableInstance.current) {
-      // Disable dragging when minimized
-      if (typeof draggableInstance.current.disable === 'function') {
-        draggableInstance.current.disable();
-        console.log('[Draggable] Disabled dragging for minimized state');
+      if (state.view === 'minimized') {
+        applyMinimizedStyles();
+      } else if (state.view === 'full') {
+        applyFullscreenStyles();
       }
     }
-  }, [modalState, modalRef, reinitializeDraggable, getBottomRightPosition]);
+  }, [
+    state.view,
+    enableDragging,
+    disableDragging,
+    applyPipStyles,
+    applyMinimizedStyles,
+    applyFullscreenStyles,
+  ]);
 
-  // Modify the window resize handler to only reposition the pip mode, not minimized
+  // Handle window resize
   useEffect(() => {
     const handleResize = () => {
-      if (modalState === 'pip' && modalRef.current) {
-        // Check if the modal is outside the visible area after resize
+      if (state.view === 'pip' && modalRef.current) {
+        // Ensure modal stays within viewport
         const rect = modalRef.current.getBoundingClientRect();
         const maxX = window.innerWidth - rect.width;
         const maxY = window.innerHeight - rect.height;
 
-        // If the modal is outside the visible area, reposition it
         let repositioned = false;
+
+        // Check if the modal is out of bounds horizontally
         if (rect.right > window.innerWidth || rect.left < 0) {
-          modalRef.current.style.left = `${Math.min(
-            Math.max(0, rect.left),
-            maxX,
-          )}px`;
+          const newX = Math.min(Math.max(0, rect.left), maxX);
+          setX(newX);
+          console.log(`[Modal] Repositioning X to ${newX}`);
           repositioned = true;
         }
 
+        // Check if the modal is out of bounds vertically
         if (rect.bottom > window.innerHeight || rect.top < 0) {
-          modalRef.current.style.top = `${Math.min(
-            Math.max(0, rect.top),
-            maxY,
-          )}px`;
+          const newY = Math.min(Math.max(0, rect.top), maxY);
+          setY(newY);
+          console.log(`[Modal] Repositioning Y to ${newY}`);
           repositioned = true;
         }
 
-        // If repositioned, log it
+        // Only reinitialize if we had to reposition
         if (repositioned) {
-          console.log('[Window] Modal repositioned after resize');
-        }
-
-        // Always recreate the draggable instance after resize to update container boundaries
-        try {
-          // First disable the old instance if it exists
-          if (
-            draggableInstance.current &&
-            typeof draggableInstance.current.disable === 'function'
-          ) {
-            draggableInstance.current.disable();
-          }
-
-          // Create a new draggable instance with updated boundaries
-          if (modalRef.current && headerRef.current) {
-            draggableInstance.current = createDraggable(modalRef.current, {
-              trigger: headerRef.current,
-              container: document.body, // Use document.body as container to restrict to viewport
-            });
-            console.log(
-              '[Window] Draggable recreated with new boundaries after resize',
-            );
-          }
-        } catch (error) {
-          console.error(
-            '[Draggable] Error recreating draggable instance on resize:',
-            error,
-          );
           reinitializeDraggable();
+          console.log('[Modal] Reinitialized draggable after repositioning');
         }
       }
     };
@@ -565,248 +897,137 @@ function DraggableMusicModal() {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [modalState, modalRef, reinitializeDraggable]);
+  }, [state.view, reinitializeDraggable, setX, setY]);
 
-  // Change view state handlers
-  const handleMinimize = useCallback(() => {
-    console.log('[State] Minimizing from', modalState);
-
-    // If we're in fullscreen mode, transition to pip mode
-    if (modalState === 'full') {
-      console.log('[State] Transitioning from fullscreen to pip');
-
-      // From fullscreen, we only go to pip (not directly to minimized)
-      setModalState('pip');
-    }
-    // If we're in pip mode, go to minimized
-    else if (modalState === 'pip') {
-      console.log('[State] Transitioning from pip to minimized');
-
-      // Disable dragging before minimizing
-      if (
-        draggableInstance.current &&
-        typeof draggableInstance.current.disable === 'function'
-      ) {
-        draggableInstance.current.disable();
-      }
-
-      setModalState('minimized');
-    }
-    // Toggle between minimized and pip
-    else if (modalState === 'minimized') {
-      console.log('[State] Transitioning from minimized to pip');
-      setModalState('pip');
-
-      // Need to reapply position after modal state change to pip
-      setTimeout(() => {
-        if (modalRef.current) {
-          // Position in center of the screen for better visibility
-          const x = Math.max(0, (window.innerWidth - 600) / 2); // PiP width is 600px
-          const y = Math.max(0, (window.innerHeight - 450) / 3); // PiP height is 450px, position in upper third
-
-          // Apply position
-          modalRef.current.style.left = `${x}px`;
-          modalRef.current.style.top = `${y}px`;
-          modalRef.current.style.right = 'auto';
-          modalRef.current.style.bottom = 'auto';
-
-          // Reinitialize draggable for the new size
-          setTimeout(reinitializeDraggable, 50);
-        }
-      }, 50);
-    }
-  }, [modalState, setModalState, modalRef, reinitializeDraggable]);
-
-  const handleMaximize = useCallback(() => {
-    console.log('[State] Maximizing from', modalState);
-    // Store current position before going fullscreen
-    if (modalRef.current) {
-      const rect = modalRef.current.getBoundingClientRect();
-      const newPosition = {
-        x: rect.left,
-        y: rect.top,
-      };
-      console.log('[Position] Storing position before maximize:', newPosition);
-    }
-
-    setModalState('full');
-  }, [modalState, setModalState, modalRef]);
-
-  const handlePipMode = useCallback(() => {
-    console.log(
-      '[DIRECT ACTION] Explicitly transitioning from fullscreen to pip mode',
-    );
-
-    // Force modalState update
-    setModalState('pip');
-
-    // Force a direct state change with no animation
-    if (modalRef.current) {
-      console.log('[UI] Force removing fullscreen styles');
-      // Cancel fullscreen styling immediately
-
-      // Calculate a position that ensures the modal is fully visible on screen
-      // Center horizontally, but keep it in the upper part of the screen
-      const modalWidth = 600; // Modal width is 600px
-      const modalHeight = 450; // Modal height is 450px
-
-      // Keep modal within viewport bounds
-      const maxX = Math.max(0, window.innerWidth - modalWidth);
-      const maxY = Math.max(0, window.innerHeight - modalHeight);
-
-      // Start with center position
-      const x = Math.min(
-        Math.max(0, (window.innerWidth - modalWidth) / 2),
-        maxX,
-      );
-      const y = Math.min(
-        Math.max(0, (window.innerHeight - modalHeight) / 3),
-        maxY,
-      ); // Position in upper third
-
-      // Apply styles immediately
-      modalRef.current.style.width = `${modalWidth}px`;
-      modalRef.current.style.height = `${modalHeight}px`;
-      modalRef.current.style.top = `${y}px`;
-      modalRef.current.style.left = `${x}px`;
-      modalRef.current.style.bottom = 'auto';
-      modalRef.current.style.right = 'auto';
-      modalRef.current.style.transition = 'none';
-
-      // Force a reflow to ensure the styles are applied immediately
-      void modalRef.current.offsetHeight;
-
-      // Now reset the transition back
-      setTimeout(() => {
-        if (modalRef.current) {
-          modalRef.current.style.transition = '';
-        }
-      }, 50);
-
-      // Re-initialize draggable after transition
-      setTimeout(() => {
-        reinitializeDraggable();
-      }, 200);
-    }
-  }, [setModalState, reinitializeDraggable, modalRef]);
-
-  // Fix useEffect with refs
+  // State transition effect for content refreshing
   useEffect(() => {
-    // Store the ref value in a variable
-    const headerElement = headerRef.current;
+    // Only run if this is a pip-to-full transition
+    if (state.view === 'full' && state.previousView === 'pip') {
+      console.log('[Transition] PiP to fullscreen - refreshing content');
 
-    const handleHeaderButtonClick = (e: MouseEvent) => {
-      if (!(e.target instanceof Element)) {
-        return;
-      }
+      // Apply styles first
+      applyFullscreenStyles();
+
+      // Force a refresh after transition completes
+      setTimeout(() => {
+        if (state.view === 'full') {
+          // Verify we're still in fullscreen
+          dispatch({ type: 'REFRESH_CONTENT' });
+        }
+      }, 350); // Longer delay to ensure transition has completed
+    }
+  }, [state.view, state.previousView, applyFullscreenStyles]);
+
+  // Simplified action handlers
+  const handleEnterFullscreen = useCallback(() => {
+    safeDispatch({ type: 'ENTER_FULLSCREEN' });
+    applyFullscreenStyles();
+  }, [safeDispatch, applyFullscreenStyles]);
+
+  const handleEnterPip = useCallback(() => {
+    safeDispatch({ type: 'ENTER_PIP' });
+    applyPipStyles();
+    // Delay draggable initialization until transition is complete
+    setTimeout(reinitializeDraggable, 300);
+  }, [safeDispatch, applyPipStyles, reinitializeDraggable]);
+
+  const handleButtonClick = useCallback(
+    (e: React.MouseEvent | MouseEvent) => {
+      if (!(e.target instanceof Element)) return;
 
       const button = e.target.closest('button');
-      if (!button) {
-        return;
-      }
+      if (!button) return;
 
-      const ariaLabel = button.getAttribute('aria-label');
-      if (!ariaLabel) {
-        return;
-      }
+      const action = button.getAttribute('aria-label');
+      if (!action) return;
 
-      // Log the button click
-      console.log(
-        '[Direct] Button click detected:',
-        ariaLabel,
-        'in state:',
-        modalState,
-      );
-
-      // Handle each button type
-      if (ariaLabel === 'Picture in Picture' && modalState === 'full') {
-        console.log('[Direct] PiP button click handler triggered');
-        setModalState('pip');
-      } else if (ariaLabel === 'Fullscreen' && modalState === 'pip') {
-        console.log('[Direct] Fullscreen button click handler triggered');
-        handleMaximize();
-      } else if (ariaLabel === 'Minimize' && modalState === 'pip') {
-        console.log('[Direct] Minimize button click handler triggered');
-        handleMinimize();
-      } else if (ariaLabel === 'Expand' && modalState === 'minimized') {
-        console.log('[Direct] Expand button click handler triggered');
-        handlePipMode();
-      }
-
-      return undefined;
-    };
-
-    // Add the event listener to the header
-    if (headerElement) {
-      headerElement.addEventListener(
-        'click',
-        handleHeaderButtonClick as EventListener,
-      );
-    }
-
-    return () => {
-      if (headerElement) {
-        headerElement.removeEventListener(
-          'click',
-          handleHeaderButtonClick as EventListener,
-        );
-      }
-    };
-  }, [
-    modalState,
-    handleMinimize,
-    handleMaximize,
-    handlePipMode,
-    setModalState,
-  ]);
-
-  // Add a direct event listener to the minimize button
-  useEffect(() => {
-    const handleMinimizeClick = (e: MouseEvent) => {
       e.stopPropagation();
       e.preventDefault();
-      console.log('[Direct] Minimize button clicked in', modalState);
-      handleMinimize();
-    };
 
-    if (minimizeButtonRef.current && modalState === 'pip') {
-      console.log(
-        '[Setup] Adding direct click handler to minimize button in pip mode',
-      );
-      const button = minimizeButtonRef.current;
-      // Remove any existing listeners first
-      button.removeEventListener('click', handleMinimizeClick as EventListener);
-      // Add the new listener
-      button.addEventListener('click', handleMinimizeClick as EventListener);
-
-      return () => {
-        button.removeEventListener(
-          'click',
-          handleMinimizeClick as EventListener,
-        );
+      // Map actions to handlers with specific state checks
+      const actions = {
+        'Picture in Picture': () => {
+          if (state.view === 'full') {
+            console.log('[Action] Fullscreen to PiP');
+            handleEnterPip();
+          }
+        },
+        Fullscreen: () => {
+          if (state.view === 'pip') {
+            console.log('[Action] PiP to Fullscreen');
+            handleEnterFullscreen();
+          }
+        },
+        Minimize: () => {
+          if (state.view === 'pip') {
+            console.log('[Action] PiP to Minimized');
+            handleMinimize();
+          }
+        },
+        Expand: () => {
+          if (state.view === 'minimized') {
+            console.log('[Action] Minimized to PiP');
+            // First apply styles for a smoother transition
+            applyPipStyles();
+            // Then update state
+            safeDispatch({ type: 'ENTER_PIP' });
+            // Initialize draggable after transition
+            setTimeout(reinitializeDraggable, 300);
+          }
+        },
       };
-    }
-  }, [modalState, handleMinimize]);
 
-  // Handle content navigation
-  const handleAlbumClick = (albumId: string) => {
-    setSelectedAlbumId(albumId);
-    setMode('album');
-  };
+      // Execute the matching action
+      const actionFn = actions[action as keyof typeof actions];
+      if (actionFn) actionFn();
+    },
+    [
+      state.view,
+      handleEnterFullscreen,
+      handleEnterPip,
+      handleMinimize,
+      safeDispatch,
+      applyPipStyles,
+      reinitializeDraggable,
+    ],
+  );
 
-  const handleLibraryClick = () => {
-    setMode('library');
-    setSelectedAlbumId(null);
-  };
+  // Attach click handler to header
+  useEffect(() => {
+    const headerElement = headerRef.current;
+    if (!headerElement) return;
 
-  // Handle play track from any view
-  const handlePlayTrack = (song: any, album: any) => {
-    playSong(song, album);
-  };
+    headerElement.addEventListener('click', handleButtonClick as EventListener);
 
-  // Helper to get header title based on mode
-  const getHeaderTitle = () => {
-    if (modalState === 'minimized') {
+    return () => {
+      headerElement.removeEventListener(
+        'click',
+        handleButtonClick as EventListener,
+      );
+    };
+  }, [handleButtonClick]);
+
+  // Content management handlers
+  const handleAlbumClick = useCallback((albumId: string) => {
+    dispatch({ type: 'SET_ALBUM', albumId });
+    dispatch({ type: 'SET_MODE', mode: 'album' });
+  }, []);
+
+  const handleLibraryClick = useCallback(() => {
+    dispatch({ type: 'SET_ALBUM', albumId: null });
+    dispatch({ type: 'SET_MODE', mode: 'library' });
+  }, []);
+
+  const handlePlayTrack = useCallback(
+    (song: any, album: any) => {
+      playSong(song, album);
+    },
+    [playSong],
+  );
+
+  // UI Helpers
+  const getHeaderTitle = useCallback(() => {
+    if (state.view === 'minimized') {
       return (
         <NowPlayingInfo>
           {currentSong && currentAlbum && (
@@ -824,7 +1045,7 @@ function DraggableMusicModal() {
       );
     }
 
-    switch (mode) {
+    switch (state.mode) {
       case 'album':
         return 'Album View';
       default:
@@ -834,87 +1055,26 @@ function DraggableMusicModal() {
           </HeaderTitle>
         );
     }
-  };
+  }, [state.view, state.mode, currentSong, currentAlbum]);
 
-  // Get content based on current mode
-  const getContent = () => {
-    switch (mode) {
-      case 'album':
-        return selectedAlbumId ? (
-          <AlbumView
-            albumId={selectedAlbumId}
-            onPlayTrack={handlePlayTrack}
-            onBackClick={handleLibraryClick}
-            currentlyPlayingId={currentSong?.song_id || null}
-            isPlaying={isPlaying}
-            modalState={modalState}
-          />
-        ) : null;
-
-      default:
-        return (
-          <MusicLibrary
-            onAlbumClick={handleAlbumClick}
-            onPlayTrack={handlePlayTrack}
-            currentlyPlayingId={currentSong?.song_id || null}
-            isPlaying={isPlaying}
-            modalState={modalState}
-          />
-        );
-    }
-  };
-
-  if (modalState === 'hidden') {
+  // Skip rendering if hidden
+  if (state.view === 'hidden') {
     return null;
   }
 
   return (
-    <ModalContainer ref={modalRef} viewState={modalState}>
-      <ModalHeader ref={headerRef} viewState={modalState}>
+    <ModalContainer ref={modalRef} viewState={state.view}>
+      <ModalHeader ref={headerRef} viewState={state.view}>
         <DragHandle />
         {getHeaderTitle()}
 
         <HeaderControls>
           {/* Show fullscreen/pip toggle only when not minimized */}
-          {modalState !== 'minimized' && (
+          {state.view !== 'minimized' && (
             <>
-              {modalState === 'full' ? (
+              {state.view === 'full' ? (
                 <ControlButton
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    console.log(
-                      '[UI] PiP button clicked directly in fullscreen, current state:',
-                      modalState,
-                    );
-
-                    // Force a direct state change with no animation
-                    if (modalRef.current) {
-                      console.log('[UI] Force removing fullscreen styles');
-                      // Cancel fullscreen styling immediately
-
-                      // Position in the center of the screen
-                      const centerX = (window.innerWidth - 600) / 2; // Modal width is 600px
-                      const centerY = (window.innerHeight - 450) / 2; // Modal height is 450px
-
-                      modalRef.current.style.width = '600px';
-                      modalRef.current.style.height = '450px';
-                      modalRef.current.style.top = `${centerY}px`;
-                      modalRef.current.style.left = `${centerX}px`;
-                      modalRef.current.style.bottom = 'auto';
-                      modalRef.current.style.right = 'auto';
-                      modalRef.current.style.borderRadius = '8px';
-                    }
-
-                    // Use direct context change
-                    setModalState('pip');
-
-                    // Call normal handler as well
-                    setTimeout(() => {
-                      console.log('[UI] Calling handlePipMode after timeout');
-                      handlePipMode();
-                    }, 50);
-                  }}
+                  onClick={handleButtonClick}
                   aria-label="Picture in Picture"
                   title="Enter Picture in Picture mode"
                 >
@@ -922,11 +1082,7 @@ function DraggableMusicModal() {
                 </ControlButton>
               ) : (
                 <ControlButton
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    handleMaximize();
-                  }}
+                  onClick={handleButtonClick}
                   aria-label="Fullscreen"
                   title="Enter Fullscreen mode"
                 >
@@ -934,32 +1090,24 @@ function DraggableMusicModal() {
                 </ControlButton>
               )}
 
-              {/* Always show minimize/expand depending on state */}
-              {modalState === 'pip' ? (
+              {/* Show minimize button only in pip mode */}
+              {state.view === 'pip' && (
                 <ControlButton
                   ref={minimizeButtonRef}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    console.log('[UI] Minimize button clicked');
-                    handleMinimize();
-                  }}
+                  onClick={handleButtonClick}
                   aria-label="Minimize"
                   title="Minimize player"
                 >
                   <MinimizeIcon />
                 </ControlButton>
-              ) : null}
+              )}
             </>
           )}
-          {/* Controls based on modal state */}
-          {modalState === 'minimized' && (
+
+          {/* Expand button in minimized mode */}
+          {state.view === 'minimized' && (
             <ControlButton
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                handlePipMode();
-              }}
+              onClick={handleButtonClick}
               aria-label="Expand"
               title="Expand player to PiP mode"
             >
@@ -969,22 +1117,28 @@ function DraggableMusicModal() {
         </HeaderControls>
       </ModalHeader>
 
-      <ModalContent viewState={modalState} data-modal-content>
-        {modalState !== 'minimized' && (
+      <ModalContent
+        viewState={state.view}
+        data-modal-content
+        key={state.refreshCounter} // Force re-render when refreshCounter changes
+      >
+        {state.view !== 'minimized' && (
           <>
-            {/* Only show mode selector in full mode, not in pip mode */}
-            {modalState === 'full' && (
+            {/* Only show mode selector in full mode */}
+            {state.view === 'full' && (
               <ModeSelector>
                 <ModeButton
-                  active={mode === 'library'}
+                  active={state.mode === 'library'}
                   onClick={handleLibraryClick}
                 >
                   Library
                 </ModeButton>
-                {selectedAlbumId && (
+                {state.selectedAlbumId && (
                   <ModeButton
-                    active={mode === 'album'}
-                    onClick={() => setMode('album')}
+                    active={state.mode === 'album'}
+                    onClick={() =>
+                      dispatch({ type: 'SET_MODE', mode: 'album' })
+                    }
                   >
                     Album
                   </ModeButton>
@@ -992,15 +1146,15 @@ function DraggableMusicModal() {
               </ModeSelector>
             )}
 
-            {/* Pass modalState to child components so they can adapt their UI */}
-            {mode === 'album' && selectedAlbumId ? (
+            {/* Content based on mode */}
+            {state.mode === 'album' && state.selectedAlbumId ? (
               <AlbumView
-                albumId={selectedAlbumId}
+                albumId={state.selectedAlbumId}
                 onPlayTrack={handlePlayTrack}
                 onBackClick={handleLibraryClick}
                 currentlyPlayingId={currentSong?.song_id || null}
                 isPlaying={isPlaying}
-                modalState={modalState}
+                modalState={state.view}
               />
             ) : (
               <MusicLibrary
@@ -1008,7 +1162,7 @@ function DraggableMusicModal() {
                 onPlayTrack={handlePlayTrack}
                 currentlyPlayingId={currentSong?.song_id || null}
                 isPlaying={isPlaying}
-                modalState={modalState}
+                modalState={state.view}
               />
             )}
           </>

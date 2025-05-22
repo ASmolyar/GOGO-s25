@@ -19,8 +19,8 @@ import InviteRegisterPage from './Authentication/InviteRegisterPage.tsx';
 import ImpactReportPage from './ImpactReport/ImpactReportPage.tsx';
 import MusicPage from './ImpactReport/MusicPage.tsx';
 import ArtistView from './ImpactReport/components/ArtistView.tsx';
-import MapDemo from './components/map/MapDemo';
-import Impact from './components/impact';
+import MapDemo from './ImpactReport/components/map/MapDemo';
+import Impact from './ImpactReport/components/Impact';
 import AlbumUploadPage from './AdminDashboard/AlbumUploadPage.tsx';
 import './assets/fonts/fonts.css';
 

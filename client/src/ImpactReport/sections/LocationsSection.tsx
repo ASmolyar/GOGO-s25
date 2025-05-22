@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { animate } from 'animejs';
 import styled, { keyframes } from 'styled-components';
-import EnhancedLeafletMap from '../../components/map/EnhancedLeafletMap';
+import EnhancedLeafletMap from '../components/map/EnhancedLeafletMap';
 import COLORS from '../../assets/colors.ts';
 
 // Animations

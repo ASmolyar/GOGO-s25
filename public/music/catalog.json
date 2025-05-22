@@ -1,0 +1,99 @@
+{
+  "albums": [
+    {
+      "album_id": "album-001",
+      "name": "Euphoria",
+      "type": "album",
+      "artists": [
+        {
+          "artist_id": "artist-001",
+          "name": "Electric Pulse"
+        }
+      ],
+      "cover": "/music/covers/euphoria.jpg",
+      "date": "2023-08-15",
+      "songs": [
+        {
+          "song_id": "song-001",
+          "title": "Neon Dreams",
+          "audio_file": "/music/songs/neon-dreams.mp3",
+          "album_id": "album-001",
+          "artists": [
+            {
+              "artist_id": "artist-001",
+              "name": "Electric Pulse"
+            }
+          ],
+          "duration": 195
+        },
+        {
+          "song_id": "song-002",
+          "title": "Midnight Run",
+          "audio_file": "/music/songs/midnight-run.mp3",
+          "album_id": "album-001",
+          "artists": [
+            {
+              "artist_id": "artist-001",
+              "name": "Electric Pulse"
+            }
+          ],
+          "duration": 210
+        },
+        {
+          "song_id": "song-003",
+          "title": "Starlight Echoes",
+          "audio_file": "/music/songs/starlight-echoes.mp3",
+          "album_id": "album-001",
+          "artists": [
+            {
+              "artist_id": "artist-001",
+              "name": "Electric Pulse"
+            }
+          ],
+          "duration": 180
+        }
+      ]
+    },
+    {
+      "album_id": "album-002",
+      "name": "Synthwave Summer",
+      "type": "album",
+      "artists": [
+        {
+          "artist_id": "artist-002",
+          "name": "Retrowave Collective"
+        }
+      ],
+      "cover": "/music/covers/synthwave-summer.jpg",
+      "date": "2023-06-01",
+      "songs": [
+        {
+          "song_id": "song-004",
+          "title": "Ocean Drive",
+          "audio_file": "/music/songs/ocean-drive.mp3",
+          "album_id": "album-002",
+          "artists": [
+            {
+              "artist_id": "artist-002",
+              "name": "Retrowave Collective"
+            }
+          ],
+          "duration": 225
+        },
+        {
+          "song_id": "song-005",
+          "title": "Sunset Boulevard",
+          "audio_file": "/music/songs/sunset-boulevard.mp3",
+          "album_id": "album-002",
+          "artists": [
+            {
+              "artist_id": "artist-002",
+              "name": "Retrowave Collective"
+            }
+          ],
+          "duration": 198
+        }
+      ]
+    }
+  ]
+} 

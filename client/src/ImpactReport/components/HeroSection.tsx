@@ -1,7 +1,13 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { animate, stagger, createTimeline, createAnimatable } from 'animejs';
+import {
+  animate,
+  stagger,
+  createTimeline,
+  createAnimatable,
+  utils,
+} from 'animejs';
 import COLORS from '../../assets/colors';
 
 // Main container with Spotify-like gradient background
@@ -38,13 +44,14 @@ const WaveBackground = styled.div`
 
 // Individual wave bar styled for a music waveform
 const WaveBar = styled.div`
-  width: 4px; /* Thicker bars for better visibility with even fewer of them */
+  width: 6px; /* Thicker bars to allow fewer of them */
   height: 4px; /* Default minimal height */
   border-radius: 2px;
-  transition: height 0.15s ease-out, opacity 0.15s ease-out; /* Simpler, faster transitions */
-  transform-origin: center; /* Center so it can extend both up and down */
-  opacity: 0.6; /* Semi-transparent by default */
-  pointer-events: none; /* Don't catch events */
+  transform-origin: center;
+  opacity: 0.6;
+  pointer-events: none;
+  will-change: transform, height, opacity; /* Better performance with transform */
+  transform: translateZ(0); /* Hardware acceleration */
 `;
 
 // Content wrapper with better Spotify-like spacing
@@ -53,7 +60,7 @@ const ContentWrapper = styled.div`
   max-width: 1400px;
   padding: 0 5%;
   position: relative;
-  margin-top: 8%;
+  margin-top: 0;
   z-index: 2; /* Content above wave but still allows events to pass through */
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -191,13 +198,6 @@ const RightContent = styled.div`
   pointer-events: none; /* Let events pass through */
 `;
 
-// Define a type for wave bar elements and wave parameters
-interface WaveBarElement extends HTMLElement {
-  height?: string;
-  marginTop?: string;
-  marginBottom?: string;
-}
-
 function HeroSection(): JSX.Element {
   // Create refs for animations
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -207,311 +207,385 @@ function HeroSection(): JSX.Element {
   const primaryButtonRef = useRef<HTMLButtonElement>(null);
   const secondaryButtonRef = useRef<HTMLButtonElement>(null);
   const waveBackgroundRef = useRef<HTMLDivElement>(null);
-  const waveBarsRef = useRef<HTMLDivElement[]>([]);
+  const containerRef = useRef<HTMLElement | null>(null);
 
-  // Performance optimization - prevent excessive re-renders
+  // Animation control refs - no state usage
   const isAnimatingRef = useRef<boolean>(false);
-  const requestRef = useRef<number | null>(null);
+  const lastMoveTimeRef = useRef<number>(0);
+  const mousePosRef = useRef({ x: 0, y: 0 });
+  const rippleTimeoutRef = useRef<number | null>(null);
+  const waveAnimatablesRef = useRef<any[]>([]);
+  const containerBoundsRef = useRef<DOMRect | null>(null);
 
-  // Define wave bar colors with more vibrant options and semi-transparency
+  // Set default wave colors - alternate colors instead of sections
   const getWaveBarColor = (index: number, total: number) => {
-    // Create more vibrant colors with transparency
-    const position = index / total;
-    const opacity = 0.5; // Base opacity for background effect
-
-    // Ultra-simplified color spectrum - just 3 colors
-    if (position < 0.33) {
-      return `rgba(0, 210, 180, ${opacity})`;
-    }
-    if (position < 0.67) {
-      return `rgba(30, 120, 255, ${opacity})`;
-    }
-    return `rgba(200, 55, 180, ${opacity})`;
+    // Alternate between two colors based on even/odd index
+    return index % 2 === 0
+      ? `rgba(30, 120, 255, 0.7)`
+      : `rgba(0, 210, 180, 0.7)`;
   };
 
-  // Reset all animations to default state
-  const resetAllBars = () => {
-    // Cancel any ongoing animations
-    if (requestRef.current) {
-      cancelAnimationFrame(requestRef.current);
-      requestRef.current = null;
-    }
-
-    isAnimatingRef.current = false;
-
-    // Get all bars
+  // Initialize wave animatables - using createAnimatable for better performance
+  const initializeWaveAnimatables = useCallback(() => {
     const waveBars = document.querySelectorAll('.wave-bar');
-    if (waveBars.length === 0) return;
+    if (!waveBars.length) return;
 
-    // Create a new animation using default parameters
-    animate(waveBars, {
-      height: (el: any, i: number) => {
-        const position = i / waveBars.length;
-        const centralFactor = 0.5 + Math.abs(position - 0.5);
-        return 5 + centralFactor * 10;
-      },
-      marginTop: (el: any, i: number) => {
-        const position = i / waveBars.length;
-        const centralFactor = 0.5 + Math.abs(position - 0.5);
-        const height = 5 + centralFactor * 10;
-        return -height / 2;
-      },
-      marginBottom: (el: any, i: number) => {
-        const position = i / waveBars.length;
-        const centralFactor = 0.5 + Math.abs(position - 0.5);
-        const height = 5 + centralFactor * 10;
-        return -height / 2;
-      },
-      opacity: 0.6,
-      easing: 'easeOutQuad',
-      duration: 400,
-    });
-  };
+    // Clear previous animatables
+    waveAnimatablesRef.current = [];
 
-  // Define the handleMouseMove callback with proper type for DOM events
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (isAnimatingRef.current || !waveBackgroundRef.current) return;
-    isAnimatingRef.current = true;
-
-    // Define animation parameters within the callback to avoid dependency issues
-    // Use requestAnimationFrame for better performance
-    requestRef.current = requestAnimationFrame(() => {
-      const container = waveBackgroundRef.current?.parentElement;
-      if (!container) {
-        isAnimatingRef.current = false;
-        return;
-      }
-
-      const waveBars = Array.from(
-        document.querySelectorAll('.wave-bar'),
-      ).filter((el): el is HTMLElement => el instanceof HTMLElement);
-      if (waveBars.length === 0) {
-        isAnimatingRef.current = false;
-        return;
-      }
-
-      // Get container dimensions and mouse position
-      const rect = container.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const containerWidth = rect.width;
-
-      // Calculate the mouse position ratio (0 to 1)
-      const positionRatioX = mouseX / containerWidth;
-
-      // Use anime.js to animate the bars
-      animate(waveBars, {
-        height: (el: any, i: number) => {
-          const position = i / waveBars.length;
-          const distance = Math.abs(position - positionRatioX);
-
-          if (distance < 0.15) {
-            const intensity = 1 - distance / 0.15;
-            return 5 + intensity * 80;
-          }
-          return parseFloat(getComputedStyle(el).height);
-        },
-        marginTop: (el: any, i: number) => {
-          const position = i / waveBars.length;
-          const distance = Math.abs(position - positionRatioX);
-
-          if (distance < 0.15) {
-            const intensity = 1 - distance / 0.15;
-            const height = 5 + intensity * 80;
-            return -height / 2;
-          }
-          return parseFloat(getComputedStyle(el).marginTop);
-        },
-        marginBottom: (el: any, i: number) => {
-          const position = i / waveBars.length;
-          const distance = Math.abs(position - positionRatioX);
-
-          if (distance < 0.15) {
-            const intensity = 1 - distance / 0.15;
-            const height = 5 + intensity * 80;
-            return -height / 2;
-          }
-          return parseFloat(getComputedStyle(el).marginBottom);
-        },
-        opacity: (el: any, i: number) => {
-          const position = i / waveBars.length;
-          const distance = Math.abs(position - positionRatioX);
-
-          if (distance < 0.15) {
-            const intensity = 1 - distance / 0.15;
-            return 0.6 + intensity * 0.2;
-          }
-          return 0.6;
-        },
-        duration: 250,
-        easing: 'easeOutQuad',
+    // Create animatable for each bar
+    waveBars.forEach((bar, index) => {
+      const animatable = createAnimatable(bar, {
+        height: 350,
+        marginTop: 350,
+        marginBottom: 350,
+        opacity: 250,
+        scale: 350,
+        ease: 'out(4)', // Snappy, responsive easing
       });
 
-      isAnimatingRef.current = false;
+      waveAnimatablesRef.current.push({
+        el: bar,
+        animatable,
+        index,
+        position: index / waveBars.length,
+      });
+    });
+
+    // Set initial idle wave pattern
+    setIdleWavePattern();
+  }, []);
+
+  // Set idle wave pattern
+  const setIdleWavePattern = useCallback(() => {
+    if (!waveAnimatablesRef.current.length) return;
+
+    waveAnimatablesRef.current.forEach(({ animatable, position }) => {
+      // Create a more interesting pattern with sines
+      const baseHeight = 8 + Math.sin(position * Math.PI * 4) * 15;
+      const height = baseHeight + Math.random() * 5;
+      const halfHeight = height / 2;
+
+      // Use chained animatable methods
+      animatable
+        .height(height, 800, 'inOutSine')
+        .marginTop(-halfHeight, 800, 'inOutSine')
+        .marginBottom(-halfHeight, 800, 'inOutSine')
+        .opacity(0.5 + Math.random() * 0.3, 800, 'inOutSine')
+        .scale(1, 800, 'inOutSine');
     });
   }, []);
 
-  // Simple ripple effect using anime.js
-  const createWaveRipple = useCallback((e: MouseEvent) => {
-    const container = waveBackgroundRef.current?.parentElement;
-    if (!container) return;
+  // Throttled mouse move handler using animatables
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      // Basic throttling - increase to 50ms for better performance
+      const now = Date.now();
+      if (now - lastMoveTimeRef.current < 50) return;
+      lastMoveTimeRef.current = now;
 
-    const waveBars = Array.from(document.querySelectorAll('.wave-bar'));
-    if (waveBars.length === 0) return;
+      // Store current position
+      mousePosRef.current = { x: e.clientX, y: e.clientY };
 
-    // If we're already animating, cancel it
-    if (requestRef.current) {
-      cancelAnimationFrame(requestRef.current);
-    }
+      // Bail if already in click animation
+      if (isAnimatingRef.current) return;
 
-    // Get container dimensions and mouse position
-    const rect = container.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const containerWidth = rect.width;
-    const clickPosition = mouseX / containerWidth;
+      // Clear any pending reset
+      if (rippleTimeoutRef.current) {
+        clearTimeout(rippleTimeoutRef.current);
+        rippleTimeoutRef.current = null;
+      }
 
-    // Create timeline for ripple animation
-    const duration = 1500;
-    const maxWaveHeight = 120;
+      const container = containerRef.current;
+      if (!container || !waveAnimatablesRef.current.length) return;
 
-    // Create keyframes for a ripple effect that propagates outward
-    const keyframes = 10; // Number of animation keyframes
-    const rippleTimeline: Array<{
-      targets: HTMLElement[];
-      height: (target: any, i: number) => number;
-      marginTop: (target: any, i: number) => number;
-      marginBottom: (target: any, i: number) => number;
-      opacity: (target: any, i: number) => number;
-      duration: number;
-      easing: string;
-    }> = [];
+      // Update bounds if needed
+      if (!containerBoundsRef.current) {
+        containerBoundsRef.current = container.getBoundingClientRect();
+      }
 
-    for (let frame = 0; frame < keyframes; frame++) {
-      const progress = frame / (keyframes - 1);
-      const rippleRadius = progress * 0.8;
+      const rect = containerBoundsRef.current;
+      const posX = (e.clientX - rect.left) / rect.width;
 
-      rippleTimeline.push({
-        targets: waveBars as HTMLElement[],
-        height: (el: HTMLElement, i: number) => {
-          const position = i / waveBars.length;
-          const distance = Math.abs(position - clickPosition);
-          const distanceFromRipple = rippleRadius - distance;
+      // Get the vertical position relative to center line (normalized from -1 to 1)
+      // This will determine the intensity of the effect
+      const centerLineY = rect.top + rect.height / 2;
+      const distanceFromCenterY =
+        Math.abs(e.clientY - centerLineY) / (rect.height / 2);
+      const normalizedDistY = utils.clamp(1 - distanceFromCenterY, 0, 1);
 
-          if (distanceFromRipple > -0.1 && distanceFromRipple < 0.2) {
-            const waveIntensity = 1 - Math.abs(distanceFromRipple - 0.05) * 10;
-            const normalizedIntensity = Math.max(0, Math.min(1, waveIntensity));
-            const heightFactor = normalizedIntensity ** 2 * maxWaveHeight;
-            return 5 + heightFactor;
-          }
-          return 5; // Default size
-        },
-        marginTop: (el: HTMLElement, i: number) => {
-          const position = i / waveBars.length;
-          const distance = Math.abs(position - clickPosition);
-          const distanceFromRipple = rippleRadius - distance;
+      // Enhanced intensity based on distance from center line
+      const intensityMultiplier = 0.5 + normalizedDistY * 2; // 0.5x to 2.5x based on centerline proximity
 
-          if (distanceFromRipple > -0.1 && distanceFromRipple < 0.2) {
-            const waveIntensity = 1 - Math.abs(distanceFromRipple - 0.05) * 10;
-            const normalizedIntensity = Math.max(0, Math.min(1, waveIntensity));
-            const heightFactor = normalizedIntensity ** 2 * maxWaveHeight;
-            const height = 5 + heightFactor;
-            return -height / 2;
-          }
-          return -2.5; // Default margin
-        },
-        marginBottom: (el: HTMLElement, i: number) => {
-          const position = i / waveBars.length;
-          const distance = Math.abs(position - clickPosition);
-          const distanceFromRipple = rippleRadius - distance;
+      // Apply animation to ALL bars individually using animatables with chained methods
+      waveAnimatablesRef.current.forEach(({ animatable, position }) => {
+        const distance = Math.abs(position - posX);
 
-          if (distanceFromRipple > -0.1 && distanceFromRipple < 0.2) {
-            const waveIntensity = 1 - Math.abs(distanceFromRipple - 0.05) * 10;
-            const normalizedIntensity = Math.max(0, Math.min(1, waveIntensity));
-            const heightFactor = normalizedIntensity ** 2 * maxWaveHeight;
-            const height = 5 + heightFactor;
-            return -height / 2;
-          }
-          return -2.5; // Default margin
-        },
-        opacity: (el: HTMLElement, i: number) => {
-          const position = i / waveBars.length;
-          const distance = Math.abs(position - clickPosition);
-          const distanceFromRipple = rippleRadius - distance;
+        // Always calculate an intensity, but it drops off with distance
+        // The active range is still 0.3, but we always calculate some effect
+        const rawIntensity =
+          Math.pow(Math.max(0, 1 - distance / 0.3), 2) * intensityMultiplier;
 
-          if (distanceFromRipple > -0.1 && distanceFromRipple < 0.2) {
-            const waveIntensity = 1 - Math.abs(distanceFromRipple - 0.05) * 10;
-            const normalizedIntensity = Math.max(0, Math.min(1, waveIntensity));
-            return 0.6 + normalizedIntensity * 0.3;
-          }
-          return 0.6;
-        },
-        duration: duration / keyframes,
-        easing: 'easeOutQuad',
-      });
-    }
+        // Only apply significant changes if we're in range
+        if (distance < 0.3) {
+          const height = Math.min(5 + rawIntensity * 100, 105);
+          const halfHeight = height / 2;
 
-    // Execute each frame in sequence
-    let currentFrame = 0;
-    const animateFrame = () => {
-      if (currentFrame < rippleTimeline.length) {
-        animate(rippleTimeline[currentFrame].targets, {
-          height: rippleTimeline[currentFrame].height,
-          marginTop: rippleTimeline[currentFrame].marginTop,
-          marginBottom: rippleTimeline[currentFrame].marginBottom,
-          opacity: rippleTimeline[currentFrame].opacity,
-          duration: rippleTimeline[currentFrame].duration,
-          easing: rippleTimeline[currentFrame].easing,
-        });
+          // Use chained methods with short duration for responsive feel
+          animatable
+            .height(height, 100, 'outQuad')
+            .marginTop(-halfHeight, 100, 'outQuad')
+            .marginBottom(-halfHeight, 100, 'outQuad')
+            .opacity(0.6 + Math.min(rawIntensity * 0.4, 0.4), 100, 'outQuad');
+        } else {
+          // For bars outside the range, we still apply a very small effect
+          // This ensures they're "aware" of the cursor and will animate smoothly
+          const minHeight = 5 + Math.random() * 3; // Small random height for idle state
+          const halfHeight = minHeight / 2;
 
-        const frameIndex = currentFrame;
-        currentFrame = currentFrame + 1;
-
-        // Wait for a timeout before starting next frame
-        setTimeout(animateFrame, rippleTimeline[frameIndex].duration);
-      } else {
-        // Reset to default state after animation completes
-        if (requestRef.current) {
-          cancelAnimationFrame(requestRef.current);
-          requestRef.current = null;
+          animatable
+            .height(minHeight, 300, 'outQuad')
+            .marginTop(-halfHeight, 300, 'outQuad')
+            .marginBottom(-halfHeight, 300, 'outQuad')
+            .opacity(0.5 + Math.random() * 0.1, 300, 'outQuad');
         }
+      });
 
-        isAnimatingRef.current = false;
+      // Set a timeout to reset the wave if mouse isn't moving
+      rippleTimeoutRef.current = window.setTimeout(() => {
+        // Gradual transition back to idle wave pattern
+        if (!isAnimatingRef.current) {
+          // Don't interfere with click animations
+          setIdleWavePattern();
+        }
+      }, 800); // Shorter timeout for more responsive reset
+    },
+    [setIdleWavePattern],
+  );
 
-        // Get all bars and reset them to default state
-        const barElements = document.querySelectorAll('.wave-bar');
-        if (barElements.length === 0) return;
-
-        // Reset to default appearance
-        animate(barElements, {
-          height: (el: any, i: number) => {
-            const position = i / barElements.length;
-            const centralFactor = 0.5 + Math.abs(position - 0.5);
-            return 5 + centralFactor * 10;
-          },
-          marginTop: (el: any, i: number) => {
-            const position = i / barElements.length;
-            const centralFactor = 0.5 + Math.abs(position - 0.5);
-            const height = 5 + centralFactor * 10;
-            return -height / 2;
-          },
-          marginBottom: (el: any, i: number) => {
-            const position = i / barElements.length;
-            const centralFactor = 0.5 + Math.abs(position - 0.5);
-            const height = 5 + centralFactor * 10;
-            return -height / 2;
-          },
-          opacity: 0.6,
-          easing: 'easeOutQuad',
-          duration: 400,
-        });
+  // Wave click handler using animatables
+  const handleWaveClick = useCallback(
+    (e: MouseEvent) => {
+      // Bail early if animation is already in progress
+      if (isAnimatingRef.current) {
+        console.log('⚠️ Click ignored - animation already in progress');
+        return;
       }
-    };
 
-    // Start animation
-    animateFrame();
-  }, []);
+      // Bail early if wave doesn't exist
+      const container = containerRef.current;
+      if (!container || !waveAnimatablesRef.current.length) {
+        console.log('⚠️ Click ignored - container or wave bars not available');
+        return;
+      }
 
+      console.log('🎯 Click handler started, setting up animation');
+
+      // Cancel any pending reset
+      if (rippleTimeoutRef.current) {
+        clearTimeout(rippleTimeoutRef.current);
+        rippleTimeoutRef.current = null;
+        console.log('🧹 Cleared pending reset timeout');
+      }
+
+      // Mark as animating to avoid mouse move interference
+      isAnimatingRef.current = true;
+      console.log('🔒 Animation lock acquired');
+
+      // Update bounds if needed
+      if (!containerBoundsRef.current) {
+        containerBoundsRef.current = container.getBoundingClientRect();
+      }
+
+      const rect = containerBoundsRef.current;
+      const clickX = (e.clientX - rect.left) / rect.width;
+
+      // Get the vertical position relative to center line (normalized from -1 to 1)
+      const centerLineY = rect.top + rect.height / 2;
+      const distanceFromCenterY =
+        Math.abs(e.clientY - centerLineY) / (rect.height / 2);
+      const normalizedDistY = utils.clamp(1 - distanceFromCenterY, 0, 1);
+
+      // Enhanced intensity based on distance from center line
+      const intensityMultiplier = 0.5 + normalizedDistY * 2.5; // 0.5x to 3x based on centerline proximity
+
+      console.log(
+        '🌊 Shockwave click detected at position:',
+        clickX.toFixed(3),
+        'Intensity:',
+        intensityMultiplier.toFixed(2),
+        'Animatable count:',
+        waveAnimatablesRef.current.length,
+      );
+
+      // First wave - intense spike at click point
+      console.log('🔽 Starting initial spike animation');
+
+      // Reset all bars to base state to ensure clean animation
+      waveAnimatablesRef.current.forEach(({ animatable, position }) => {
+        const distance = Math.abs(position - clickX);
+
+        // Set initial spike height and properties using proper animatable methods
+        if (distance < 0.15) {
+          const intensity =
+            Math.pow(1 - distance / 0.15, 2) * intensityMultiplier;
+          const height = Math.min(5 + intensity * 150, 180);
+          const halfHeight = height / 2;
+
+          // Use chained animatable methods with proper duration and easing
+          animatable
+            .height(height)
+            .marginTop(-halfHeight)
+            .marginBottom(-halfHeight)
+            .opacity(0.95 + (1 - distance / 0.15) * 0.05)
+            .scale(distance < 0.05 ? 1.2 : 1);
+        } else {
+          // Reset other bars with direct animatable method calls
+          animatable
+            .height(5)
+            .marginTop(-2.5)
+            .marginBottom(-2.5)
+            .opacity(0.6)
+            .scale(1);
+        }
+      });
+
+      console.log('✅ Initial spike animation complete');
+
+      // Set up the shockwave effect with a series of timed animations
+      console.log('🚀 Setting up shockwave sequence');
+
+      // Track animation phases to allow for cleanup
+      let currentPhase = 0;
+      let isCancelled = false;
+
+      // Phase 1: First shockwave - Starting animation
+      setTimeout(() => {
+        if (isCancelled) return;
+        currentPhase = 1;
+        console.log('📊 Shockwave phase 1 - starting wave propagation');
+
+        // Prepare animation intervals for smooth wave movement
+        const totalSteps = 20;
+        const stepDuration = 50; // ms between steps
+        let currentStep = 0;
+
+        // Animation interval instead of frames
+        const propagateWave = setInterval(() => {
+          if (isCancelled) {
+            clearInterval(propagateWave);
+            return;
+          }
+
+          currentStep++;
+          const progress = Math.min(currentStep / totalSteps, 1);
+          const waveProgress = progress * 0.95; // Don't go all the way to edges
+
+          if (currentStep % 5 === 0) {
+            console.log(
+              `📊 Shockwave progress: ${Math.round(progress * 100)}%`,
+            );
+          }
+
+          // Apply the wave position to each bar
+          waveAnimatablesRef.current.forEach(({ animatable, position }) => {
+            const distanceRight = Math.abs(position - (clickX + waveProgress));
+            const distanceLeft = Math.abs(position - (clickX - waveProgress));
+            const minDistance = Math.min(distanceRight, distanceLeft);
+
+            // If bar is at the shockwave front
+            if (minDistance < 0.08) {
+              const frontIntensity =
+                (1 - minDistance / 0.08) * intensityMultiplier;
+              const height = 5 + frontIntensity * 80;
+              const halfHeight = height / 2;
+
+              // Apply shockwave with animatable methods - short duration for responsive feel
+              animatable
+                .height(height, 100, 'outExpo')
+                .marginTop(-halfHeight, 100, 'outExpo')
+                .marginBottom(-halfHeight, 100, 'outExpo')
+                .opacity(0.8 + frontIntensity * 0.2, 100, 'outExpo')
+                .scale(1 + frontIntensity * 0.15, 100, 'outExpo');
+            }
+            // Bars in the wake of the shockwave
+            else if (
+              (position > clickX - waveProgress && position < clickX) ||
+              (position < clickX + waveProgress && position > clickX)
+            ) {
+              const distanceFromClick = Math.abs(position - clickX);
+              const wakePosition = distanceFromClick / waveProgress;
+              const wakeIntensity =
+                Math.sin(wakePosition * Math.PI) * 0.5 * intensityMultiplier;
+
+              if (wakeIntensity > 0.05) {
+                const height = 5 + wakeIntensity * 30;
+                const halfHeight = height / 2;
+
+                animatable
+                  .height(height, 100, 'outSine')
+                  .marginTop(-halfHeight, 100, 'outSine')
+                  .marginBottom(-halfHeight, 100, 'outSine')
+                  .opacity(0.6 + wakeIntensity * 0.3, 100, 'outSine')
+                  .scale(1 + wakeIntensity * 0.1, 100, 'outSine');
+              } else {
+                // Return to minimal height
+                animatable
+                  .height(5, 100, 'outSine')
+                  .marginTop(-2.5, 100, 'outSine')
+                  .marginBottom(-2.5, 100, 'outSine')
+                  .opacity(0.6, 100, 'outSine')
+                  .scale(1, 100, 'outSine');
+              }
+            }
+          });
+
+          // Once complete, clean up and reset
+          if (currentStep >= totalSteps) {
+            clearInterval(propagateWave);
+            console.log('🏁 Shockwave animation complete');
+
+            // Phase 3: Reset to idle pattern
+            setTimeout(() => {
+              if (isCancelled) return;
+              currentPhase = 3;
+              console.log('🔄 Resetting to idle pattern');
+              setIdleWavePattern();
+              isAnimatingRef.current = false;
+              console.log('🔓 Animation lock released');
+            }, 300);
+          }
+        }, stepDuration);
+      }, 350);
+
+      // Return a cleanup function that can be used to cancel animation
+      return () => {
+        console.log(`⚠️ Cancelling shockwave at phase ${currentPhase}`);
+        isCancelled = true;
+        setIdleWavePattern();
+        isAnimatingRef.current = false;
+        console.log('🔓 Animation lock released (cancellation)');
+      };
+    },
+    [setIdleWavePattern],
+  );
+
+  // Define handler for mouseleave with detailed logging
+  const mouseLeaveHandler = useCallback(() => {
+    console.log(
+      '🖱️ Mouse left - animation state:',
+      isAnimatingRef.current ? 'locked' : 'unlocked',
+    );
+    if (!isAnimatingRef.current) {
+      setTimeout(setIdleWavePattern, 300);
+    } else {
+      console.log('⏭️ Skipping idle pattern reset due to active animation');
+    }
+  }, [setIdleWavePattern]);
+
+  // Set up everything on mount and handle cleanup
   useEffect(() => {
-    // Create animation for each element
+    // Initialize animations for text elements using direct AnimeJS calls
     if (titleRef.current) {
       animate(titleRef.current, {
         opacity: [0, 1],
@@ -521,7 +595,6 @@ function HeroSection(): JSX.Element {
       });
     }
 
-    // Add underline animation
     if (underlineRef.current) {
       animate(underlineRef.current, {
         scaleX: [0, 1],
@@ -532,7 +605,6 @@ function HeroSection(): JSX.Element {
       });
     }
 
-    // Add subtitle animation
     if (subtitleRef.current) {
       animate(subtitleRef.current, {
         opacity: [0, 1],
@@ -543,7 +615,6 @@ function HeroSection(): JSX.Element {
       });
     }
 
-    // Add year animation
     if (yearRef.current) {
       animate(yearRef.current, {
         opacity: [0, 1],
@@ -554,7 +625,7 @@ function HeroSection(): JSX.Element {
       });
     }
 
-    // Animate buttons with staggered timing
+    // Animate buttons
     const buttons = [
       primaryButtonRef.current,
       secondaryButtonRef.current,
@@ -573,74 +644,92 @@ function HeroSection(): JSX.Element {
     // Animate wave background
     if (waveBackgroundRef.current) {
       animate(waveBackgroundRef.current, {
-        opacity: [0, 1],
-        duration: 1000,
+        opacity: [0, 0.7],
+        duration: 1200,
         easing: 'easeOutExpo',
         delay: 1000,
       });
     }
 
-    // Initialize basic wave appearance
-    resetAllBars();
-
-    // Setup event listeners with performance optimizations
+    // Set container ref for events
     const heroContainer = waveBackgroundRef.current?.parentElement;
     if (heroContainer) {
-      heroContainer.addEventListener('mousemove', handleMouseMove, {
-        passive: true,
-      });
-      heroContainer.addEventListener('mouseleave', resetAllBars);
-      heroContainer.addEventListener('click', createWaveRipple);
+      containerRef.current = heroContainer;
+      containerBoundsRef.current = heroContainer.getBoundingClientRect();
     }
 
-    // Cleanup on unmount
+    // Initialize wave animatables
+    setTimeout(initializeWaveAnimatables, 100);
+
+    // Handle window resize to update container bounds
+    const handleResize = () => {
+      if (containerRef.current) {
+        containerBoundsRef.current =
+          containerRef.current.getBoundingClientRect();
+      }
+    };
+
+    // Define event handlers for cleanup
+    const clickHandler = (e: Event) => {
+      // Cast to MouseEvent since we know it's a mouse event
+      handleWaveClick(e as MouseEvent);
+    };
+
+    // Set up event listeners with better event handling
+    if (heroContainer) {
+      // Use explicit event listeners without throttling in the listener itself
+      // The throttling is handled inside the function
+      heroContainer.addEventListener('mousemove', handleMouseMove);
+
+      // Make sure click event propagates properly
+      heroContainer.addEventListener('click', clickHandler);
+
+      // Simple mouseleave handler
+      heroContainer.addEventListener('mouseleave', mouseLeaveHandler);
+
+      // Add resize listener
+      window.addEventListener('resize', handleResize);
+    }
+
+    // Cleanup function
     return () => {
       if (heroContainer) {
         heroContainer.removeEventListener('mousemove', handleMouseMove);
-        heroContainer.removeEventListener('mouseleave', resetAllBars);
-        heroContainer.removeEventListener('click', createWaveRipple);
+        heroContainer.removeEventListener('click', clickHandler);
+        heroContainer.removeEventListener('mouseleave', mouseLeaveHandler);
       }
 
-      // Cancel any ongoing animations
-      if (requestRef.current) {
-        cancelAnimationFrame(requestRef.current);
+      window.removeEventListener('resize', handleResize);
+
+      if (rippleTimeoutRef.current) {
+        clearTimeout(rippleTimeoutRef.current);
       }
     };
-  }, [handleMouseMove, createWaveRipple]);
+  }, [
+    handleWaveClick,
+    initializeWaveAnimatables,
+    setIdleWavePattern,
+    mouseLeaveHandler,
+    handleMouseMove,
+  ]);
 
-  // Drastically reduced number of wave bars for much better performance
-  const numWaveBars = 60; // Only half of the previous count
+  // Reduced number of wave bars for better performance
+  const numWaveBars = 80; // Increased to 80 for more visual detail
 
   return (
     <HeroContainer>
-      {/* Music waveform visualization as full background - extremely optimized */}
+      {/* Music waveform visualization */}
       <WaveBackground ref={waveBackgroundRef}>
         {Array.from({ length: numWaveBars }).map((_, i) => {
           const uniqueId = `wave-bar-${i}`;
-
-          // Ultra-simplified initial height calculation
           const position = i / numWaveBars;
-          const centralFactor = 0.5 + Math.abs(position - 0.5); // Simpler calculation
-          const initialHeight = 5 + centralFactor * 10; // Much smaller range
+          const initialHeight = 5 + Math.abs(position - 0.5) * 15;
           const halfHeight = initialHeight / 2;
 
           return (
             <WaveBar
               key={uniqueId}
               className="wave-bar"
-              ref={(el) => {
-                if (el) {
-                  // Create a new array if needed
-                  if (!waveBarsRef.current) {
-                    waveBarsRef.current = [];
-                  }
-                  // Ensure the array is large enough
-                  if (waveBarsRef.current.length <= i) {
-                    waveBarsRef.current.length = i + 1;
-                  }
-                  waveBarsRef.current[i] = el;
-                }
-              }}
               style={{
                 backgroundColor: getWaveBarColor(i, numWaveBars),
                 height: `${initialHeight}px`,

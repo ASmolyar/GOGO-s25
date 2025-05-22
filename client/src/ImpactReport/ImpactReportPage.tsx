@@ -17,7 +17,7 @@ import AchievementsSection from './components/AchievementsSection';
 import PartnersSection from './components/PartnersSection';
 import FutureVisionSection from './components/FutureVisionSection';
 import MusicLibrary from './components/MusicLibrary';
-import MissionStatement from '../components/MissionStatement';
+import MissionStatement from './components/MissionStatement';
 import photo1 from '../assets/missionPhotos/Photo1.jpg';
 import gogoLogo from '../assets/GOGO_LOGO_STACKED_WH.png';
 import gogoWideLogo from '../assets/GOGO_LOGO_WIDE_WH.png';
@@ -797,7 +797,7 @@ function ImpactReportPage() {
 
       {/* Music player integration */}
       <MusicPlayerProvider>
-        <React.Fragment>
+        <>
           {/* Debug logging */}
           {(() => {
             console.log('MusicPlayerProvider children rendering');
@@ -809,28 +809,38 @@ function ImpactReportPage() {
           {/* Hidden initialization for testing */}
           {isMusicInitialized && (
             <div style={{ display: 'none' }}>
-              {(() => {
-                console.log('Hidden initialization rendering');
-                // This is an IIFE (Immediately Invoked Function Expression)
-                // to allow us to use hooks within JSX
-                console.log('IIFE for initialization executing');
-                const { playSong, setModalState } = useMusicPlayer();
-                useEffect(() => {
-                  console.log('Init effect running, playing mock song');
-                  // Make sure modal is visible first
-                  setModalState('pip');
-                  console.log('Set modal state to pip');
-                  // Initialize with mock data when the flag is set
-                  playSong(mockSong, mockAlbum);
-                }, []);
-                return null; // Return nothing - this is just for the side effect
-              })()}
+              <InitializationComponent
+                mockSong={mockSong}
+                mockAlbum={mockAlbum}
+              />
             </div>
           )}
-        </React.Fragment>
+        </>
       </MusicPlayerProvider>
     </div>
   );
+}
+
+// Define a separate component for initialization to use hooks properly
+function InitializationComponent({
+  mockSong,
+  mockAlbum,
+}: {
+  mockSong: Song;
+  mockAlbum: Album;
+}) {
+  const { playSong, setModalState } = useMusicPlayer();
+
+  useEffect(() => {
+    console.log('Init effect running, playing mock song');
+    // Make sure modal is visible first
+    setModalState('pip');
+    console.log('Set modal state to pip');
+    // Initialize with mock data when the flag is set
+    playSong(mockSong, mockAlbum);
+  }, [playSong, setModalState, mockSong, mockAlbum]);
+
+  return null;
 }
 
 export default ImpactReportPage;

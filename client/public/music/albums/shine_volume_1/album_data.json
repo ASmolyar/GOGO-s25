@@ -1,0 +1,184 @@
+{
+  "albums": [
+    {
+      "album_id": "e8f9a0b1-c2d3-4567-stuv-6789012345678",
+      "name": "Shine, Vol. 1 (Guitars over Guns)",
+      "album_url": "https://open.spotify.com/album/shine_vol_1",
+      "type": "compilation",
+      "cover": "/music/albums/shine_volume_1/cover.jpeg",
+      "date": "2023",
+      "artists": [
+        {
+          "artist_id": "a0b1c2d3-e4f5-6789-bcde-f01234567890",
+          "name": "Various Artists"
+        }
+      ],
+      "songs": [
+        {
+          "song_id": "b1c2d3e4-f5a6-7890-tuvw-9012345678901",
+          "title": "Cruel World",
+          "audio_file": "/music/albums/shine_volume_1/cruel_world.mp3",
+          "album_id": "e8f9a0b1-c2d3-4567-stuv-6789012345678",
+          "duration": 223,
+          "artists": [
+            {
+              "artist_id": "b1c2d3e4-f5a6-7890-bcde-f12345678901",
+              "name": "Anaiis Dupoux"
+            }
+          ]
+        },
+        {
+          "song_id": "c2d3e4f5-a6b7-8901-uvwx-0123456789012",
+          "title": "Magic",
+          "audio_file": "/music/albums/shine_volume_1/magic.mp3",
+          "album_id": "e8f9a0b1-c2d3-4567-stuv-6789012345678",
+          "duration": 154,
+          "artists": [
+            {
+              "artist_id": "c2d3e4f5-a6b7-8901-cdef-123456789012",
+              "name": "Slaughter Face"
+            }
+          ]
+        },
+        {
+          "song_id": "d3e4f5a6-b7c8-9012-vwxy-1234567890123",
+          "title": "Ain't No Glory (Guitars over Guns)",
+          "audio_file": "/music/albums/shine_volume_1/aint_no_glory.mp3",
+          "album_id": "e8f9a0b1-c2d3-4567-stuv-6789012345678",
+          "duration": 176,
+          "artists": [
+            {
+              "artist_id": "d3e4f5a6-b7c8-9012-defg-234567890123",
+              "name": "Wiliena Clesidor"
+            }
+          ]
+        },
+        {
+          "song_id": "e4f5a6b7-c8d9-0123-wxyz-2345678901234",
+          "title": "Fragile",
+          "audio_file": "/music/albums/shine_volume_1/fragile.mp3",
+          "album_id": "e8f9a0b1-c2d3-4567-stuv-6789012345678",
+          "duration": 243,
+          "artists": [
+            {
+              "artist_id": "e4f5a6b7-c8d9-0123-efgh-345678901234",
+              "name": "Atlas"
+            }
+          ]
+        },
+        {
+          "song_id": "f5a6b7c8-d9e0-1234-xyza-3456789012345",
+          "title": "I Must Lose You",
+          "audio_file": "/music/albums/shine_volume_1/i_must_lose_you.mp3",
+          "album_id": "e8f9a0b1-c2d3-4567-stuv-6789012345678",
+          "duration": 258,
+          "artists": [
+            {
+              "artist_id": "f5a6b7c8-d9e0-1234-fghi-456789012345",
+              "name": "Sangre Oscura"
+            }
+          ]
+        },
+        {
+          "song_id": "a6b7c8d9-e0f1-2345-yzab-4567890123456",
+          "title": "Left Out",
+          "audio_file": "/music/albums/shine_volume_1/left_out.mp3",
+          "album_id": "e8f9a0b1-c2d3-4567-stuv-6789012345678",
+          "duration": 158,
+          "artists": [
+            {
+              "artist_id": "a6b7c8d9-e0f1-2345-ghij-567890123456",
+              "name": "Sandra Labissiere"
+            }
+          ]
+        },
+        {
+          "song_id": "b7c8d9e0-f1a2-3456-zabc-5678901234567",
+          "title": "Battles",
+          "audio_file": "/music/albums/shine_volume_1/battles.mp3",
+          "album_id": "e8f9a0b1-c2d3-4567-stuv-6789012345678",
+          "duration": 234,
+          "artists": [
+            {
+              "artist_id": "b7c8d9e0-f1a2-3456-hijk-678901234567",
+              "name": "Leeyahna Lawson"
+            }
+          ]
+        },
+        {
+          "song_id": "c8d9e0f1-a2b3-4567-abcd-6789012345678",
+          "title": "Mistakes",
+          "audio_file": "/music/albums/shine_volume_1/mistakes.mp3",
+          "album_id": "e8f9a0b1-c2d3-4567-stuv-6789012345678",
+          "duration": 331,
+          "artists": [
+            {
+              "artist_id": "c8d9e0f1-a2b3-4567-ijkl-789012345678",
+              "name": "Scentless"
+            }
+          ]
+        },
+        {
+          "song_id": "d9e0f1a2-b3c4-5678-bcde-7890123456789",
+          "title": "The Hundred Mile Stare",
+          "audio_file": "/music/albums/shine_volume_1/the_hundred_mile_stare.mp3",
+          "album_id": "e8f9a0b1-c2d3-4567-stuv-6789012345678",
+          "duration": 287,
+          "artists": [
+            {
+              "artist_id": "e4f5a6b7-c8d9-0123-efgh-345678901234",
+              "name": "Atlas"
+            }
+          ]
+        },
+        {
+          "song_id": "e0f1a2b3-c4d5-6789-cdef-8901234567890",
+          "title": "We Can Choose",
+          "audio_file": "/music/albums/shine_volume_1/we_can_choose.mp3",
+          "album_id": "e8f9a0b1-c2d3-4567-stuv-6789012345678",
+          "duration": 231,
+          "artists": [
+            {
+              "artist_id": "e0f1a2b3-c4d5-6789-klmn-901234567890",
+              "name": "Jasmine Etienne"
+            },
+            {
+              "artist_id": "f1a2b3c4-d5e6-7890-lmno-012345678901",
+              "name": "Manny Jean-Charles"
+            }
+          ]
+        },
+        {
+          "song_id": "f1a2b3c4-d5e6-7890-defg-9012345678901",
+          "title": "I Wish We Had More Time",
+          "audio_file": "/music/albums/shine_volume_1/i_wish_we_had_more_time.mp3",
+          "album_id": "e8f9a0b1-c2d3-4567-stuv-6789012345678",
+          "duration": 189,
+          "artists": [
+            {
+              "artist_id": "d3e4f5a6-b7c8-9012-defg-234567890123",
+              "name": "Wiliena Clesidor"
+            }
+          ]
+        },
+        {
+          "song_id": "a2b3c4d5-e6f7-8901-efgh-0123456789012",
+          "title": "We Gon' shine",
+          "audio_file": "/music/albums/shine_volume_1/we_gon_shine.mp3",
+          "album_id": "e8f9a0b1-c2d3-4567-stuv-6789012345678",
+          "duration": 231,
+          "artists": [
+            {
+              "artist_id": "a2b3c4d5-e6f7-8901-mnop-123456789012",
+              "name": "Angelina Barbosa"
+            },
+            {
+              "artist_id": "b3c4d5e6-f7a8-9012-nopq-234567890123",
+              "name": "Miriam Dozier"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+} 

@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 import '../assets/fonts/fonts.css';
-import COLORS from '../assets/colors.ts';
 import { animate, stagger } from 'animejs';
+import COLORS from '../assets/colors.ts';
 
 // Modern animations
 const shimmer = keyframes`
@@ -218,91 +218,17 @@ const Statement = styled.div`
   }
 `;
 
-// Stats display with animated equalizer
-const StatsContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  margin-top: 3rem;
-  flex-wrap: wrap;
-`;
-
-const StatCard = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 2rem;
-  border-radius: 16px;
-  background: rgba(25, 25, 35, 0.3);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
-  min-width: 160px;
-  transition: all 0.3s ease;
-  animation: ${pulse} 8s ease-in-out infinite;
-  animation-delay: calc(var(--index) * 0.5s);
-
-  &:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), 0 0 0 2px ${COLORS.gogo_blue}66;
-  }
-`;
-
-const StatValue = styled.div`
-  font-size: 3rem;
-  font-weight: bold;
-  color: white;
-  margin-bottom: 0.5rem;
-  font-family: 'Century Gothic', 'Arial', sans-serif;
-  background: linear-gradient(
-    to right,
-    #ffffff,
-    ${COLORS.gogo_blue},
-    ${COLORS.gogo_purple}
-  );
-  background-size: 100% 100%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-`;
-
-const StatLabel = styled.div`
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.8);
-  text-align: center;
-  margin-bottom: 1rem;
-`;
-
-const Equalizer = styled.div`
-  display: flex;
-  align-items: flex-end;
-  gap: 4px;
-  height: 40px;
-  margin-top: 1rem;
-`;
-
-const EqualizerBar = styled.div`
-  width: 6px;
-  background: linear-gradient(
-    to top,
-    ${COLORS.gogo_blue},
-    ${COLORS.gogo_purple}
-  );
-  border-radius: 2px;
-  height: 15%;
-  animation: ${equalizer} 1.2s ease-in-out infinite;
-  animation-delay: calc(var(--index) * 0.1s);
-`;
-
 interface MissionStatementProps {
   topImages: string[];
   bottomImages: string[];
   statement: string;
 }
 
-const MissionStatement: React.FC<MissionStatementProps> = ({
+function MissionStatement({
   topImages,
   bottomImages,
   statement,
-}) => {
+}: MissionStatementProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Create extended arrays for smooth scrolling
@@ -354,7 +280,7 @@ const MissionStatement: React.FC<MissionStatementProps> = ({
       <ConveyorBelt direction="left">
         {extendedTopImages.map((src, index) => (
           <ImageCard
-            key={index}
+            key={`top-image-${index}`}
             className="image-card"
             style={
               { '--index': index % topImages.length } as React.CSSProperties
@@ -372,7 +298,7 @@ const MissionStatement: React.FC<MissionStatementProps> = ({
       <ConveyorBelt direction="right">
         {extendedBottomImages.map((src, index) => (
           <ImageCard
-            key={index}
+            key={`bottom-image-${index}`}
             className="image-card"
             style={
               { '--index': index % bottomImages.length } as React.CSSProperties
@@ -382,58 +308,8 @@ const MissionStatement: React.FC<MissionStatementProps> = ({
           </ImageCard>
         ))}
       </ConveyorBelt>
-
-      <StatsContainer>
-        <StatCard
-          className="stat-card"
-          style={{ '--index': 0 } as React.CSSProperties}
-        >
-          <StatValue>250K</StatValue>
-          <StatLabel>Students Reached</StatLabel>
-          <Equalizer>
-            {[...Array(5)].map((_, i) => (
-              <EqualizerBar
-                key={i}
-                style={{ '--index': i } as React.CSSProperties}
-              />
-            ))}
-          </Equalizer>
-        </StatCard>
-
-        <StatCard
-          className="stat-card"
-          style={{ '--index': 1 } as React.CSSProperties}
-        >
-          <StatValue>98%</StatValue>
-          <StatLabel>Satisfaction Rate</StatLabel>
-          <Equalizer>
-            {[...Array(5)].map((_, i) => (
-              <EqualizerBar
-                key={i}
-                style={{ '--index': i } as React.CSSProperties}
-              />
-            ))}
-          </Equalizer>
-        </StatCard>
-
-        <StatCard
-          className="stat-card"
-          style={{ '--index': 2 } as React.CSSProperties}
-        >
-          <StatValue>15+</StatValue>
-          <StatLabel>Years of Impact</StatLabel>
-          <Equalizer>
-            {[...Array(5)].map((_, i) => (
-              <EqualizerBar
-                key={i}
-                style={{ '--index': i } as React.CSSProperties}
-              />
-            ))}
-          </Equalizer>
-        </StatCard>
-      </StatsContainer>
     </SectionContainer>
   );
-};
+}
 
 export default MissionStatement;

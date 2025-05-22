@@ -804,18 +804,18 @@ interface MapStatsProps {
 }
 
 function MapStats({ regions, selectedRegion }: MapStatsProps) {
-  // Count total locations and programs for the selected region or all regions
+  // Count total locations and mediums for the selected region or all regions
   const statsData = useMemo(() => {
     if (selectedRegion) {
       // Stats for selected region
       const cityCount = 1;
       const locationCount = selectedRegion.sublocations.length;
-      const programCount = selectedRegion.sublocations.reduce(
-        (count, location) => count + (location.programs?.length || 0),
+      const mediumCount = selectedRegion.sublocations.reduce(
+        (count, location) => count + (location.mediums?.length || 0),
         0,
       );
 
-      return { cityCount, locationCount, programCount };
+      return { cityCount, locationCount, mediumCount };
     }
 
     // Stats for all regions
@@ -827,15 +827,15 @@ function MapStats({ regions, selectedRegion }: MapStatsProps) {
       (count, region) => count + region.sublocations.length,
       0,
     );
-    const totalProgramCount = regions.reduce((count, region) => {
-      const regionProgramCount = region.sublocations.reduce(
-        (subCount, location) => subCount + (location.programs?.length || 0),
+    const totalMediumCount = regions.reduce((count, region) => {
+      const regionMediumCount = region.sublocations.reduce(
+        (subCount, location) => subCount + (location.mediums?.length || 0),
         0,
       );
-      return count + regionProgramCount;
+      return count + regionMediumCount;
     }, 0);
 
-    return { cityCount, locationCount, programCount: totalProgramCount };
+    return { cityCount, locationCount, mediumCount: totalMediumCount };
   }, [regions, selectedRegion]);
 
   return (
@@ -849,8 +849,8 @@ function MapStats({ regions, selectedRegion }: MapStatsProps) {
         <StatLabel>Locations</StatLabel>
       </Stat>
       <Stat>
-        <StatValue>{statsData.programCount}</StatValue>
-        <StatLabel>Programs</StatLabel>
+        <StatValue>{statsData.mediumCount}</StatValue>
+        <StatLabel>Mediums</StatLabel>
       </Stat>
     </StatsBar>
   );
@@ -1305,27 +1305,25 @@ function Map({
                   <PopupDescription>{location.description}</PopupDescription>
                 )}
 
-                {location.programs && location.programs.length > 0 && (
+                {location.mediums && location.mediums.length > 0 && (
                   <>
-                    <ProgramsTitle>Programs</ProgramsTitle>
+                    <ProgramsTitle>Mediums</ProgramsTitle>
                     <ProgramsList>
-                      {location.programs.map((program, index) => (
+                      {location.mediums.map((medium, index) => (
                         <li
-                          key={`${location.id}-program-${
-                            program.replace(/\s+/g, '-').toLowerCase() || index
+                          key={`${location.id}-medium-${
+                            medium.replace(/\s+/g, '-').toLowerCase() || index
                           }`}
                         >
-                          {program}
+                          {medium}
                         </li>
                       ))}
                     </ProgramsList>
                   </>
                 )}
 
-                {location.supportedBy && location.supportedBy.length > 0 && (
-                  <SupportedBy>
-                    Supported by: {location.supportedBy.join(', ')}
-                  </SupportedBy>
+                {location.extraText && (
+                  <SupportedBy>{location.extraText}</SupportedBy>
                 )}
 
                 {location.website && (

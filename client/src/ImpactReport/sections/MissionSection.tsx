@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
-import MissionStatement from '../../components/MissionStatement';
+import MissionStatement from '../components/MissionStatement';
 import COLORS from '../../assets/colors.ts';
 import photo1 from '../../assets/missionPhotos/Photo1.jpg';
 import photo2 from '../../assets/missionPhotos/Photo2.jpg';

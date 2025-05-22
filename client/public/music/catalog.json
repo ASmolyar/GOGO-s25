@@ -74,7 +74,7 @@
         }
       ],
       "songs": [
-    {
+        {
           "song_id": "f8a9b0c1-d2e3-4567-rstu-6789012345678",
           "title": "This Is Nothing New",
           "audio_file": "/music/albums/the_rain_may_be_pouring/This_Is_Nothing_New.mp3",
@@ -95,16 +95,16 @@
             {
               "artist_id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
               "name": "Justine Garcia"
-        }
-      ]
-    },
-    {
+            }
+          ]
+        },
+        {
           "song_id": "b0c1d2e3-f4a5-6789-tuvw-8901234567890",
           "title": "Company",
           "audio_file": "/music/albums/the_rain_may_be_pouring/Company.mp3",
           "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
           "artists": [
-        {
+            {
               "artist_id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
               "name": "Starve Marve"
             }
@@ -135,16 +135,16 @@
             {
               "artist_id": "f6a7b8c9-d0e1-2345-fghi-45678901234567",
               "name": "Tif Boom"
-        }
-      ]
-    },
-    {
+            }
+          ]
+        },
+        {
           "song_id": "e3f4a5b6-c7d8-9012-wxyz-1234567890123",
           "title": "Homesick",
           "audio_file": "/music/albums/the_rain_may_be_pouring/Homesick.mp3",
           "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
           "artists": [
-        {
+            {
               "artist_id": "a7b8c9d0-e1f2-3456-ghij-5678901234567",
               "name": "Mish"
             }
@@ -171,16 +171,16 @@
             {
               "artist_id": "c9d0e1f2-a3b4-5678-ijkl-7890123456789",
               "name": "RonDon Keyz"
-        }
-      ]
-    },
-    {
+            }
+          ]
+        },
+        {
           "song_id": "b6c7d8e9-f0a1-2345-zabc-4567890123456",
           "title": "Pieces",
           "audio_file": "/music/albums/the_rain_may_be_pouring/Pieces.mp3",
           "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
           "artists": [
-        {
+            {
               "artist_id": "d0e1f2a3-b4c5-6789-jklm-8901234567890",
               "name": "Rios"
             }
@@ -207,16 +207,16 @@
             {
               "artist_id": "f2a3b4c5-d6e7-8901-lmno-0123456789012",
               "name": "Lyrical Grenade"
-        }
-      ]
-    },
-    {
+            }
+          ]
+        },
+        {
           "song_id": "e9f0a1b2-c3d4-5678-cdef-7890123456789",
           "title": "It's Come to This...",
           "audio_file": "/music/albums/the_rain_may_be_pouring/It's_Come_to_This....mp3",
           "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
           "artists": [
-        {
+            {
               "artist_id": "a3b4c5d6-e7f8-9012-mnop-1234567890123",
               "name": "Kenzy Lafrance"
             }
@@ -249,6 +249,186 @@
               "name": "St. James Valsin"
             }
           ]
+        }
+      ]
+    },
+    {
+      "album_id": "e8f9a0b1-c2d3-4567-stuv-6789012345678",
+      "name": "Shine, Vol. 1 (Guitars over Guns)",
+      "album_url": "https://open.spotify.com/album/shine_vol_1",
+      "type": "compilation",
+      "cover": "/music/albums/shine_volume_1/cover.jpeg",
+      "date": "2023",
+      "artists": [
+        {
+          "artist_id": "a0b1c2d3-e4f5-6789-bcde-f01234567890",
+          "name": "Various Artists"
+        }
+      ],
+      "songs": [
+        {
+          "song_id": "b1c2d3e4-f5a6-7890-tuvw-9012345678901",
+          "title": "Cruel World",
+          "audio_file": "/music/albums/shine_volume_1/cruel_world.mp3",
+          "album_id": "e8f9a0b1-c2d3-4567-stuv-6789012345678",
+          "artists": [
+            {
+              "artist_id": "b1c2d3e4-f5a6-7890-bcde-f12345678901",
+              "name": "Anaiis Dupoux"
+            }
+          ],
+          "duration": 223
+        },
+        {
+          "song_id": "c2d3e4f5-a6b7-8901-uvwx-0123456789012",
+          "title": "Magic",
+          "audio_file": "/music/albums/shine_volume_1/magic.mp3",
+          "album_id": "e8f9a0b1-c2d3-4567-stuv-6789012345678",
+          "artists": [
+            {
+              "artist_id": "c2d3e4f5-a6b7-8901-cdef-123456789012",
+              "name": "Slaughter Face"
+            }
+          ],
+          "duration": 154
+        },
+        {
+          "song_id": "d3e4f5a6-b7c8-9012-vwxy-1234567890123",
+          "title": "Ain't No Glory (Guitars over Guns)",
+          "audio_file": "/music/albums/shine_volume_1/aint_no_glory.mp3",
+          "album_id": "e8f9a0b1-c2d3-4567-stuv-6789012345678",
+          "artists": [
+            {
+              "artist_id": "d3e4f5a6-b7c8-9012-defg-234567890123",
+              "name": "Wiliena Clesidor"
+            }
+          ],
+          "duration": 176
+        },
+        {
+          "song_id": "e4f5a6b7-c8d9-0123-wxyz-2345678901234",
+          "title": "Fragile",
+          "audio_file": "/music/albums/shine_volume_1/fragile.mp3",
+          "album_id": "e8f9a0b1-c2d3-4567-stuv-6789012345678",
+          "artists": [
+            {
+              "artist_id": "e4f5a6b7-c8d9-0123-efgh-345678901234",
+              "name": "Atlas"
+            }
+          ],
+          "duration": 243
+        },
+        {
+          "song_id": "f5a6b7c8-d9e0-1234-xyza-3456789012345",
+          "title": "I Must Lose You",
+          "audio_file": "/music/albums/shine_volume_1/i_must_lose_you.mp3",
+          "album_id": "e8f9a0b1-c2d3-4567-stuv-6789012345678",
+          "artists": [
+            {
+              "artist_id": "f5a6b7c8-d9e0-1234-fghi-456789012345",
+              "name": "Sangre Oscura"
+            }
+          ],
+          "duration": 258
+        },
+        {
+          "song_id": "a6b7c8d9-e0f1-2345-yzab-4567890123456",
+          "title": "Left Out",
+          "audio_file": "/music/albums/shine_volume_1/left_out.mp3",
+          "album_id": "e8f9a0b1-c2d3-4567-stuv-6789012345678",
+          "artists": [
+            {
+              "artist_id": "a6b7c8d9-e0f1-2345-ghij-567890123456",
+              "name": "Sandra Labissiere"
+            }
+          ],
+          "duration": 158
+        },
+        {
+          "song_id": "b7c8d9e0-f1a2-3456-zabc-5678901234567",
+          "title": "Battles",
+          "audio_file": "/music/albums/shine_volume_1/battles.mp3",
+          "album_id": "e8f9a0b1-c2d3-4567-stuv-6789012345678",
+          "artists": [
+            {
+              "artist_id": "b7c8d9e0-f1a2-3456-hijk-678901234567",
+              "name": "Leeyahna Lawson"
+            }
+          ],
+          "duration": 234
+        },
+        {
+          "song_id": "c8d9e0f1-a2b3-4567-abcd-6789012345678",
+          "title": "Mistakes",
+          "audio_file": "/music/albums/shine_volume_1/mistakes.mp3",
+          "album_id": "e8f9a0b1-c2d3-4567-stuv-6789012345678",
+          "artists": [
+            {
+              "artist_id": "c8d9e0f1-a2b3-4567-ijkl-789012345678",
+              "name": "Scentless"
+            }
+          ],
+          "duration": 331
+        },
+        {
+          "song_id": "d9e0f1a2-b3c4-5678-bcde-7890123456789",
+          "title": "The Hundred Mile Stare",
+          "audio_file": "/music/albums/shine_volume_1/the_hundred_mile_stare.mp3",
+          "album_id": "e8f9a0b1-c2d3-4567-stuv-6789012345678",
+          "artists": [
+            {
+              "artist_id": "e4f5a6b7-c8d9-0123-efgh-345678901234",
+              "name": "Atlas"
+            }
+          ],
+          "duration": 287
+        },
+        {
+          "song_id": "e0f1a2b3-c4d5-6789-cdef-8901234567890",
+          "title": "We Can Choose",
+          "audio_file": "/music/albums/shine_volume_1/we_can_choose.mp3",
+          "album_id": "e8f9a0b1-c2d3-4567-stuv-6789012345678",
+          "artists": [
+            {
+              "artist_id": "e0f1a2b3-c4d5-6789-klmn-901234567890",
+              "name": "Jasmine Etienne"
+            },
+            {
+              "artist_id": "f1a2b3c4-d5e6-7890-lmno-012345678901",
+              "name": "Manny Jean-Charles"
+            }
+          ],
+          "duration": 231
+        },
+        {
+          "song_id": "f1a2b3c4-d5e6-7890-defg-9012345678901",
+          "title": "I Wish We Had More Time",
+          "audio_file": "/music/albums/shine_volume_1/i_wish_we_had_more_time.mp3",
+          "album_id": "e8f9a0b1-c2d3-4567-stuv-6789012345678",
+          "artists": [
+            {
+              "artist_id": "d3e4f5a6-b7c8-9012-defg-234567890123",
+              "name": "Wiliena Clesidor"
+            }
+          ],
+          "duration": 189
+        },
+        {
+          "song_id": "a2b3c4d5-e6f7-8901-efgh-0123456789012",
+          "title": "We Gon' shine",
+          "audio_file": "/music/albums/shine_volume_1/we_gon_shine.mp3",
+          "album_id": "e8f9a0b1-c2d3-4567-stuv-6789012345678",
+          "artists": [
+            {
+              "artist_id": "a2b3c4d5-e6f7-8901-mnop-123456789012",
+              "name": "Angelina Barbosa"
+            },
+            {
+              "artist_id": "b3c4d5e6-f7a8-9012-nopq-234567890123",
+              "name": "Miriam Dozier"
+            }
+          ],
+          "duration": 231
         }
       ]
     }

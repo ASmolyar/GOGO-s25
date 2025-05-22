@@ -4,6 +4,8 @@ import React, {
   useState,
   useRef,
   useEffect,
+  useCallback,
+  useMemo,
 } from 'react';
 import { Song, Album } from '../types/music';
 
@@ -34,7 +36,27 @@ const MusicPlayerContext = createContext<MusicPlayerContextType | undefined>(
 export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  console.log('MusicPlayerProvider initializing');
+  console.log('[MusicPlayerContext] Provider rendering');
+  const renderCountRef = useRef(0);
+  const prevPropsRef = useRef<{ children: React.ReactNode }>({ children });
+
+  // Track render count
+  useEffect(() => {
+    renderCountRef.current += 1;
+    console.log(`[MusicPlayerContext] Render count: ${renderCountRef.current}`);
+  });
+
+  // Check if this is an unnecessary re-render
+  const isRerender =
+    React.Children.count(children) ===
+    React.Children.count(prevPropsRef.current.children);
+  if (isRerender && renderCountRef.current > 1) {
+    console.log('[MusicPlayerContext] Detected unnecessary re-render');
+  }
+  prevPropsRef.current = { children };
+
+  console.log('[MusicPlayerContext] Initializing');
+
   // State for the music player
   const [currentSong, setCurrentSong] = useState<Song | null>(null);
   const [currentAlbum, setCurrentAlbum] = useState<Album | null>(null);
@@ -44,16 +66,23 @@ export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({
   const [volume, setVolume] = useState(0.7); // Default volume
   const [modalState, setModalState] = useState<
     'full' | 'pip' | 'minimized' | 'hidden'
-  >('pip'); // Default to picture-in-picture mode instead of hidden
+  >('full'); // Default to fullscreen mode
 
-  console.log('MusicPlayerProvider initial state:', { modalState, isPlaying });
+  // Track modal state changes
+  const prevModalStateRef = useRef<'full' | 'pip' | 'minimized' | 'hidden'>(
+    'full',
+  );
+  const modalStateChangeCountRef = useRef(0);
+  const isUpdatingRef = useRef(false);
+
+  console.log('[MusicPlayerContext] Initial state:', { modalState, isPlaying });
 
   // Reference to the audio element
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Initialize the audio element on component mount
   useEffect(() => {
-    console.log('MusicPlayerContext: Setting up audio element');
+    console.log('[MusicPlayerContext] Setting up audio element');
     audioRef.current = new Audio();
     const audio = audioRef.current;
 
@@ -68,7 +97,7 @@ export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({
 
     // Clean up function
     return () => {
-      console.log('MusicPlayerContext: Cleaning up audio element');
+      console.log('[MusicPlayerContext] Cleaning up audio element');
       audio.pause();
       audio.src = '';
       audio.removeEventListener('timeupdate', handleTimeUpdate);
@@ -198,70 +227,117 @@ export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   // Modal state setter with logging
-  const setModalStateWithLogging = (
-    state: 'full' | 'pip' | 'minimized' | 'hidden',
-  ) => {
-    console.log(`Modal state changing: ${modalState} -> ${state}`);
+  const setModalStateWithLogging = useCallback(
+    (state: 'full' | 'pip' | 'minimized' | 'hidden') => {
+      // Only update if the state is actually different
+      if (modalState === state) {
+        console.log(
+          `[MusicPlayerContext] Skipping identical state update: ${state}`,
+        );
+        return;
+      }
 
-    // Add extra debugging to track if state is actually changing
-    console.log('[Debug] Previous state object:', {
-      modalState,
-      isStateEqual: modalState === state,
-      stateValue: state,
-    });
+      // Prevent multiple rapid updates
+      if (isUpdatingRef.current) {
+        console.log(
+          `[MusicPlayerContext] Already updating, skipping new state: ${state}`,
+        );
+        return;
+      }
 
-    // Force state change even if it appears to be the same value
-    if (modalState === state) {
+      isUpdatingRef.current = true;
+
+      modalStateChangeCountRef.current += 1;
       console.log(
-        '[Debug] Forcing state update even though values appear the same',
+        `[MusicPlayerContext] Modal state change #${modalStateChangeCountRef.current}: ${modalState} -> ${state}`,
       );
-      // Use a different approach to ensure the state updates
-      setModalState((prevState) => {
-        console.log('[Debug] Inside state setter, prevState:', prevState);
-        return state;
+
+      prevModalStateRef.current = modalState;
+
+      // Add extra debugging to track if state is actually changing
+      console.log('[MusicPlayerContext] Previous state object:', {
+        modalState,
+        isStateEqual: modalState === state,
+        stateValue: state,
       });
-    } else {
+
+      // Simply update the state directly without extra logic
+      console.log(`[MusicPlayerContext] Calling setModalState(${state})`);
       setModalState(state);
-    }
-  };
+
+      // Reset the updating flag after a short delay
+      setTimeout(() => {
+        isUpdatingRef.current = false;
+        console.log('[MusicPlayerContext] Reset updating flag');
+      }, 200);
+    },
+    [modalState],
+  );
 
   // Update audio src when currentSong changes
   useEffect(() => {
-    console.log('currentSong changed effect running');
+    console.log('[MusicPlayerContext] currentSong changed effect running');
     if (audioRef.current && currentSong) {
+      console.log(
+        `[MusicPlayerContext] Updating audio source: ${currentSong.audio_file}`,
+      );
       audioRef.current.src = currentSong.audio_file;
 
       if (isPlaying) {
+        console.log('[MusicPlayerContext] Auto-playing after source change');
         audioRef.current.play().catch((error) => {
-          console.error('Error playing audio:', error);
+          console.error('[MusicPlayerContext] Error playing audio:', error);
           setIsPlaying(false);
         });
       }
     }
-  }, [currentSong]);
+  }, [currentSong, isPlaying]);
 
   // Track modal state changes
   useEffect(() => {
-    console.log('Modal state updated to:', modalState);
+    if (prevModalStateRef.current !== modalState) {
+      console.log(
+        `[MusicPlayerContext] Modal state updated from ${prevModalStateRef.current} to ${modalState}`,
+      );
+      prevModalStateRef.current = modalState;
+    }
   }, [modalState]);
 
   // The context value
-  const contextValue: MusicPlayerContextType = {
-    currentSong,
-    currentAlbum,
-    isPlaying,
-    currentTime,
-    duration,
-    volume,
-    modalState,
-    setModalState: setModalStateWithLogging,
-    playSong,
-    playPause,
-    nextTrack,
-    previousTrack,
-    seek,
-    setVolume: handleSetVolume,
-  };
+  const contextValue = useMemo(
+    () => ({
+      currentSong,
+      currentAlbum,
+      isPlaying,
+      currentTime,
+      duration,
+      volume,
+      modalState,
+      setModalState: setModalStateWithLogging,
+      playSong,
+      playPause,
+      nextTrack,
+      previousTrack,
+      seek,
+      setVolume: handleSetVolume,
+    }),
+    [
+      currentSong,
+      currentAlbum,
+      isPlaying,
+      currentTime,
+      duration,
+      volume,
+      modalState,
+      setModalStateWithLogging,
+      playSong,
+      playPause,
+      nextTrack,
+      previousTrack,
+      seek,
+      handleSetVolume,
+    ],
+  );
 
   return (
     <MusicPlayerContext.Provider value={contextValue}>
@@ -275,7 +351,9 @@ export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({
 export const useMusicPlayer = () => {
   const context = useContext(MusicPlayerContext);
   if (context === undefined) {
-    console.error('useMusicPlayer was called outside of MusicPlayerProvider');
+    console.error(
+      '[MusicPlayerContext] useMusicPlayer was called outside of MusicPlayerProvider',
+    );
     throw new Error('useMusicPlayer must be used within a MusicPlayerProvider');
   }
   return context;

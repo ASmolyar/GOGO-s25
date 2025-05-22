@@ -8,12 +8,12 @@ const regions: Region[] = [
     name: 'Chicago',
     centerCoordinates: [41.8781, -87.6298],
     defaultZoom: 11,
-    minZoom: 9,
+    minZoom: 8,
     maxZoom: 18,
     color: COLORS.gogo_blue,
     maxBounds: [
-      [41.6447, -87.9402], // Southwest corner
-      [42.023, -87.3241], // Northeast corner
+      [41.5447, -88.0402], // Southwest corner - expanded
+      [42.123, -87.2241], // Northeast corner - expanded
     ],
     sublocations: [
       {
@@ -21,36 +21,40 @@ const regions: Region[] = [
         name: 'Mosaic Hub Chicago',
         coordinates: [41.8826, -87.6322],
         type: 'hub',
-        programs: ['Music Education', 'Recording Studio'],
+        mediums: ['Music Education', 'Recording Studio'],
+        mediaType: 'image',
+        mediaUrl: '/images/locations/chicago/mosaic-hub.jpg',
       },
       {
         id: 'walter-payton-college-prep',
         name: 'Walter Payton College Prep',
         coordinates: [41.9106, -87.6382],
         type: 'school',
-        programs: ['After School Music Program', 'Youth Development'],
+        mediums: ['After School Music Program', 'Youth Development'],
       },
       {
         id: 'sound-studio-chicago',
         name: 'Sound Studio Chicago',
         coordinates: [41.8916, -87.6446],
         type: 'studio',
-        programs: ['Music Production', 'Artist Development'],
+        mediums: ['Music Production', 'Artist Development'],
+        mediaType: 'video',
+        mediaUrl: 'https://www.youtube.com/embed/Dn4MBJJmvmw',
       },
       {
         id: 'whitney-young-magnet',
         name: 'Whitney M. Young Magnet High School',
         coordinates: [41.8783, -87.6728],
         type: 'school',
-        programs: ['Music Classes', 'Performance Arts'],
+        mediums: ['Music Classes', 'Performance Arts'],
       },
       {
         id: 'chicago-youth-center',
         name: 'Chicago Youth Center',
         coordinates: [41.8513, -87.6516],
         type: 'community-center',
-        programs: ['After School Activities', 'Music Training'],
-        supportedBy: ['City of Chicago', 'GOGO Foundation'],
+        mediums: ['After School Activities', 'Music Training'],
+        extraText: 'In partnership with City of Chicago',
       },
     ],
   },
@@ -59,12 +63,12 @@ const regions: Region[] = [
     name: 'New York City',
     centerCoordinates: [40.7128, -74.006],
     defaultZoom: 11,
-    minZoom: 9,
+    minZoom: 8,
     maxZoom: 18,
     color: COLORS.gogo_green,
     maxBounds: [
-      [40.4774, -74.259], // Southwest corner
-      [40.9176, -73.7004], // Northeast corner
+      [40.3774, -74.359], // Southwest corner - expanded
+      [41.0176, -73.6004], // Northeast corner - expanded
     ],
     sublocations: [
       {
@@ -72,38 +76,40 @@ const regions: Region[] = [
         name: 'Bronx School of Music',
         coordinates: [40.8448, -73.8648],
         type: 'academy',
-        programs: ['Classical Training', 'Jazz Studies'],
+        mediums: ['Classical Training', 'Jazz Studies'],
+        mediaType: 'image',
+        mediaUrl: '/images/locations/nyc/bronx-school.jpg',
       },
       {
         id: 'brooklyn-arts-center',
         name: 'Brooklyn Arts Center',
         coordinates: [40.6782, -73.9442],
         type: 'community-center',
-        programs: ['Urban Music', 'Hip Hop Production'],
-        supportedBy: ['NYC Arts Council', 'GOGO Foundation'],
+        mediums: ['Urban Music', 'Hip Hop Production'],
+        extraText: 'GOGO Foundation partner site',
       },
       {
         id: 'juilliard-outreach',
         name: 'Juilliard Community Outreach',
         coordinates: [40.7738, -73.9837],
         type: 'program',
-        programs: ['Classical Music Education', 'Performance Training'],
+        mediums: ['Classical Music Education', 'Performance Training'],
       },
       {
         id: 'harlem-studio-museum',
         name: 'Harlem Studio Museum',
         coordinates: [40.8054, -73.943],
         type: 'studio',
-        programs: ['Recording Sessions', 'Music History'],
-        supportedBy: ['NYC Cultural Affairs'],
+        mediums: ['Recording Sessions', 'Music History'],
+        extraText: 'In collaboration with NYC Cultural Affairs',
       },
       {
         id: 'laguardia-high-school',
         name: 'LaGuardia High School of Music & Art',
         coordinates: [40.7744, -73.9816],
         type: 'school',
-        programs: ['Music & Arts Education', 'Performance'],
-        supportedBy: ['NYC Department of Education'],
+        mediums: ['Music & Arts Education', 'Performance'],
+        extraText: 'In partnership with NYC Department of Education',
       },
     ],
   },
@@ -112,12 +118,12 @@ const regions: Region[] = [
     name: 'Los Angeles',
     centerCoordinates: [34.0522, -118.2437],
     defaultZoom: 10,
-    minZoom: 9,
+    minZoom: 8,
     maxZoom: 18,
     color: COLORS.gogo_purple,
     maxBounds: [
-      [33.7037, -118.6682], // Southwest corner
-      [34.3373, -118.1553], // Northeast corner
+      [33.6037, -118.7682], // Southwest corner - expanded
+      [34.4373, -118.0553], // Northeast corner - expanded
     ],
     sublocations: [
       {
@@ -125,38 +131,38 @@ const regions: Region[] = [
         name: 'LA Music Academy',
         coordinates: [34.0922, -118.3278],
         type: 'academy',
-        programs: ['Music Industry', 'Production'],
-        supportedBy: ['LA Arts Commission'],
+        mediums: ['Music Industry', 'Production'],
+        extraText: 'Supported by LA Arts Commission',
       },
       {
         id: 'hollywood-high',
         name: 'Hollywood High School of Performing Arts',
         coordinates: [34.1016, -118.3391],
         type: 'school',
-        programs: ['Performance Arts', 'Music Theory'],
+        mediums: ['Performance Arts', 'Music Theory'],
       },
       {
         id: 'echo-park-community',
         name: 'Echo Park Community Music Center',
         coordinates: [34.0781, -118.2593],
         type: 'community-center',
-        programs: ['Youth Music Program', 'Instrument Lessons'],
-        supportedBy: ['LA County', 'GOGO Foundation'],
+        mediums: ['Youth Music Program', 'Instrument Lessons'],
+        extraText: 'GOGO Foundation partner site',
       },
       {
         id: 'downtown-recording',
         name: 'Downtown Recording Studio',
         coordinates: [34.0407, -118.2468],
         type: 'studio',
-        programs: ['Professional Recording', 'Production Classes'],
+        mediums: ['Professional Recording', 'Production Classes'],
       },
       {
         id: 'compton-youth-ensemble',
         name: 'Compton Youth Ensemble',
         coordinates: [33.8958, -118.2201],
         type: 'program',
-        programs: ['Orchestra', 'Music Education'],
-        supportedBy: ['LA Philharmonic Outreach'],
+        mediums: ['Orchestra', 'Music Education'],
+        extraText: 'In collaboration with LA Philharmonic Outreach',
       },
     ],
   },
@@ -164,53 +170,121 @@ const regions: Region[] = [
     id: 'miami',
     name: 'Miami',
     centerCoordinates: [25.7617, -80.1918],
-    defaultZoom: 11,
-    minZoom: 9,
+    defaultZoom: 10,
+    minZoom: 7,
     maxZoom: 18,
     color: COLORS.gogo_yellow,
     maxBounds: [
-      [25.5644, -80.4502], // Southwest corner
-      [25.9717, -80.0867], // Northeast corner
+      [25.3, -80.65], // Southwest corner - expanded further
+      [26.1, -79.95], // Northeast corner - expanded further
     ],
     sublocations: [
       {
-        id: 'miami-beach-conservatory',
-        name: 'Miami Beach Conservatory',
-        coordinates: [25.7903, -80.1342],
-        type: 'academy',
-        programs: ['Classical Music', 'Latin Jazz'],
-        supportedBy: ['Miami Cultural Affairs'],
-      },
-      {
-        id: 'little-havana-arts',
-        name: 'Little Havana Arts Center',
-        coordinates: [25.7659, -80.2196],
-        type: 'community-center',
-        programs: ['Latin Music', 'Cultural Education'],
-        supportedBy: ['Miami-Dade County', 'GOGO Foundation'],
-      },
-      {
-        id: 'wynwood-sound-labs',
-        name: 'Wynwood Sound Labs',
-        coordinates: [25.8049, -80.1985],
-        type: 'studio',
-        programs: ['Electronic Music', 'Beat Production'],
-      },
-      {
-        id: 'new-world-school',
-        name: 'New World School of the Arts',
-        coordinates: [25.7741, -80.1906],
+        id: 'lake-stevens-middle-school',
+        name: 'Lake Stevens Middle School',
+        coordinates: [25.9373, -80.2753], // Miami Gardens
         type: 'school',
-        programs: ['Performing Arts', 'Music Theory'],
-        supportedBy: ['Florida Department of Education'],
+        mediums: ['Guitar/Bass', 'Keys', 'Drums', 'Vocals', 'Wellness'],
+        website: 'https://lakestevensms.com',
+      },
+      {
+        id: 'myrtle-grove-elementary',
+        name: 'Myrtle Grove Elementary',
+        coordinates: [25.945, -80.253], // Miami Gardens
+        type: 'school',
+        mediums: ['Vocals', 'Drums', 'Wellness'],
+        website: 'https://myrtlegrovees.com',
+      },
+      {
+        id: 'linda-lentin-k8-center',
+        name: 'Linda Lentin K-8 Center',
+        coordinates: [25.9061, -80.1695], // North Miami
+        type: 'school',
+        mediums: ['Drums', 'Piano', 'Vocals', 'Wellness'],
+        website: 'https://lindalentink8.net',
+      },
+      {
+        id: 'north-miami-middle-school',
+        name: 'North Miami Middle School',
+        coordinates: [25.8983, -80.1668], // North Miami
+        type: 'school',
+        mediums: ['Piano', 'Vocals', 'Drums', 'Guitar', 'Art', 'Wellness'],
+        website: 'https://northmiamims.com',
+      },
+      {
+        id: 'north-miami-senior-high',
+        name: 'North Miami Senior High School',
+        coordinates: [25.89, -80.181], // North Miami
+        type: 'school',
+        mediums: ['Art', 'Vocals', 'Drums', 'Guitar'],
+        website: 'https://northmiamisenior.org',
+      },
+      {
+        id: 'citrus-grove-k8',
+        name: 'Citrus Grove K-8',
+        coordinates: [25.7933, -80.238], // Miami
+        type: 'school',
+        mediums: ['Vocals', 'Guitars', 'Drums'],
+        website: 'https://citrusgrovek8.org',
+      },
+      {
+        id: 'north-dade-middle-school',
+        name: 'North Dade Middle School',
+        coordinates: [25.9294, -80.239], // Opa-locka
+        type: 'school',
+        mediums: ['Rap', 'Music Production'],
+        website: 'https://northdadems.org',
+      },
+      {
+        id: 'gwen-cherry-park',
+        name: 'Gwen Cherry Park',
+        coordinates: [25.8278, -80.2217], // Miami
+        type: 'community-center',
+        mediums: ['Music Production', 'Wellness'],
+        website: 'https://miamidade.gov/parks/gwen-cherry.asp',
+      },
+      {
+        id: 'carol-city-middle',
+        name: 'Carol City Middle',
+        coordinates: [25.9425, -80.2694], // Miami Gardens
+        type: 'school',
+        mediums: ['Production', 'Guitar/Bass', 'Wellness'],
+        website: 'https://carolcityms.org',
+      },
+      {
+        id: 'miami-carol-city-senior-high',
+        name: 'Miami Carol City Senior High School',
+        coordinates: [25.9396, -80.2525], // Miami Gardens
+        type: 'school',
+        mediums: ['Production', 'Guitar'],
+        website: 'https://carolcityhs.org',
       },
       {
         id: 'overtown-youth-center',
         name: 'Overtown Youth Center',
-        coordinates: [25.7867, -80.2031],
-        type: 'program',
-        programs: ['After School Music', 'Instrument Training'],
-        supportedBy: ['Miami Heat Foundation', 'GOGO Foundation'],
+        coordinates: [25.7867, -80.2031], // Miami
+        type: 'community-center',
+        mediums: ['Production', 'Songwriting', 'Keys'],
+        extraText: 'GOGO Foundation partner site',
+        website: 'https://overtownyouth.org',
+      },
+      {
+        id: 'homestead-studio',
+        name: 'GOGO Homestead Studio @ Live Like Bella Park',
+        coordinates: [25.5404, -80.4821], // Homestead
+        type: 'studio',
+        mediums: ['Drums', 'Guitar/Bass'],
+        website: 'https://gogohomestead.org',
+      },
+      {
+        id: 'miami-beach-bandshell',
+        name: 'Miami Beach Bandshell',
+        coordinates: [25.8196, -80.1231], // Miami Beach
+        type: 'performance-venue',
+        mediums: ['North Dade Showcase'],
+        website: 'https://northbeachbandshell.com',
+        mediaType: 'video',
+        mediaUrl: 'https://www.youtube.com/embed/9o_v6i_kQxs',
       },
     ],
   },
@@ -228,39 +302,44 @@ const regions: Region[] = [
         name: 'Camp GOGO @ Lake Geneva, WI',
         coordinates: [42.5916, -88.4334],
         type: 'summer-program',
-        programs: ['Summer Music Camp', 'Instrument Instruction'],
+        mediums: ['Summer Music Camp', 'Instrument Instruction'],
+        website: 'https://campgogo.org',
       },
       {
         id: 'berklee-summer-boston',
         name: 'Berklee Summer Program Boston',
         coordinates: [42.3467, -71.0972],
         type: 'summer-program',
-        programs: ['College Prep Music', 'Performance Workshops'],
-        supportedBy: ['Berklee College of Music', 'GOGO Foundation'],
+        mediums: ['College Prep Music', 'Performance Workshops'],
+        extraText: 'In partnership with Berklee College of Music',
+        website: 'https://berklee.edu/summer',
       },
       {
         id: 'aspen-music-festival',
         name: 'Aspen Music Festival Colorado',
         coordinates: [39.1911, -106.8175],
         type: 'summer-program',
-        programs: ['Classical Training', 'Orchestra Experience'],
-        supportedBy: ['Aspen Music Festival'],
+        mediums: ['Classical Training', 'Orchestra Experience'],
+        extraText: 'In collaboration with Aspen Music Festival',
+        website: 'https://aspenmusicfestival.com',
       },
       {
         id: 'interlochen-arts-camp',
         name: 'Interlochen Arts Camp Michigan',
         coordinates: [44.6367, -85.7694],
         type: 'summer-program',
-        programs: ['Intensive Music Training', 'Performance Arts'],
-        supportedBy: ['Interlochen Center for the Arts'],
+        mediums: ['Intensive Music Training', 'Performance Arts'],
+        extraText: 'In partnership with Interlochen Center for the Arts',
+        website: 'https://interlochen.org',
       },
       {
         id: 'new-orleans-jazz-camp',
         name: 'New Orleans Jazz & Heritage Camp',
         coordinates: [29.9511, -90.0715],
         type: 'summer-program',
-        programs: ['Jazz Education', 'Louisiana Music History'],
-        supportedBy: ['Jazz & Heritage Foundation', 'GOGO Foundation'],
+        mediums: ['Jazz Education', 'Louisiana Music History'],
+        extraText: 'GOGO Foundation partner site',
+        website: 'https://jazzandheritage.org/camp',
       },
     ],
   },

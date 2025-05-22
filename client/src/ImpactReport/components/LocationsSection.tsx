@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 // Import the vanilla JavaScript Leaflet implementation
-import PlainLeafletMap from '../../components/map/PlainLeafletMap';
+import PlainLeafletMap from './map/PlainLeafletMap';
 
 // Styled component for the map container to fit the GOGO aesthetic
 const MapContainer = styled.div`
