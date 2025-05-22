@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import { Box, Typography, useTheme, useMediaQuery } from '@mui/material';
 import styled, { keyframes } from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { animate, stagger } from 'animejs';
 import COLORS from '../../assets/colors';
 
@@ -539,7 +539,8 @@ const SpotifyCard = styled.div`
 // Change MeasurementHeader to have Spotify-like left alignment with accent bar
 const MeasurementHeader = styled.div`
   text-align: left;
-  margin-bottom: 2rem;
+  margin-top: -2rem;
+  margin-bottom: 1rem;
   position: relative;
   padding-left: 1rem;
 
@@ -581,8 +582,8 @@ const MeasureTitle = styled.h2`
 const SpotifySubtitle = styled.p`
   font-size: 1.2rem;
   color: rgba(255, 255, 255, 0.7);
-  max-width: 650px;
-  margin-top: 1.5rem;
+  max-width: 70vw;
+  margin-top: 0.5rem;
   line-height: 1.6;
 `;
 
@@ -823,6 +824,7 @@ function ImpactSection(): JSX.Element {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [counting, setCounting] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const navigate = useNavigate();
 
   // Create refs for each impact stat
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -1076,9 +1078,9 @@ function ImpactSection(): JSX.Element {
               <span className="highlight">measure impact</span>
               <span className="regular">?</span>
             </MeasureTitle>
-            <SpotifySubtitle>
-              Using industry-leading tools and methodologies to track, measure,
-              and evaluate the growth and development of our students over time.
+            <SpotifySubtitle style={{ marginTop: '0.1rem' }}>
+              We use Hello Insight, a nationally recognized evaluation tool, to track students' self-reported growth across 6 Positive Youth Development (PYD)
+              pillars. Guitars Over Guns mentors use healing-centered, culturally affirming PYD practices in program sessions.
             </SpotifySubtitle>
 
             <AudioWaveContainer>
@@ -1091,64 +1093,61 @@ function ImpactSection(): JSX.Element {
           <SpotifyGrid>
             <div>
               <SpotifyCard>
+                <h4 style={{
+                  color: 'white',
+                  fontWeight: 700,
+                  fontSize: '1.5rem',
+                  margin: '0 0 0.4rem 0',
+                  letterSpacing: '0.02em'
+                }}>
+                  Our Method Provides
+                </h4>
+                <div style={{
+                  width: '80px',
+                  height: '2.5px',
+                  background: 'linear-gradient(90deg, #1ed760,rgb(20, 105, 50))',
+                  borderRadius: '2px',
+                  marginBottom: '1.3rem'
+                }} />
                 <SpotifyMethodsList>
                   <SpotifyMethod>
                     <MethodName>
-                      <InsightIcon /> Hello Insight Platform
+                      <InsightIcon /> Trusting relationships with caring adults
                     </MethodName>
                     <MethodDescription>
-                      A nationally recognized platform that helps youth
-                      development programs evaluate and respond to the needs of
-                      their young people through comprehensive surveys and
-                      analytics.
+                      Our model pairs youth with a caring adult mentor. Mentees self-report the number of supportive adults in their lives who support their growth and expand their interests
                     </MethodDescription>
                   </SpotifyMethod>
 
                   <SpotifyMethod>
                     <MethodName>
-                      <ArtisticIcon /> Artistic Scale Measurement
+                      <ArtisticIcon /> High-quality, no-cost arts education during typically unsupervised hours
                     </MethodName>
                     <MethodDescription>
-                      Custom assessment tools that track students' artistic
-                      growth across multiple dimensions including technical
-                      skills, creativity, and performance abilities.
+                      Providing enriching, safe activities from a research-driven curriculum
                     </MethodDescription>
                   </SpotifyMethod>
 
                   <SpotifyMethod>
                     <MethodName>
-                      <AcademicIcon /> Academic Achievement Data
+                      <AcademicIcon /> Skill Development
                     </MethodName>
                     <MethodDescription>
-                      Tracking academic performance metrics in collaboration
-                      with schools to measure the program's impact on
-                      educational outcomes.
+                      Through performance opportunities and after school programs
                     </MethodDescription>
                   </SpotifyMethod>
 
                   <SpotifyMethod>
                     <MethodName>
-                      <TrackingIcon /> Longitudinal Student Tracking
+                      <TrackingIcon /> Trauma-informed mental health support
                     </MethodName>
                     <MethodDescription>
-                      Following students' progress over multiple years to assess
-                      long-term program impact and personal development
-                      trajectories.
+                      By investing in the mental health and creative capacities of
+                      our young people, we create space for each student to work
+                      hard and own their path in life.
                     </MethodDescription>
                   </SpotifyMethod>
                 </SpotifyMethodsList>
-
-                <SpotifySubtitle
-                  style={{
-                    fontSize: '1rem',
-                    marginTop: '2rem',
-                    maxWidth: '100%',
-                  }}
-                >
-                  By investing in the mental health and creative capacities of
-                  our young people, we create space for each student to work
-                  hard and own their path in life.
-                </SpotifySubtitle>
               </SpotifyCard>
             </div>
 
@@ -1183,7 +1182,7 @@ function ImpactSection(): JSX.Element {
                   </ToolIcon>
                   <ToolInfo>
                     <ToolName className="tool-name">
-                      Hello Insight SEL & PYD Platform
+                      Hello Insight SEL & PYD Evaluation Platform
                     </ToolName>
                     <ToolDescription>
                       Primary assessment tool for all students
@@ -1241,7 +1240,7 @@ function ImpactSection(): JSX.Element {
                       Artistic Progress Reports
                     </ToolName>
                     <ToolDescription>
-                      Quarterly assessments by mentors
+                      Quarterly assessments using the artistic scale measurement
                     </ToolDescription>
                   </ToolInfo>
                 </ToolItem>
@@ -1268,7 +1267,7 @@ function ImpactSection(): JSX.Element {
                       Academic Achievement Data
                     </ToolName>
                     <ToolDescription>
-                      Attendance and performance metrics
+                      As observed from school records
                     </ToolDescription>
                   </ToolInfo>
                 </ToolItem>
@@ -1281,8 +1280,8 @@ function ImpactSection(): JSX.Element {
                   textAlign: 'center',
                 }}
               >
-                Mentees self-report their growth across six Positive Youth
-                Development pillars
+                GOGO largely supports kids affected by systemic challenges that reduce their
+                access to opportunities
               </SpotifySubtitle>
 
               <div
@@ -1305,8 +1304,9 @@ function ImpactSection(): JSX.Element {
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}
+                  onClick={() => navigate('/population')}
                 >
-                  <span style={{ marginRight: '0.5rem' }}>Learn More</span>
+                  <span style={{ marginRight: '0.5rem' }}>Learn More About Who We Serve</span>
                   <svg
                     width="16"
                     height="16"
