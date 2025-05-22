@@ -183,7 +183,7 @@ const ConveyorBelt = styled.div<{ direction: 'left' | 'right' }>`
 // Modern animated statement with gradient
 const Statement = styled.div`
   color: white;
-  font-size: 2.8rem;
+  font-size: 3.1rem;
   text-align: center;
   margin: 4rem auto;
   padding: 3rem;
@@ -193,22 +193,22 @@ const Statement = styled.div`
   line-height: 1.4;
   position: relative;
   z-index: 2;
-  background: rgba(25, 25, 35, 0.3);
-  backdrop-filter: blur(10px);
+  background: rgba(25, 25, 35, 0.15);
+  backdrop-filter: blur(8px);
   border-radius: 20px;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(255, 255, 255, 0.06);
   transition: all 0.3s ease;
 
   &:hover {
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 2px ${COLORS.gogo_blue}66;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.22), 0 0 0 2px rgb(134, 150, 255);
   }
 
   p {
     background: linear-gradient(
       to right,
       #ffffff,
-      ${COLORS.gogo_blue},
-      ${COLORS.gogo_purple},
+      rgb(140, 195, 255),
+      rgb(134, 150, 255),
       #ffffff
     );
     background-size: 100% 100%;
@@ -308,6 +308,56 @@ function MissionStatement({
           </ImageCard>
         ))}
       </ConveyorBelt>
+
+      {/* <StatsContainer>
+        <StatCard
+          className="stat-card"
+          style={{ '--index': 0 } as React.CSSProperties}
+        >
+          <StatValue>250K</StatValue>
+          <StatLabel>Students Reached</StatLabel>
+          <Equalizer>
+            {[...Array(5)].map((_, i) => (
+              <EqualizerBar
+                key={i}
+                style={{ '--index': i } as React.CSSProperties}
+              />
+            ))}
+          </Equalizer>
+        </StatCard>
+
+        <StatCard
+          className="stat-card"
+          style={{ '--index': 1 } as React.CSSProperties}
+        >
+          <StatValue>98%</StatValue>
+          <StatLabel>Satisfaction Rate</StatLabel>
+          <Equalizer>
+            {[...Array(5)].map((_, i) => (
+              <EqualizerBar
+                key={i}
+                style={{ '--index': i } as React.CSSProperties}
+              />
+            ))}
+          </Equalizer>
+        </StatCard>
+
+        <StatCard
+          className="stat-card"
+          style={{ '--index': 2 } as React.CSSProperties}
+        >
+          <StatValue>15+</StatValue>
+          <StatLabel>Years of Impact</StatLabel>
+          <Equalizer>
+            {[...Array(5)].map((_, i) => (
+              <EqualizerBar
+                key={i}
+                style={{ '--index': i } as React.CSSProperties}
+              />
+            ))}
+          </Equalizer>
+        </StatCard>
+      </StatsContainer> */}
     </SectionContainer>
   );
 }

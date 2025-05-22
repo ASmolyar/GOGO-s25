@@ -2,6 +2,9 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { animate, stagger } from 'animejs';
 import COLORS from '../../assets/colors';
+import photo1 from '../../assets/programPhotos/photo1.png';
+import photo2 from '../../assets/programPhotos/photo2.png';
+import photo3 from '../../assets/programPhotos/photo3.png';
 
 // Animation keyframes
 const shimmer = keyframes`
@@ -213,7 +216,7 @@ const FilterItem = styled.div<{ active: boolean }>`
   color: ${(props) => (props.active ? '#000' : 'rgba(255, 255, 255, 0.8)')};
   border: 1px solid
     ${(props) =>
-      props.active ? COLORS.gogo_green : 'rgba(255, 255, 255, 0.05)'};
+    props.active ? COLORS.gogo_green : 'rgba(255, 255, 255, 0.05)'};
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   box-shadow: ${(props) =>
     props.active ? '0 5px 15px rgba(30, 215, 96, 0.3)' : 'none'};
@@ -222,11 +225,11 @@ const FilterItem = styled.div<{ active: boolean }>`
 
   &:hover {
     background: ${(props) =>
-      props.active ? COLORS.gogo_green : 'rgba(255, 255, 255, 0.1)'};
+    props.active ? COLORS.gogo_green : 'rgba(255, 255, 255, 0.1)'};
     color: ${(props) => (props.active ? '#000' : 'white')};
     transform: translateY(-3px);
     border-color: ${(props) =>
-      props.active ? COLORS.gogo_green : 'rgba(255, 255, 255, 0.1)'};
+    props.active ? COLORS.gogo_green : 'rgba(255, 255, 255, 0.1)'};
   }
 
   &:after {
@@ -254,7 +257,7 @@ const ProgramGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 2.5rem;
-  margin-bottom: 4rem;
+  margin-bottom: 2rem;
 `;
 
 const ProgramCard = styled.div<{
@@ -608,99 +611,69 @@ const SpotifyButton = styled.a`
   }
 `;
 
+const ProgramImage = styled.img`
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-top: 1.5rem;
+`;
+
 // Define the program data
 const programData = [
   {
-    id: 'music-mentorship',
-    title: 'Music Mentorship',
+    id: 'm-power',
+    title: 'M-Power Program',
     description:
-      'One-on-one and group mentorship where professional musicians guide students through musical development and personal growth.',
-    icon: '🎸',
-    category: 'music',
-    color: COLORS.gogo_purple,
-    features: [
-      'Individual instruction in chosen instrument',
-      'Performance opportunities',
-      'Music theory and composition',
-      'Emotional support and guidance',
-    ],
-  },
-  {
-    id: 'studio-recording',
-    title: 'Studio Recording',
-    description:
-      'Students learn professional recording techniques and create original music in state-of-the-art studios.',
-    icon: '🎙️',
-    category: 'music',
-    color: COLORS.gogo_blue,
-    features: [
-      'Digital audio workstation training',
-      'Audio engineering fundamentals',
-      'Professional recording sessions',
-      'Music production skills',
-    ],
-  },
-  {
-    id: 'visual-arts',
-    title: 'Visual Arts Program',
-    description:
-      'Mentorship in various visual art mediums, developing creative expression and technical skills.',
-    icon: '🎨',
-    category: 'arts',
-    color: COLORS.gogo_teal,
-    features: [
-      'Drawing and painting techniques',
-      'Digital art creation',
-      'Art history exploration',
-      'Exhibition opportunities',
-    ],
-  },
-  {
-    id: 'dance-program',
-    title: 'Dance Expression',
-    description:
-      'Movement-based program teaching various dance styles while building confidence and self-expression.',
-    icon: '💃',
-    category: 'arts',
+      'Our M-Power Mental Health and Wellness program has experienced remarkable expansion across all regions, emphasizing the need for comprehensive support services for both youth and mentors.',
+    icon: '🌱',
+    category: 'wellness',
     color: COLORS.gogo_pink,
     features: [
-      'Multiple dance style instruction',
-      'Choreography development',
-      'Performance preparation',
-      'Team building through movement',
+      'Enhanced curriculum with reflective, community-building circle sessions',
+      'Mentors lead interactive exercises that promote connection and growth',
+      'All staff trained in Youth Mental Health First Aid',
+      'Mental wellness fully integrated into every aspect of our programming',
     ],
   },
   {
-    id: 'songwriting',
-    title: 'Songwriting Workshop',
+    id: 'tasc',
+    title: 'Pilot Program with the TASC Reporting Center',
     description:
-      'Students learn to craft lyrics, compose melodies, and express themselves through song creation.',
-    icon: '✍️',
+      'GOGO partnered with TASC to give justice-involved youth a voice through music, supporting support 39 Cook County youth on probation',
+    icon: '🎙️',
     category: 'music',
     color: COLORS.gogo_yellow,
     features: [
-      'Lyric writing techniques',
-      'Melody and harmony development',
-      'Song structure and arranging',
-      'Peer feedback sessions',
+      'Youth learned songwriting, rap, and music production from caring mentors',
+      'Safe, creative spaces helped build self-esteem and emotional resilience',
+      'Program addressed critical risks like incarceration, school dropout, and poor mental health',
+      'Mentees gained clarity, confidence, and a renewed sense of direction through music',
     ],
   },
   {
-    id: 'community-events',
-    title: 'Community Performances',
+    id: 'oyc',
+    title: 'Overtown Youth Center (OYC)',
     description:
-      'Regular performance opportunities for students to showcase their talents and connect with the community.',
-    icon: '🎭',
-    category: 'community',
-    color: COLORS.gogo_green,
+      'In partnership with the Playing for Change and We The Best Foundations, Guitars Over Guns collaborated with the community hub of Overtown, OYC.',
+    icon: '🎨',
+    category: 'music',
+    color: COLORS.gogo_teal,
     features: [
-      'Public performance experience',
-      'Community engagement',
-      'Collaborative showcases',
-      'Behind-the-scenes production roles',
+      'Dedicated mentors led trauma-informed programming after school and during summer',
+      'Students wrote, produced, and recorded original RnB tracks like "All I Do" and "Future Role Model"',
+      'Friendly competition fostered creativity, confidence, and collaboration',
+      'The summer showcase spotlighted student talent and built a strong sense of community',
     ],
   },
+
 ];
+
+const programImages = {
+  'm-power': photo1,
+  'tasc': photo2,
+  'oyc': photo3,
+};
 
 function ProgramsSection(): JSX.Element {
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
@@ -727,7 +700,7 @@ function ProgramsSection(): JSX.Element {
       setFilteredPrograms(programData);
     } else {
       setFilteredPrograms(
-        programData.filter((program) => program.category === filter),
+        programData.filter((program) => program.category.toLowerCase() === filter.toLowerCase()),
       );
     }
   }, [filter]);
@@ -822,16 +795,10 @@ function ProgramsSection(): JSX.Element {
             Music
           </FilterItem>
           <FilterItem
-            active={filter === 'arts'}
-            onClick={() => setFilter('arts')}
+            active={filter === 'wellness'}
+            onClick={() => setFilter('wellness')}
           >
-            Visual & Performance
-          </FilterItem>
-          <FilterItem
-            active={filter === 'community'}
-            onClick={() => setFilter('community')}
-          >
-            Community
+            Wellness
           </FilterItem>
         </FilterContainer>
 
@@ -863,6 +830,7 @@ function ProgramsSection(): JSX.Element {
                     </ProgramFeatureItem>
                   ))}
                 </ProgramFeatures>
+                <ProgramImage src={programImages[program.id as keyof typeof programImages]} alt={`${program.title} image`} />
               </ProgramContent>
               <NumberIndicator>{index + 1}</NumberIndicator>
               <PlayButton visible={hoveredCard === program.id}>
@@ -872,14 +840,7 @@ function ProgramsSection(): JSX.Element {
           ))}
         </ProgramGrid>
 
-        <FooterContainer>
-          <FooterText>
-            Join one of our programs and become part of a supportive community
-            where creativity, mentorship, and personal growth come together to
-            transform lives.
-          </FooterText>
-          <SpotifyButton href="#contact">Apply Now</SpotifyButton>
-        </FooterContainer>
+        {/* was a footer here i deleted */}
       </ContentContainer>
     </ProgramsContainer>
   );

@@ -22,6 +22,7 @@ import ArtistView from './ImpactReport/components/ArtistView.tsx';
 import MapDemo from './ImpactReport/components/map/MapDemo';
 import Impact from './ImpactReport/components/Impact';
 import AlbumUploadPage from './AdminDashboard/AlbumUploadPage.tsx';
+import { Population } from './ImpactReport/components';
 import './assets/fonts/fonts.css';
 
 function App() {
@@ -63,6 +64,7 @@ function App() {
             <Route path="/users" element={<AdminDashboardPage />} />
           </Route>
           {/* Impact Report (Spotify-style) route */}
+          <Route path="/population" element={<Population />} />
 
           {/* Route which redirects to a different page depending on if the user is an authenticated or not by utilizing the DynamicRedirect component */}
           <Route

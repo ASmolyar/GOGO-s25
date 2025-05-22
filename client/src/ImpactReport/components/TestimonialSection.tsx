@@ -124,14 +124,14 @@ const SectionSubheading = styled.p`
   font-size: 1.2rem;
   text-align: center;
   max-width: 700px;
-  margin: 0 auto 3rem;
+  margin: 0 auto 1.5rem !important;
   color: rgba(255, 255, 255, 0.8);
   line-height: 1.6;
 `;
 
 const CarouselContainer = styled.div`
   position: relative;
-  margin: 2rem 0;
+  margin: 1rem 0;
 `;
 
 const TestimonialsTrack = styled.div<{ transform: string; transition: string }>`
@@ -147,8 +147,8 @@ const TestimonialCard = styled.div<{ active: boolean; color: string }>`
   background: rgba(35, 35, 40, 0.7);
   border-radius: 20px;
   padding: 2.5rem;
-  width: 380px;
-  max-width: 90vw;
+  width: 460px;
+  max-width: 95vw;
   box-shadow: ${(props) =>
     props.active
       ? '0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(128, 128, 255, 0.1)'
@@ -166,9 +166,9 @@ const TestimonialCard = styled.div<{ active: boolean; color: string }>`
 
   &:hover {
     transform: ${(props) =>
-      props.active
-        ? 'translateY(-15px) scale(1.03)'
-        : 'translateY(-5px) scale(1.01)'};
+    props.active
+      ? 'translateY(-15px) scale(1.03)'
+      : 'translateY(-5px) scale(1.01)'};
     opacity: ${(props) => (props.active ? 1 : 0.8)};
   }
 
@@ -287,11 +287,11 @@ const PersonAvatar = styled.div<{ color: string; active: boolean }>`
     border-radius: 50%;
     z-index: -1;
     animation: ${(props) =>
-      props.active
-        ? css`
+    props.active
+      ? css`
             ${float} 6s ease infinite
           `
-        : 'none'};
+      : 'none'};
     opacity: ${(props) => (props.active ? 0.7 : 0)};
     transition: opacity 0.3s ease;
   }
@@ -333,7 +333,7 @@ const CarouselIndicator = styled.button<{ active: boolean }>`
 
   &:hover {
     background-color: ${(props) =>
-      props.active ? 'white' : 'rgba(255, 255, 255, 0.5)'};
+    props.active ? 'white' : 'rgba(255, 255, 255, 0.5)'};
   }
 `;
 
@@ -388,42 +388,42 @@ const CarouselNavButton = styled.button`
 const testimonials = [
   {
     quote:
-      "GOGO has changed my life. I've discovered my passion for music and found a community where I belong. My mentor has been there for me through some tough times.",
-    name: 'Jasmine',
-    role: 'Student, Chicago',
-    avatarText: 'J',
+      "Watching GOGO New York – a vision and a dream – become reality, I couldn't be prouder. I had to pinch myself watching the kids perform, watching the school community rally so hard behind the students, listening to one of the most incredible principals we've ever had the honor of working with tell us that we're reaching kids that aren't typically engaged or who may don't normally have the access or opportunity to hold the mic, to tell their own story",
+    name: 'Chad Bernstein',
+    role: 'CEO/Co-Founder',
+    avatarText: 'C',
     color: COLORS.gogo_purple,
   },
   {
     quote:
-      "Having the opportunity to mentor these amazing young people has been the most rewarding experience. I've watched them grow not just as musicians, but as confident young adults.",
-    name: 'Marcus',
-    role: 'Mentor, Miami',
-    avatarText: 'M',
+      "In my very first session with the students, I brought up the idea of living life unapologetically yourself. Being able to stick to your values and do what makes you your own person. As I reached my final session with the group, one of the students shared their song from our songwriting activity. She was asked what her inspiration was and she responded that her 6th and 7th grades of middle school were terrible for her but as she went through her 8th-grade year, she lived her life as her own and didn't try to follow anyone else's footsteps. She followed up by saying that this year was immensely better and she is super proud of herself for doing so.",
+    name: 'Benjamin Eisenberg',
+    role: 'M-Power Intern, Spring 2024',
+    avatarText: 'B',
     color: COLORS.gogo_blue,
   },
   {
     quote:
-      "Before GOGO, I didn't have a creative outlet. Now I'm producing my own music and have performed at local venues. This program gave me skills I'll use for life.",
-    name: 'Carlos',
-    role: 'Student, Los Angeles',
-    avatarText: 'C',
+      "One of our students shared how helpful these wellness discussions and activities were in assisting her through a traumatic experience she faced and how the exposure of Guitars Over Guns' resources assisted in her healing process. She also expressed how grateful she was to have an understanding of why she wants to become a singer and how music has always been an outlet that has brought her so much joy, peace, and serves as her very own therapy. From students from single-parent homes, to students dealing with depression, anxieties and traumatic experiences, the M-Power program provides students with a strong support system and exposure to positive coping strategies to help the students better express their emotions, cope through life's challenges.",
+    name: 'Daniella Lexine',
+    role: 'M-Power Intern, Spring & Summer 2024',
+    avatarText: 'D',
     color: COLORS.gogo_green,
   },
   {
     quote:
-      "The transformation I've seen in my students is incredible. They come in shy and uncertain, but leave with confidence and leadership skills that go beyond music.",
-    name: 'Sophia',
-    role: 'Mentor, Nashville',
-    avatarText: 'S',
+      "It makes me look at a different outlook in life when it comes to changing myself and changing my decisions,",
+    name: 'James',
+    role: 'Mentee, TASC',
+    avatarText: 'J',
     color: COLORS.gogo_pink,
   },
   {
     quote:
-      "My grades have improved, and I'm now thinking about college. I never thought I'd be saying that before I joined GOGO. The mentors really believe in us.",
-    name: 'Devon',
-    role: 'Student, Miami',
-    avatarText: 'D',
+      "Really, I see Guitars Over Guns as a way to express myself. Before I got into music production I didn't know what I wanted to do. [My mentors] Ron and Dolan helped me figure out what I wanted to do, and it helped me work with other people a little better",
+    name: 'Elijah',
+    role: 'Mentee, TASC',
+    avatarText: 'E',
     color: COLORS.gogo_teal,
   },
 ];
@@ -563,16 +563,9 @@ function TestimonialSection(): JSX.Element {
       ))}
 
       <SectionContainer>
-        <SectionHeading className="section-heading" style={{ opacity: 0 }}>
+        <SectionHeading className="section-heading" style={{ opacity: 100 }}>
           Stories of Impact
         </SectionHeading>
-        <SectionSubheading
-          className="section-subheading"
-          style={{ opacity: 0 }}
-        >
-          Hear from our students and mentors about how Guitars Over Guns has
-          impacted their lives and their communities.
-        </SectionSubheading>
 
         <CarouselContainer ref={carouselRef}>
           <CarouselNavButton

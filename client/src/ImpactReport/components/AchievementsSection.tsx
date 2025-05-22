@@ -216,25 +216,25 @@ const achievementsData = [
   {
     id: 1,
     year: '2023',
-    title: 'Expanded to Nashville',
+    title: 'Community Partnerships',
     description:
-      'Launched our first programs in Nashville, Tennessee, bringing music mentorship to a new community of students.',
+      'Strengthened key community partnerships like Lollapalooza, TEDxChicago, the Obama Foundation’s MBK Alliance, and Illinois State Senators Johnson, Sims, Hunter, and Peters to elevate opportunities for our youth in Chicago.',
     stats: [
       { value: '120+', label: 'New Students' },
       { value: '8', label: 'New Mentors' },
     ],
-    mediaLink: 'View Launch Event',
+    mediaLink: 'Link?',
     backgroundColor: 'rgba(104, 54, 154, 0.1)', // Purple
   },
   {
     id: 2,
     year: '2022',
-    title: 'Mentorship Excellence Award',
+    title: 'Partnership Expansion',
     description:
-      'Recognized by the National Mentoring Partnership for our innovative approaches to arts-based mentorship programs.',
+      'Expanded our relationship with the Miami-Dade County Department of Parks, Recreation & Open Spaces, including the launch of the Papa Keith Music & Media Studio at Gwen Cherry Park.',
     stats: [
-      { value: '93%', label: 'Student Satisfaction' },
-      { value: '#1', label: 'Program Rating' },
+      { value: '4', label: 'Public Parks Served' },
+      { value: '1', label: 'New Studio Launched' },
     ],
     mediaLink: 'Read the Story',
     backgroundColor: 'rgba(190, 43, 147, 0.1)', // Pink
@@ -242,53 +242,52 @@ const achievementsData = [
   {
     id: 3,
     year: '2021',
-    title: 'Virtual Studio Launch',
+    title: 'New York Location Launch',
     description:
-      'Developed our virtual recording studio platform to continue music education during the pandemic, ensuring students stayed connected.',
+      'Launched GOGO New York with a pilot program in two Harlem schools, establishing lasting partnerships in the community.',
     stats: [
-      { value: '850+', label: 'Remote Sessions' },
-      { value: '24', label: 'Online Concerts' },
+      { value: '23+', label: 'students served' },
     ],
-    mediaLink: 'Explore Platform',
+    mediaLink: 'Link?',
     backgroundColor: 'rgba(25, 70, 245, 0.1)', // Blue
   },
   {
     id: 4,
     year: '2020',
-    title: 'First Album Release',
+    title: 'M-Power Program',
     description:
-      'Released "Rising Voices," a collaborative album featuring original music created by our students and mentors across all locations.',
+      'Grew our M-Power mental wellness department nationally with the addition of Wellness Mentors in Miami and Chicago, new partnerships with local universities’ social work intern programs, and the implementation of Youth Mental Health First Aid certification for our mentors and staff.',
     stats: [
-      { value: '18', label: 'Original Tracks' },
-      { value: '42K', label: 'Streams' },
+      { value: '18', label: 'Wellness Mentors' },
+      { value: '1', label: 'New University Partnerships' },
     ],
-    mediaLink: 'Listen Now',
+    mediaLink: 'Link?',
     backgroundColor: 'rgba(141, 221, 166, 0.1)', // Green
   },
   {
     id: 5,
     year: '2019',
-    title: 'Chicago Expansion',
+    title: 'Alumni & New Developments',
     description:
-      'Opened three new program sites in Chicago, partnering with local schools to bring music education to underserved neighborhoods.',
+      'Debuted a powerful new version of our signature music/arts and mental wellness curriculum, equipping mentors with the training and resources to carry out the GOGO methodology, stronger than ever.',
     stats: [
-      { value: '210+', label: 'New Students' },
-      { value: '12', label: 'New Mentors' },
+      { value: '42%', label: 'of our full-time staff are former mentors' },
+      { value: '6%', label: 'are program alumni' },
     ],
-    mediaLink: 'View Gallery',
+    mediaLink: 'Link?',
     backgroundColor: 'rgba(233, 187, 77, 0.1)', // Yellow
   },
   {
     id: 6,
-    year: '2018',
-    title: '10-Year Anniversary Concert',
+    year: '2026?',
+    title: 'What\'s Next?',
     description:
-      'Celebrated a decade of impact with a special concert featuring current students, alumni, and professional musician supporters.',
+      'Our goal is to serve 10,000 students annually across the U.S. as a national leader in arts-based youth development.',
     stats: [
-      { value: '2.5K', label: 'Attendees' },
-      { value: '120', label: 'Performers' },
+      { value: '10K', label: 'students annually' },
+      { value: '100', label: 'locations' },
     ],
-    mediaLink: 'Watch Highlights',
+    mediaLink: 'Email info@guitarsoverguns.org for Audited Financial Statements and Form 990',
     backgroundColor: 'rgba(177, 235, 242, 0.1)', // Teal
   },
 ];
@@ -360,7 +359,7 @@ function AchievementsSection(): JSX.Element {
       <SpotifyPattern />
       <ContentContainer>
         <SectionHeader>
-          <SectionTitle ref={titleRef}>Our Achievements</SectionTitle>
+          <SectionTitle ref={titleRef}>Our Achievements and Strategic Highlights</SectionTitle>
           <SectionSubtitle>
             Milestones that showcase our commitment to empowering youth through
             music and mentorship
@@ -406,13 +405,6 @@ function AchievementsSection(): JSX.Element {
             </AchievementCard>
           ))}
         </AchievementsGrid>
-
-        <BottomCta>
-          <SpotifyButton href="/impact">
-            <span>Explore Our Full Impact Story</span>
-            <span>→</span>
-          </SpotifyButton>
-        </BottomCta>
       </ContentContainer>
     </AchievementsContainer>
   );
