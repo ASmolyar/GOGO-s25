@@ -1,5 +1,12 @@
 import React, { useRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import Photo1 from '../../assets/populationPhotos/Photo1.jpg';
+import Photo2 from '../../assets/populationPhotos/Photo2.jpg';
+import Photo3 from '../../assets/populationPhotos/Photo3.jpg';
+import Photo4 from '../../assets/populationPhotos/Photo4.jpg';
+import Photo5 from '../../assets/populationPhotos/Photo5.jpg';
+import Photo6 from '../../assets/populationPhotos/Photo6.jpg';
+
 
 const Container = styled.section`
   width: 80vw;
@@ -149,6 +156,23 @@ const SimplePercentLabel = styled.div`
   text-align: center;
 `;
 
+const ImageGallery = styled.div`
+  display: flex;
+  gap: 1.2rem;
+  overflow-x: auto;
+  margin: 3rem 0 0 0;
+  padding-bottom: 1rem;
+`;
+
+const GalleryImage = styled.img`
+  width: 160px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(30, 215, 96, 0.08);
+  background: #222;
+`;
+
 /**
  * Returns an SVG path for a pie slice.
  * cx, cy: center; r: radius; startAngle, endAngle: in degrees
@@ -287,6 +311,14 @@ const Population: React.FC = () => {
                     <SimplePercentLabel>Spring 2024: studentsincreased or maintained C-GAS</SimplePercentLabel>
                 </SimplePercentCard>
             </SimplePercentsContainer>
+            <ImageGallery>
+                <GalleryImage src={Photo1} alt="Photo 1" />
+                <GalleryImage src={Photo2} alt="Photo 2" />
+                <GalleryImage src={Photo3} alt="Photo 3" />
+                <GalleryImage src={Photo4} alt="Photo 4" />
+                <GalleryImage src={Photo5} alt="Photo 5" />
+                <GalleryImage src={Photo6} alt="Photo 6" />
+            </ImageGallery>
         </Container>
     );
 };

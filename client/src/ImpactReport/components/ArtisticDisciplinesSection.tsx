@@ -214,13 +214,6 @@ const DisciplineName = styled.h3`
   transition: color 0.3s ease;
 `;
 
-const DisciplineDescription = styled.p`
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.7);
-  line-height: 1.5;
-  transition: opacity 0.3s ease;
-`;
-
 const DisciplineStats = styled.div`
   display: flex;
   justify-content: center;
@@ -267,120 +260,86 @@ const disciplineIcons: Record<string, string> = {
 const disciplinesData = [
   {
     name: 'Music Production',
-    description:
-      'Learn to create, record, and mix music using professional software and hardware.',
     students: 78,
     projects: 120,
   },
   {
     name: 'Guitar',
-    description:
-      'Master acoustic and electric guitar techniques across various musical styles.',
     students: 95,
     projects: 150,
   },
   {
     name: 'Drums',
-    description:
-      'Develop rhythm skills and percussion techniques on drum kits and other percussion instruments.',
     students: 65,
     projects: 85,
   },
   {
     name: 'Piano',
-    description:
-      'Build keyboard skills from basic to advanced, including theory and composition.',
     students: 70,
     projects: 110,
   },
   {
     name: 'Vocals',
-    description:
-      'Develop singing techniques, vocal control, and performance skills.',
     students: 85,
     projects: 130,
   },
   {
     name: 'Bass',
-    description:
-      'Learn to hold down the groove with electric and acoustic bass guitar techniques.',
     students: 55,
     projects: 75,
   },
   {
     name: 'DJing',
-    description:
-      'Master turntable techniques, beatmatching, and live performance skills.',
     students: 60,
     projects: 95,
   },
   {
     name: 'Songwriting',
-    description:
-      'Craft compelling lyrics and melodies while learning song structure and composition.',
     students: 72,
     projects: 140,
   },
   {
     name: 'Dance',
-    description:
-      'Express yourself through movement with various dance styles and choreography.',
     students: 68,
     projects: 90,
   },
   {
     name: 'Visual Art',
-    description:
-      'Create using traditional media including drawing, painting, and sculpture.',
     students: 63,
     projects: 105,
   },
   {
     name: 'Digital Art',
-    description:
-      'Explore digital creativity through graphic design, animation, and digital illustration.',
     students: 58,
     projects: 80,
   },
   {
     name: 'Spoken Word',
-    description:
-      'Develop poetic expression and performance techniques for spoken word art.',
     students: 50,
     projects: 85,
   },
   {
     name: 'Theater',
-    description:
-      'Build acting skills, stage presence, and theatrical performance techniques.',
     students: 45,
     projects: 60,
   },
   {
     name: 'Sound Engineering',
-    description:
-      'Learn professional audio recording, mixing, and live sound reinforcement.',
     students: 40,
     projects: 65,
   },
   {
     name: 'Brass Instruments',
-    description:
-      'Master trumpet, trombone, and other brass instruments with professional techniques.',
     students: 35,
     projects: 50,
   },
   {
     name: 'Woodwind Instruments',
-    description:
-      'Develop skills on saxophone, flute, clarinet, and other woodwind instruments.',
     students: 30,
     projects: 45,
   },
   {
     name: 'Strings',
-    description:
-      'Learn to play violin, viola, cello, and other string instruments.',
     students: 25,
     projects: 40,
   },
@@ -498,9 +457,6 @@ function ArtisticDisciplinesSection(): JSX.Element {
                 {disciplineIcons[discipline.name] || '🎵'}
               </DisciplineIcon>
               <DisciplineName>{discipline.name}</DisciplineName>
-              <DisciplineDescription>
-                {discipline.description}
-              </DisciplineDescription>
               <DisciplineStats>
                 <StatItem>🧑‍🎓 {discipline.students} students</StatItem>
                 <StatItem>🎵 {discipline.projects} projects</StatItem>
