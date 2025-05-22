@@ -117,7 +117,7 @@ const ReportYear = styled.div`
   color: var(--spotify-orange, #e9bb4d);
   font-family: 'Century Gothic-Bold', 'Arial', sans-serif;
   font-weight: 500;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   opacity: 0;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   pointer-events: none; /* Let events pass through */
@@ -128,7 +128,7 @@ const Motto = styled.div`
   font-size: 1.5rem;
   color: var(--gogo-purple, #6836A');
   font-family: 'Century Gothic-Bold', 'Arial', sans-serif;
-  font-weight: 500;
+  font-weight: 700;
   margin-top: 1.5rem;
   margin-bottom: 3rem;
   opacity: 0;
