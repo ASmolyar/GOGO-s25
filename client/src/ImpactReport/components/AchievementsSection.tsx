@@ -287,6 +287,7 @@ const achievementsData = [
       { value: '10K', label: 'students annually' },
       { value: '100', label: 'locations' },
     ],
+    mediaLink: 'Email info@guitarsoverguns.org for Audited Financial Statements and Form 990',
     backgroundColor: 'rgba(177, 235, 242, 0.1)', // Teal
   },
 ];
