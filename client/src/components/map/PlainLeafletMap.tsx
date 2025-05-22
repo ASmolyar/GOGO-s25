@@ -3,11 +3,11 @@ import React, { useRef, useEffect } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import styled from 'styled-components';
-import COLORS from '../../assets/colors.ts';
 
 // Import Leaflet images directly
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+import COLORS from '../../assets/colors.ts';
 
 const MapContainer = styled.div`
   height: 450px;
@@ -18,10 +18,26 @@ const MapContainer = styled.div`
 
 // GOGO locations
 const locations = [
-  { name: 'Miami', position: [25.7617, -80.1918], description: 'GOGO Headquarters' },
-  { name: 'Chicago', position: [41.8781, -87.6298], description: 'Established 2014' },
-  { name: 'Los Angeles', position: [34.0522, -118.2437], description: 'Established 2021' },
-  { name: 'New York', position: [40.7128, -74.0060], description: 'Newest location' },
+  {
+    name: 'Miami',
+    position: [25.7617, -80.1918],
+    description: 'GOGO Headquarters',
+  },
+  {
+    name: 'Chicago',
+    position: [41.8781, -87.6298],
+    description: 'Established 2014',
+  },
+  {
+    name: 'Los Angeles',
+    position: [34.0522, -118.2437],
+    description: 'Established 2021',
+  },
+  {
+    name: 'New York',
+    position: [40.7128, -74.006],
+    description: 'Newest location',
+  },
 ];
 
 // Component that uses Leaflet directly without React Context
@@ -51,31 +67,35 @@ function PlainLeafletMap() {
     leafletMapRef.current = map;
 
     // Add tile layer
-    L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      maxZoom: 19,
-    }).addTo(map);
+    L.tileLayer(
+      'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}{r}.png',
+      {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19,
+      },
+    ).addTo(map);
 
     // Add markers for each location
     locations.forEach((location) => {
       const marker = L.marker(location.position).addTo(map);
-      
+
       // Create a custom popup with our styling
       const popupContent = document.createElement('div');
       popupContent.style.textAlign = 'center';
-      
+
       const title = document.createElement('h3');
       title.textContent = location.name;
       title.style.margin = '5px 0';
       title.style.color = COLORS.gogo_blue;
-      
+
       const description = document.createElement('div');
       description.textContent = location.description;
       description.style.margin = '5px 0';
-      
+
       popupContent.appendChild(title);
       popupContent.appendChild(description);
-      
+
       marker.bindPopup(popupContent);
     });
 
@@ -92,4 +112,4 @@ function PlainLeafletMap() {
   return <MapContainer ref={mapRef} />;
 }
 
-export default PlainLeafletMap; 
+export default PlainLeafletMap;

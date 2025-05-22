@@ -61,8 +61,8 @@ function SimpleMapDemo() {
         center={[39.8283, -98.5795] as [number, number]} // Type assertion for center
         zoom={4}
         style={{ height: '100%', width: '100%' }}
-        zoomControl={true}
-        scrollWheelZoom={true}
+        zoomControl
+        scrollWheelZoom
       >
         <TileLayer
           url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}{r}.png"

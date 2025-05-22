@@ -272,7 +272,7 @@ function YouTubeIcon() {
 }
 
 // Create a wrapper component for the NowPlayingBar that gets data from context
-const MusicPlayerBar = () => {
+function MusicPlayerBar() {
   const {
     currentSong,
     currentAlbum,
@@ -326,7 +326,7 @@ const MusicPlayerBar = () => {
       />
     </div>
   );
-};
+}
 
 // Main component
 function ImpactReportPage() {

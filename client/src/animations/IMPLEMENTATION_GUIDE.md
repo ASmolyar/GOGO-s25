@@ -5,6 +5,7 @@ This document outlines the remaining steps needed to fully implement the new ani
 ## Completed Steps
 
 1. ✅ Created the new animation architecture
+
    - Core layer with types and anime.js wrappers
    - Preset animations for common use cases
    - Application-specific animations
@@ -18,11 +19,13 @@ This document outlines the remaining steps needed to fully implement the new ani
 ## Remaining Tasks
 
 1. **Update Remaining Components**
+
    - Update all components listed below to use the new animation system
    - Follow patterns shown in HeroSection.tsx and Modal.tsx as examples
    - Use the most appropriate approach for each component (hooks, presets, or core API)
 
 2. **Remove Old Animation Files**
+
    - After all components are migrated, remove the following files:
      - `client/src/utils/animeWrapper.ts`
      - `client/src/utils/animations.ts`
@@ -41,6 +44,7 @@ This document outlines the remaining steps needed to fully implement the new ani
 ## Components to Update
 
 ### Client-side Components
+
 - `client/src/ImpactReport/components/ImpactSection.tsx`
 - `client/src/ImpactReport/components/ProgramsSection.tsx`
 - `client/src/ImpactReport/components/MusicLibrary.tsx`
@@ -52,6 +56,7 @@ This document outlines the remaining steps needed to fully implement the new ani
 - `client/src/ImpactReport/ImpactReportPage.tsx`
 
 ### Server-side Components
+
 - `src/ImpactReport/ImpactReportPage.tsx`
 - `src/ImpactReport/components/HeroSection.tsx`
 - `src/ImpactReport/components/ImpactSection.tsx`
@@ -65,7 +70,7 @@ This document outlines the remaining steps needed to fully implement the new ani
 animate({
   targets: element,
   opacity: [0, 1],
-  duration: 600
+  duration: 600,
 });
 
 // NEW
@@ -80,16 +85,19 @@ useEffect(() => {
   if (element) {
     animate({
       targets: element,
-      opacity: [0, 1]
+      opacity: [0, 1],
     });
   }
 }, [element]);
 
 // NEW
-const animation = useAnimation({
-  targets: element,
-  opacity: [0, 1]
-}, [element]);
+const animation = useAnimation(
+  {
+    targets: element,
+    opacity: [0, 1],
+  },
+  [element],
+);
 
 useEffect(() => {
   if (element) {
@@ -107,14 +115,14 @@ useEffect(() => {
   if (elementRef.current) {
     animate({
       targets: elementRef.current,
-      opacity: [0, 1]
+      opacity: [0, 1],
     });
   }
 }, []);
 
 // NEW
 const [elementRef, controls] = useAnimateOnMount((element) => ({
-  opacity: [0, 1]
+  opacity: [0, 1],
 }));
 ```
 
@@ -134,6 +142,7 @@ tl.add({...}, '-=200');
 ## Optional Performance Improvements
 
 - Consider using the Web Animation API for simple animations
+
   - The animation hooks support this natively
   - Better performance for simple property animations
   - Falls back to anime.js for complex animations
@@ -149,4 +158,4 @@ After all components are updated, perform the following tests:
 1. Verify all animations work as expected in different browsers
 2. Test performance on lower-end devices
 3. Check for any console errors related to animations
-4. Ensure animations degrade gracefully when they fail 
+4. Ensure animations degrade gracefully when they fail

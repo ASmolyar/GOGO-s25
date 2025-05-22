@@ -5,7 +5,7 @@ declare module 'leaflet' {
       icon: any;
       [key: string]: any;
     };
-    
+
     static prototype: Marker;
   }
 
@@ -15,4 +15,4 @@ declare module 'leaflet' {
     lng: number;
     constructor(lat: number, lng: number);
   }
-} 
+}

@@ -66,4 +66,4 @@ export interface Region {
   color?: string;
   sublocations: Sublocation[];
   description?: string;
-} 
+}

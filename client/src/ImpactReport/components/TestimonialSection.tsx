@@ -166,9 +166,9 @@ const TestimonialCard = styled.div<{ active: boolean; color: string }>`
 
   &:hover {
     transform: ${(props) =>
-    props.active
-      ? 'translateY(-15px) scale(1.03)'
-      : 'translateY(-5px) scale(1.01)'};
+      props.active
+        ? 'translateY(-15px) scale(1.03)'
+        : 'translateY(-5px) scale(1.01)'};
     opacity: ${(props) => (props.active ? 1 : 0.8)};
   }
 
@@ -287,11 +287,11 @@ const PersonAvatar = styled.div<{ color: string; active: boolean }>`
     border-radius: 50%;
     z-index: -1;
     animation: ${(props) =>
-    props.active
-      ? css`
+      props.active
+        ? css`
             ${float} 6s ease infinite
           `
-      : 'none'};
+        : 'none'};
     opacity: ${(props) => (props.active ? 0.7 : 0)};
     transition: opacity 0.3s ease;
   }
@@ -333,7 +333,7 @@ const CarouselIndicator = styled.button<{ active: boolean }>`
 
   &:hover {
     background-color: ${(props) =>
-    props.active ? 'white' : 'rgba(255, 255, 255, 0.5)'};
+      props.active ? 'white' : 'rgba(255, 255, 255, 0.5)'};
   }
 `;
 
@@ -412,7 +412,7 @@ const testimonials = [
   },
   {
     quote:
-      "It makes me look at a different outlook in life when it comes to changing myself and changing my decisions,",
+      'It makes me look at a different outlook in life when it comes to changing myself and changing my decisions,',
     name: 'James',
     role: 'Mentee, TASC',
     avatarText: 'J',

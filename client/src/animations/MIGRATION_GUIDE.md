@@ -22,10 +22,10 @@ Replace imports from the old animation system with the new unified API:
 import { animate, stagger, animations } from '../../utils/animeWrapper';
 
 // NEW
-import { 
-  animate, 
-  stagger, 
-  fadeIn, 
+import {
+  animate,
+  stagger,
+  fadeIn,
   slideInUp,
   // other specific functions as needed
 } from '../../animations';
@@ -45,7 +45,7 @@ fadeIn(element, { duration: 800 });
 // OLD
 animations.staggerSlideIn(elements, { delay: stagger(100) });
 
-// NEW 
+// NEW
 staggerSlideIn(elements, { delay: stagger(100) });
 ```
 
@@ -60,7 +60,7 @@ useEffect(() => {
     animate({
       targets: elementRef.current,
       opacity: [0, 1],
-      duration: 600
+      duration: 600,
     });
   }
 }, []);
@@ -68,16 +68,19 @@ useEffect(() => {
 // NEW (with useAnimateOnMount)
 const [elementRef, controls] = useAnimateOnMount((element) => ({
   opacity: [0, 1],
-  duration: 600
+  duration: 600,
 }));
 
 // NEW (with useAnimation)
 const elementRef = useRef(null);
-const animation = useAnimation({
-  targets: elementRef.current,
-  opacity: [0, 1],
-  duration: 600
-}, [elementRef.current]);
+const animation = useAnimation(
+  {
+    targets: elementRef.current,
+    opacity: [0, 1],
+    duration: 600,
+  },
+  [elementRef.current],
+);
 
 useEffect(() => {
   if (elementRef.current) {
@@ -95,12 +98,12 @@ Use the timeline API for more complex animation sequences:
 animate({
   targets: elementRef.current,
   opacity: [0, 1],
-  duration: 600
+  duration: 600,
 }).then(() => {
   animate({
     targets: secondElementRef.current,
     translateY: [50, 0],
-    duration: 400
+    duration: 400,
   });
 });
 
@@ -109,13 +112,16 @@ const sequence = timeline();
 sequence.add({
   targets: elementRef.current,
   opacity: [0, 1],
-  duration: 600
+  duration: 600,
 });
-sequence.add({
-  targets: secondElementRef.current,
-  translateY: [50, 0],
-  duration: 400
-}, '-=200'); // Overlap with previous animation
+sequence.add(
+  {
+    targets: secondElementRef.current,
+    translateY: [50, 0],
+    duration: 400,
+  },
+  '-=200',
+); // Overlap with previous animation
 ```
 
 ## Available Animation Presets
@@ -154,13 +160,13 @@ import { fadeIn } from '../../animations';
 
 const MyComponent = () => {
   const elementRef = useRef(null);
-  
+
   useEffect(() => {
     if (elementRef.current) {
       fadeIn(elementRef.current);
     }
   }, []);
-  
+
   return <div ref={elementRef}>Animated content</div>;
 };
 ```
@@ -174,9 +180,9 @@ const MyComponent = () => {
   const [elementRef, controls] = useAnimateOnMount((element) => ({
     opacity: [0, 1],
     translateY: [50, 0],
-    duration: 800
+    duration: 800,
   }));
-  
+
   return (
     <>
       <div ref={elementRef}>Animated content</div>
@@ -188,4 +194,4 @@ const MyComponent = () => {
 
 ## Need Help?
 
-If you have any questions or need assistance migrating your animations, please contact the frontend team for support. 
+If you have any questions or need assistance migrating your animations, please contact the frontend team for support.

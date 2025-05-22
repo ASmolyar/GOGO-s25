@@ -45,4 +45,4 @@ interface IAssignment extends mongoose.Document {
 
 const Assignment = mongoose.model<IAssignment>('Assignment', AssignmentSchema);
 
-export { IAssignment, Assignment }; 
+export { IAssignment, Assignment };

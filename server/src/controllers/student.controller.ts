@@ -13,7 +13,7 @@ import { IUser } from '../models/user.model.ts';
 export const getAllAssignments = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const assignments = await Assignment.find()
@@ -35,14 +35,16 @@ export const getAllAssignments = async (
 export const getAssignment = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const { id } = req.params;
     const user = req.user as IUser;
 
-    const assignment = await Assignment.findById(id)
-      .populate('createdBy', 'firstName lastName');
+    const assignment = await Assignment.findById(id).populate(
+      'createdBy',
+      'firstName lastName',
+    );
 
     if (!assignment) {
       return next(createError(404, 'Assignment not found'));
@@ -73,7 +75,7 @@ export const getAssignment = async (
 export const submitAssignment = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const { id } = req.params;
@@ -92,7 +94,9 @@ export const submitAssignment = async (
 
     // Check if the due date has passed
     if (new Date() > new Date(assignment.dueDate)) {
-      return next(createError(400, 'The due date for this assignment has passed'));
+      return next(
+        createError(400, 'The due date for this assignment has passed'),
+      );
     }
 
     // Check if the student has already submitted
@@ -139,7 +143,7 @@ export const submitAssignment = async (
 export const getStudentSubmissions = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const user = req.user as IUser;
@@ -161,4 +165,4 @@ export const getStudentSubmissions = async (
   } catch (error) {
     return next(error);
   }
-}; 
+};

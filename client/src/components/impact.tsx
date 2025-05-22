@@ -2,7 +2,7 @@ import React from 'react';
 import { ResponsivePie } from '@nivo/pie';
 import { Typography, Grid } from '@mui/material';
 
-const Impact = () => {
+function Impact() {
   // Data with enhanced metallic colors
   const data = [
     {
@@ -51,10 +51,17 @@ const Impact = () => {
 
   return (
     <Grid component="div" container>
-      <div style={{ backgroundColor: 'black', padding: '20px', minHeight: '100vh' }}>
+      <div
+        style={{
+          backgroundColor: 'black',
+          padding: '20px',
+          minHeight: '100vh',
+        }}
+      >
         {/* Google Font Import */}
         <style>
-          @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+          @import
+          url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
         </style>
 
         <Typography
@@ -83,7 +90,7 @@ const Impact = () => {
             activeOuterRadiusOffset={8}
             borderWidth={0.5} // Thin border to enhance metallic look
             borderColor={{ from: 'color', modifiers: [['brighter', 1.6]] }} // Bright border for metallic shine
-            enableArcLinkLabels={true}
+            enableArcLinkLabels
             arcLinkLabelsSkipAngle={5}
             arcLinkLabelsTextColor="#ffffff"
             arcLinkLabelsThickness={2}
@@ -191,6 +198,6 @@ const Impact = () => {
       </div>
     </Grid>
   );
-};
+}
 
 export default Impact;

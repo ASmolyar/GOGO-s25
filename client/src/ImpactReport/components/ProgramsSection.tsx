@@ -216,7 +216,7 @@ const FilterItem = styled.div<{ active: boolean }>`
   color: ${(props) => (props.active ? '#000' : 'rgba(255, 255, 255, 0.8)')};
   border: 1px solid
     ${(props) =>
-    props.active ? COLORS.gogo_green : 'rgba(255, 255, 255, 0.05)'};
+      props.active ? COLORS.gogo_green : 'rgba(255, 255, 255, 0.05)'};
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   box-shadow: ${(props) =>
     props.active ? '0 5px 15px rgba(30, 215, 96, 0.3)' : 'none'};
@@ -225,11 +225,11 @@ const FilterItem = styled.div<{ active: boolean }>`
 
   &:hover {
     background: ${(props) =>
-    props.active ? COLORS.gogo_green : 'rgba(255, 255, 255, 0.1)'};
+      props.active ? COLORS.gogo_green : 'rgba(255, 255, 255, 0.1)'};
     color: ${(props) => (props.active ? '#000' : 'white')};
     transform: translateY(-3px);
     border-color: ${(props) =>
-    props.active ? COLORS.gogo_green : 'rgba(255, 255, 255, 0.1)'};
+      props.active ? COLORS.gogo_green : 'rgba(255, 255, 255, 0.1)'};
   }
 
   &:after {
@@ -666,13 +666,12 @@ const programData = [
       'The summer showcase spotlighted student talent and built a strong sense of community',
     ],
   },
-
 ];
 
 const programImages = {
   'm-power': photo1,
-  'tasc': photo2,
-  'oyc': photo3,
+  tasc: photo2,
+  oyc: photo3,
 };
 
 function ProgramsSection(): JSX.Element {
@@ -700,7 +699,9 @@ function ProgramsSection(): JSX.Element {
       setFilteredPrograms(programData);
     } else {
       setFilteredPrograms(
-        programData.filter((program) => program.category.toLowerCase() === filter.toLowerCase()),
+        programData.filter(
+          (program) => program.category.toLowerCase() === filter.toLowerCase(),
+        ),
       );
     }
   }, [filter]);
@@ -830,7 +831,10 @@ function ProgramsSection(): JSX.Element {
                     </ProgramFeatureItem>
                   ))}
                 </ProgramFeatures>
-                <ProgramImage src={programImages[program.id as keyof typeof programImages]} alt={`${program.title} image`} />
+                <ProgramImage
+                  src={programImages[program.id as keyof typeof programImages]}
+                  alt={`${program.title} image`}
+                />
               </ProgramContent>
               <NumberIndicator>{index + 1}</NumberIndicator>
               <PlayButton visible={hoveredCard === program.id}>

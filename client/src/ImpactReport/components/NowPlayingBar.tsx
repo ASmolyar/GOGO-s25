@@ -330,7 +330,7 @@ function VolumeMuteIcon() {
   );
 }
 
-const NowPlayingBar = ({
+function NowPlayingBar({
   currentSong = null,
   currentAlbum = null,
   isPlaying = false,
@@ -349,7 +349,7 @@ const NowPlayingBar = ({
   onToggleModal = () => {
     /* Default implementation */
   },
-}: NowPlayingBarProps): JSX.Element => {
+}: NowPlayingBarProps): JSX.Element {
   const [internalProgress, setInternalProgress] = useState(30);
   const [volume, setVolume] = useState(70);
   const [liked, setLiked] = useState(false);
@@ -531,6 +531,6 @@ const NowPlayingBar = ({
       </NowPlayingRight>
     </NowPlayingBarContainer>
   );
-};
+}
 
 export default NowPlayingBar;

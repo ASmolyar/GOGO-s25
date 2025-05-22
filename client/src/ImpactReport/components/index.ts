@@ -1,1 +1,1 @@
-export { default as Population } from './Population'; 
+export { default as Population } from './Population';
