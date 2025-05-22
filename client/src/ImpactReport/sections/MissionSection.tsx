@@ -98,8 +98,8 @@ const SectionTitle = styled.h2`
     height: 4px;
     background: linear-gradient(
       to right,
-      ${COLORS.gogo_blue},
-      ${COLORS.gogo_purple}
+      #5fa8d3, /* softer blue */
+      #7b7fd1 /* softer purple */
     );
     transition: width 0.3s ease;
   }
@@ -121,7 +121,7 @@ const SpotifyBadge = styled.div`
   .badge-icon {
     margin-right: 0.8rem;
     font-size: 1.2rem;
-    color: ${COLORS.gogo_blue};
+    color: #7b7fd1;
   }
 
   span {
