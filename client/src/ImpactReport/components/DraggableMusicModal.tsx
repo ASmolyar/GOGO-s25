@@ -24,12 +24,7 @@ interface DraggableInstance {
 }
 
 // Styled components
-const ModalContainer = styled.div.attrs<{
-  viewState: ModalState;
-  style?: React.CSSProperties;
-}>((props) => ({
-  style: {},
-}))`
+const ModalContainer = styled.div<{ $viewState: ModalState }>`
   position: fixed;
   background: rgba(18, 18, 18, 0.95);
   backdrop-filter: blur(20px);
@@ -43,7 +38,7 @@ const ModalContainer = styled.div.attrs<{
 
   /* Position based on view state */
   ${(props) =>
-    props.viewState === 'full' &&
+    props.$viewState === 'full' &&
     `
     top: 0 !important;
     left: 0 !important;
@@ -54,14 +49,14 @@ const ModalContainer = styled.div.attrs<{
   `}
 
   ${(props) =>
-    props.viewState === 'pip' &&
+    props.$viewState === 'pip' &&
     `
     width: 600px;
     height: 450px;
   `}
   
   ${(props) =>
-    props.viewState === 'minimized' &&
+    props.$viewState === 'minimized' &&
     `
     height: 40px;
     width: 240px;
@@ -73,21 +68,21 @@ const ModalContainer = styled.div.attrs<{
   `}
   
   ${(props) =>
-    props.viewState === 'hidden' &&
+    props.$viewState === 'hidden' &&
     `
     display: none;
   `}
 `;
 
-const ModalHeader = styled.div<{ viewState: ModalState }>`
+const ModalHeader = styled.div<{ $viewState: ModalState }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: ${(props) =>
-    props.viewState === 'minimized' ? '0 15px' : '10px 20px'};
+    props.$viewState === 'minimized' ? '0 15px' : '10px 20px'};
   background: rgba(0, 0, 0, 0.5);
   cursor: grab;
-  height: ${(props) => (props.viewState === 'minimized' ? '100%' : '60px')};
+  height: ${(props) => (props.$viewState === 'minimized' ? '100%' : '60px')};
   border-bottom: 2px solid ${COLORS.gogo_blue};
   position: relative;
 
@@ -134,16 +129,16 @@ const ControlButton = styled.button`
 
 // Reset button removed as it's not needed
 
-const ModalContent = styled.div<{ viewState: ModalState }>`
+const ModalContent = styled.div<{ $viewState: ModalState }>`
   ${(props) =>
-    props.viewState === 'minimized' &&
+    props.$viewState === 'minimized' &&
     `
     display: none;
   `}
 
   height: calc(100% - 60px);
   overflow-y: auto;
-  padding: ${(props) => (props.viewState === 'full' ? '20px' : '10px')};
+  padding: ${(props) => (props.$viewState === 'full' ? '20px' : '10px')};
   overscroll-behavior: contain; /* Prevent scroll chaining */
 
   /* Custom scrollbar */
@@ -188,7 +183,7 @@ const ModeButton = styled.button<{ active: boolean }>`
 
   &:hover {
     background: ${(props) =>
-      props.active ? COLORS.gogo_blue : 'rgba(255, 255, 255, 0.1)'};
+    props.active ? COLORS.gogo_blue : 'rgba(255, 255, 255, 0.1)'};
   }
 `;
 
@@ -869,8 +864,8 @@ function DraggableMusicModal() {
   }
 
   return (
-    <ModalContainer ref={modalRef} viewState={modalState}>
-      <ModalHeader ref={headerRef} viewState={modalState}>
+    <ModalContainer ref={modalRef} $viewState={modalState}>
+      <ModalHeader ref={headerRef} $viewState={modalState}>
         <DragHandle />
         {getHeaderTitle()}
 
@@ -969,7 +964,7 @@ function DraggableMusicModal() {
         </HeaderControls>
       </ModalHeader>
 
-      <ModalContent viewState={modalState} data-modal-content>
+      <ModalContent $viewState={modalState} data-modal-content>
         {modalState !== 'minimized' && (
           <>
             {/* Only show mode selector in full mode, not in pip mode */}

@@ -118,6 +118,18 @@ const ReportYear = styled.div`
   font-family: 'Century Gothic-Bold', 'Arial', sans-serif;
   font-weight: 500;
   margin-top: 1rem;
+  opacity: 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  pointer-events: none; /* Let events pass through */
+`;
+
+// Motto text
+const Motto = styled.div`
+  font-size: 1.5rem;
+  color: var(--gogo-purple, #6836A');
+  font-family: 'Century Gothic-Bold', 'Arial', sans-serif;
+  font-weight: 500;
+  margin-top: 1.5rem;
   margin-bottom: 3rem;
   opacity: 0;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
@@ -204,6 +216,7 @@ function HeroSection(): JSX.Element {
   const subtitleRef = useRef<HTMLHeadingElement>(null);
   const underlineRef = useRef<HTMLDivElement>(null);
   const yearRef = useRef<HTMLDivElement>(null);
+  const mottoRef = useRef<HTMLDivElement>(null);
   const primaryButtonRef = useRef<HTMLButtonElement>(null);
   const secondaryButtonRef = useRef<HTMLButtonElement>(null);
   const waveBackgroundRef = useRef<HTMLDivElement>(null);
@@ -554,6 +567,17 @@ function HeroSection(): JSX.Element {
       });
     }
 
+    // Add motto animation
+    if (mottoRef.current) {
+      animate(mottoRef.current, {
+        opacity: [0, 1],
+        translateY: [20, 0],
+        duration: 600,
+        easing: 'easeOutExpo',
+        delay: 400,
+      });
+    }
+
     // Animate buttons with staggered timing
     const buttons = [
       primaryButtonRef.current,
@@ -659,6 +683,7 @@ function HeroSection(): JSX.Element {
           <TitleUnderline ref={underlineRef} />
           <SubtitleText ref={subtitleRef}>GUITARS OVER GUNS</SubtitleText>
           <ReportYear ref={yearRef}>2024-2025</ReportYear>
+          <Motto ref={mottoRef}>Unlocking Youth Potential Through Music, Mentorship, and the Arts</Motto>
 
           <ButtonContainer>
             <PrimaryButton ref={primaryButtonRef}>
