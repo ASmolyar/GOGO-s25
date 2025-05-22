@@ -66,16 +66,22 @@ declare module 'react-leaflet' {
   export const Popup: React.FC<PopupProps>;
   export const Tooltip: React.FC<TooltipProps>;
   export const ZoomControl: React.FC<ZoomControlProps>;
-  
+
   // Hooks
   export function useMap(): L.Map;
-  export function useMapEvents(events: Record<string, (...args: any[]) => void>): L.Map;
+  export function useMapEvents(
+    events: Record<string, (...args: any[]) => void>,
+  ): L.Map;
 }
 
 // Type declarations for leaflet
 declare module 'leaflet' {
   export interface Map {
-    setView(center: LatLngExpression, zoom: number, options?: ZoomPanOptions): this;
+    setView(
+      center: LatLngExpression,
+      zoom: number,
+      options?: ZoomPanOptions,
+    ): this;
     setMinZoom(zoom: number): this;
     setMaxZoom(zoom: number): this;
     setMaxBounds(bounds: LatLngBoundsExpression): this;
@@ -130,12 +136,21 @@ declare module 'leaflet' {
     icon?: Icon;
   }
 
-  export type LatLngExpression = LatLng | [number, number] | { lat: number; lng: number };
-  export type LatLngBoundsExpression = LatLngBounds | LatLngExpression[] | [[number, number], [number, number]];
+  export type LatLngExpression =
+    | LatLng
+    | [number, number]
+    | { lat: number; lng: number };
+  export type LatLngBoundsExpression =
+    | LatLngBounds
+    | LatLngExpression[]
+    | [[number, number], [number, number]];
 
   export function map(element: HTMLElement, options?: any): Map;
   export function latLng(lat: number, lng: number): LatLng;
-  export function latLngBounds(a: LatLngExpression, b: LatLngExpression): LatLngBounds;
+  export function latLngBounds(
+    a: LatLngExpression,
+    b: LatLngExpression,
+  ): LatLngBounds;
   export function icon(options: any): Icon;
 
   export interface Icon {
@@ -144,14 +159,14 @@ declare module 'leaflet' {
       shadowUrl?: string;
       iconSize?: [number, number];
       iconAnchor?: [number, number];
-    }
+    };
   }
 
   export class Marker {
     static prototype: {
       options: {
         icon: Icon;
-      }
+      };
     };
   }
-} 
+}

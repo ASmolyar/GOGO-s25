@@ -48,7 +48,7 @@
 
 .progress-fill {
   height: 100% !important;
-  background-color: #1DB954 !important; /* Spotify green */
+  background-color: #1db954 !important; /* Spotify green */
   border-radius: 3px !important;
   position: relative !important;
   left: 0 !important;
@@ -61,7 +61,7 @@
 
 /* More specific selector to increase specificity */
 .now-playing-bar-container .ProgressBar .progress-container .progress-fill {
-  background-color: #1DB954 !important; /* Spotify green */
+  background-color: #1db954 !important; /* Spotify green */
   height: 100% !important;
   display: block !important;
 }
@@ -103,7 +103,7 @@
 }
 
 /* More explicit styling for time info */
-.now-playing-bar-container .ProgressBar div[class*="TimeInfo"] {
+.now-playing-bar-container .ProgressBar div[class*='TimeInfo'] {
   font-size: 11px !important;
   color: #b3b3b3 !important;
   min-width: 40px !important;
@@ -167,11 +167,11 @@ html {
   fill: currentColor !important;
 }
 
-.now-playing-bar-container [aria-label="Toggle Music Library"] {
+.now-playing-bar-container [aria-label='Toggle Music Library'] {
   color: #b3b3b3 !important;
 }
 
-.now-playing-bar-container [aria-label="Toggle Music Library"]:hover {
+.now-playing-bar-container [aria-label='Toggle Music Library']:hover {
   color: white !important;
 }
 
@@ -193,7 +193,7 @@ html {
 
 .progress-container:hover .progress-fill,
 .volume-container:hover .volume-fill {
-  background-color: #1DB954 !important;
+  background-color: #1db954 !important;
 }
 
 .progress-container:hover .progress-handle,
@@ -203,23 +203,24 @@ html {
 }
 
 /* Fix selector for play button color */
-button[class*="PlayButton"] {
+button[class*='PlayButton'] {
   background-color: white !important;
   color: black !important;
   border-radius: 50% !important;
 }
 
-button[class*="PlayButton"]:hover {
+button[class*='PlayButton']:hover {
   transform: scale(1.05) !important;
   color: black !important;
 }
 
 /* Fix for any elements creating new stacking contexts */
-#root, .App {
+#root,
+.App {
   position: relative !important;
   z-index: auto !important;
 }
 
 .active {
-  color: #1DB954 !important;
-} 
+  color: #1db954 !important;
+}

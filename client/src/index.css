@@ -1,7 +1,8 @@
 /* Import custom fonts */
 @import './assets/fonts/fonts.css';
 
-body, html {
+body,
+html {
   margin: 0;
   padding: 0;
   background-color: #1a1a1e;

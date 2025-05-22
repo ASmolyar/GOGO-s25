@@ -47,4 +47,4 @@ interface ISubmission extends mongoose.Document {
 
 const Submission = mongoose.model<ISubmission>('Submission', SubmissionSchema);
 
-export { ISubmission, Submission }; 
+export { ISubmission, Submission };

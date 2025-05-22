@@ -64,25 +64,23 @@ function LocationDetail({ location }: LocationDetailProps) {
   return (
     <Container>
       <Title>{location.name}</Title>
-      
-      {location.address && (
-        <Address>{location.address}</Address>
-      )}
-      
+
+      {location.address && <Address>{location.address}</Address>}
+
       {location.type && (
         <Section>
           <SectionTitle>Type</SectionTitle>
           <div>{location.type.replace('-', ' ')}</div>
         </Section>
       )}
-      
+
       {location.description && (
         <Section>
           <SectionTitle>About</SectionTitle>
           <Description>{location.description}</Description>
         </Section>
       )}
-      
+
       {location.programs && location.programs.length > 0 && (
         <Section>
           <SectionTitle>Programs</SectionTitle>
@@ -93,7 +91,7 @@ function LocationDetail({ location }: LocationDetailProps) {
           </div>
         </Section>
       )}
-      
+
       {location.supportedBy && location.supportedBy.length > 0 && (
         <SupportedBy>
           Supported by: {location.supportedBy.join(', ')}
@@ -103,4 +101,4 @@ function LocationDetail({ location }: LocationDetailProps) {
   );
 }
 
-export default LocationDetail; 
+export default LocationDetail;

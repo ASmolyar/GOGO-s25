@@ -13,7 +13,7 @@ import { IUser } from '../models/user.model.ts';
 export const createAssignment = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const { title, description, dueDate } = req.body;
@@ -47,7 +47,7 @@ export const createAssignment = async (
 export const updateAssignment = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const { id } = req.params;
@@ -61,8 +61,13 @@ export const updateAssignment = async (
     }
 
     // Check if the user is the creator of the assignment
-    if (assignment.createdBy.toString() !== user._id.toString() && !user.admin) {
-      return next(createError(403, 'You are not authorized to update this assignment'));
+    if (
+      assignment.createdBy.toString() !== user._id.toString() &&
+      !user.admin
+    ) {
+      return next(
+        createError(403, 'You are not authorized to update this assignment'),
+      );
     }
 
     const updatedFields: Partial<IAssignment> = {};
@@ -75,7 +80,7 @@ export const updateAssignment = async (
     const updatedAssignment = await Assignment.findByIdAndUpdate(
       id,
       updatedFields,
-      { new: true }
+      { new: true },
     );
 
     return res.status(200).json({
@@ -93,7 +98,7 @@ export const updateAssignment = async (
 export const deleteAssignment = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const { id } = req.params;
@@ -106,8 +111,13 @@ export const deleteAssignment = async (
     }
 
     // Check if the user is the creator of the assignment
-    if (assignment.createdBy.toString() !== user._id.toString() && !user.admin) {
-      return next(createError(403, 'You are not authorized to delete this assignment'));
+    if (
+      assignment.createdBy.toString() !== user._id.toString() &&
+      !user.admin
+    ) {
+      return next(
+        createError(403, 'You are not authorized to delete this assignment'),
+      );
     }
 
     // Remove all submissions related to this assignment
@@ -131,12 +141,14 @@ export const deleteAssignment = async (
 export const getTeacherAssignments = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const user = req.user as IUser;
 
-    const assignments = await Assignment.find({ createdBy: user._id }).sort({ createdAt: -1 });
+    const assignments = await Assignment.find({ createdBy: user._id }).sort({
+      createdAt: -1,
+    });
 
     return res.status(200).json({
       success: true,
@@ -153,7 +165,7 @@ export const getTeacherAssignments = async (
 export const getAssignment = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const { id } = req.params;
@@ -179,7 +191,7 @@ export const getAssignment = async (
 export const getAssignmentSubmissions = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const { id } = req.params;
@@ -192,8 +204,13 @@ export const getAssignmentSubmissions = async (
     }
 
     // Check if the user is the creator of the assignment
-    if (assignment.createdBy.toString() !== user._id.toString() && !user.admin) {
-      return next(createError(403, 'You are not authorized to view these submissions'));
+    if (
+      assignment.createdBy.toString() !== user._id.toString() &&
+      !user.admin
+    ) {
+      return next(
+        createError(403, 'You are not authorized to view these submissions'),
+      );
     }
 
     const submissions = await Submission.find({ assignment: id })
@@ -215,7 +232,7 @@ export const getAssignmentSubmissions = async (
 export const gradeSubmission = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const { id } = req.params;
@@ -226,8 +243,7 @@ export const gradeSubmission = async (
       return next(createError(400, 'Grade is required'));
     }
 
-    const submission = await Submission.findById(id)
-      .populate('assignment');
+    const submission = await Submission.findById(id).populate('assignment');
 
     if (!submission) {
       return next(createError(404, 'Submission not found'));
@@ -235,8 +251,13 @@ export const gradeSubmission = async (
 
     // Check if the user is the creator of the related assignment
     const assignment = submission.assignment as IAssignment;
-    if (assignment.createdBy.toString() !== user._id.toString() && !user.admin) {
-      return next(createError(403, 'You are not authorized to grade this submission'));
+    if (
+      assignment.createdBy.toString() !== user._id.toString() &&
+      !user.admin
+    ) {
+      return next(
+        createError(403, 'You are not authorized to grade this submission'),
+      );
     }
 
     submission.grade = grade;
@@ -251,4 +272,4 @@ export const gradeSubmission = async (
   } catch (error) {
     return next(error);
   }
-}; 
+};

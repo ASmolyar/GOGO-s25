@@ -1,7 +1,7 @@
 import { Album, Artist, Song, MusicData } from '../types/music';
 
 // Use undefined instead of null for better type safety
-let musicData: MusicData | undefined = undefined;
+let musicData: MusicData | undefined;
 
 /**
  * Loads the music data from the JSON file

@@ -476,7 +476,7 @@ function HeroSection(): JSX.Element {
         });
 
         const frameIndex = currentFrame;
-        currentFrame = currentFrame + 1;
+        currentFrame += 1;
 
         // Wait for a timeout before starting next frame
         setTimeout(animateFrame, rippleTimeline[frameIndex].duration);
@@ -683,7 +683,9 @@ function HeroSection(): JSX.Element {
           <TitleUnderline ref={underlineRef} />
           <SubtitleText ref={subtitleRef}>GUITARS OVER GUNS</SubtitleText>
           <ReportYear ref={yearRef}>2024-2025</ReportYear>
-          <Motto ref={mottoRef}>Unlocking Youth Potential Through Music, Mentorship, and the Arts</Motto>
+          <Motto ref={mottoRef}>
+            Unlocking Youth Potential Through Music, Mentorship, and the Arts
+          </Motto>
 
           <ButtonContainer>
             <PrimaryButton

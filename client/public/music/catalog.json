@@ -74,7 +74,7 @@
         }
       ],
       "songs": [
-    {
+        {
           "song_id": "f8a9b0c1-d2e3-4567-rstu-6789012345678",
           "title": "This Is Nothing New",
           "audio_file": "/music/albums/the_rain_may_be_pouring/This_Is_Nothing_New.mp3",
@@ -95,16 +95,16 @@
             {
               "artist_id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
               "name": "Justine Garcia"
-        }
-      ]
-    },
-    {
+            }
+          ]
+        },
+        {
           "song_id": "b0c1d2e3-f4a5-6789-tuvw-8901234567890",
           "title": "Company",
           "audio_file": "/music/albums/the_rain_may_be_pouring/Company.mp3",
           "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
           "artists": [
-        {
+            {
               "artist_id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
               "name": "Starve Marve"
             }
@@ -135,16 +135,16 @@
             {
               "artist_id": "f6a7b8c9-d0e1-2345-fghi-45678901234567",
               "name": "Tif Boom"
-        }
-      ]
-    },
-    {
+            }
+          ]
+        },
+        {
           "song_id": "e3f4a5b6-c7d8-9012-wxyz-1234567890123",
           "title": "Homesick",
           "audio_file": "/music/albums/the_rain_may_be_pouring/Homesick.mp3",
           "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
           "artists": [
-        {
+            {
               "artist_id": "a7b8c9d0-e1f2-3456-ghij-5678901234567",
               "name": "Mish"
             }
@@ -171,16 +171,16 @@
             {
               "artist_id": "c9d0e1f2-a3b4-5678-ijkl-7890123456789",
               "name": "RonDon Keyz"
-        }
-      ]
-    },
-    {
+            }
+          ]
+        },
+        {
           "song_id": "b6c7d8e9-f0a1-2345-zabc-4567890123456",
           "title": "Pieces",
           "audio_file": "/music/albums/the_rain_may_be_pouring/Pieces.mp3",
           "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
           "artists": [
-        {
+            {
               "artist_id": "d0e1f2a3-b4c5-6789-jklm-8901234567890",
               "name": "Rios"
             }
@@ -207,16 +207,16 @@
             {
               "artist_id": "f2a3b4c5-d6e7-8901-lmno-0123456789012",
               "name": "Lyrical Grenade"
-        }
-      ]
-    },
-    {
+            }
+          ]
+        },
+        {
           "song_id": "e9f0a1b2-c3d4-5678-cdef-7890123456789",
           "title": "It's Come to This...",
           "audio_file": "/music/albums/the_rain_may_be_pouring/It's_Come_to_This....mp3",
           "album_id": "e7f8a9b0-c1d2-3456-qrst-5678901234567",
           "artists": [
-        {
+            {
               "artist_id": "a3b4c5d6-e7f8-9012-mnop-1234567890123",
               "name": "Kenzy Lafrance"
             }
@@ -253,4 +253,4 @@
       ]
     }
   ]
-} 
+}

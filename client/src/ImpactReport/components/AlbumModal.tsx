@@ -202,11 +202,11 @@ const calculateDuration = (): string => {
   return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 };
 
-const AlbumModal = ({
+function AlbumModal({
   albumId,
   onPlayTrack,
   onClose,
-}: AlbumModalProps): JSX.Element => {
+}: AlbumModalProps): JSX.Element {
   const [album, setAlbum] = useState<Album | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -337,6 +337,6 @@ const AlbumModal = ({
       </TracksContainer>
     </ModalContent>
   );
-};
+}
 
 export default AlbumModal;

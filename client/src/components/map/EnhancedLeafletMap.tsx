@@ -3,13 +3,13 @@ import React, { useRef, useEffect, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import styled from 'styled-components';
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import COLORS from '../../assets/colors.ts';
 import regions from './data/regions';
 import { darkenColor, lightenColor } from './utils/colorHelpers';
 
 // Import Leaflet images directly
-import icon from 'leaflet/dist/images/marker-icon.png';
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
 // Define type for location types
 const LocationTypes = {
@@ -571,7 +571,7 @@ function EnhancedLeafletMap() {
           map.on('drag', function () {
             // Check if current view is at the bounds
             const bounds = map.getBounds();
-            const maxBounds = map.options.maxBounds;
+            const { maxBounds } = map.options;
 
             if (
               maxBounds &&

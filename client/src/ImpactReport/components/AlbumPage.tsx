@@ -224,11 +224,13 @@ const NotFoundContainer = styled.div`
   color: #b3b3b3;
 `;
 
-const VerifiedIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="#3D91F4">
-    <path d="M12 1a11 11 0 1 0 0 22 11 11 0 0 0 0-22zm5.045 8.866L11.357 16.9l-4.4-3.396a.75.75 0 1 1 .914-1.182l3.417 2.639 4.968-6.276a.749.749 0 0 1 1.185.918l-.003.004a.752.752 0 0 1-.136.177l-.258.326z" />
-  </svg>
-);
+function VerifiedIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="#3D91F4">
+      <path d="M12 1a11 11 0 1 0 0 22 11 11 0 0 0 0-22zm5.045 8.866L11.357 16.9l-4.4-3.396a.75.75 0 1 1 .914-1.182l3.417 2.639 4.968-6.276a.749.749 0 0 1 1.185.918l-.003.004a.752.752 0 0 1-.136.177l-.258.326z" />
+    </svg>
+  );
+}
 
 const AlbumPage: React.FC<AlbumPageProps> = ({ albumId, onPlayTrack }) => {
   const [catalog, setCatalog] = useState<MusicCatalog | null>(null);
@@ -358,4 +360,4 @@ const AlbumPage: React.FC<AlbumPageProps> = ({ albumId, onPlayTrack }) => {
   );
 };
 
-export default AlbumPage; 
+export default AlbumPage;

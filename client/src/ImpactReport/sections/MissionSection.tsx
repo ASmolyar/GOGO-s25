@@ -98,8 +98,8 @@ const SectionTitle = styled.h2`
     height: 4px;
     background: linear-gradient(
       to right,
-      #5fa8d3, /* softer blue */
-      #7b7fd1 /* softer purple */
+      #5fa8d3,
+      /* softer blue */ #7b7fd1 /* softer purple */
     );
     transition: width 0.3s ease;
   }

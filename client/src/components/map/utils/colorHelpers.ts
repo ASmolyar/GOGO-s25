@@ -10,7 +10,9 @@
  */
 export function darkenColor(color: string, percent: number): string {
   // Convert hex to RGB if needed
-  let r: number, g: number, b: number;
+  let r: number;
+  let g: number;
+  let b: number;
 
   if (color.startsWith('#')) {
     // Handle hex color
@@ -50,7 +52,9 @@ export function darkenColor(color: string, percent: number): string {
  */
 export function lightenColor(color: string, percent: number): string {
   // Convert hex to RGB if needed
-  let r: number, g: number, b: number;
+  let r: number;
+  let g: number;
+  let b: number;
 
   if (color.startsWith('#')) {
     // Handle hex color

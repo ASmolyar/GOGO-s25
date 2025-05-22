@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 import '../assets/fonts/fonts.css';
-import COLORS from '../assets/colors.ts';
 import { animate, stagger } from 'animejs';
+import COLORS from '../assets/colors.ts';
 
 // Modern animations
 const shimmer = keyframes`
@@ -196,7 +196,8 @@ const Statement = styled.div`
   background: rgba(25, 25, 35, 0.15);
   backdrop-filter: blur(8px);
   border-radius: 20px;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
   transition: all 0.3s ease;
 
   &:hover {

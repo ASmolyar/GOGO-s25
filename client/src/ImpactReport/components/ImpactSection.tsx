@@ -733,91 +733,99 @@ const ToolDescription = styled.div`
 `;
 
 // SVG Icon components for method icons
-const InsightIcon = () => (
-  <svg
-    width="18"
-    height="18"
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M12 16.5V8.5M12 8.5L15 11.5M12 8.5L9 11.5M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
+function InsightIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M12 16.5V8.5M12 8.5L15 11.5M12 8.5L9 11.5M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
-const ArtisticIcon = () => (
-  <svg
-    width="18"
-    height="18"
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M2 12H4.5M4.5 12C5.88071 12 7 10.8807 7 9.5C7 8.11929 5.88071 7 4.5 7C3.11929 7 2 8.11929 2 9.5C2 10.8807 3.11929 12 4.5 12ZM19.5 12H22M19.5 12C18.1193 12 17 10.8807 17 9.5C17 8.11929 18.1193 7 19.5 7C20.8807 7 22 8.11929 22 9.5C22 10.8807 20.8807 12 19.5 12ZM12 19.5V22M12 19.5C10.6193 19.5 9.5 18.3807 9.5 17C9.5 15.6193 10.6193 14.5 12 14.5C13.3807 14.5 14.5 15.6193 14.5 17C14.5 18.3807 13.3807 19.5 12 19.5ZM12 4.5V2M12 4.5C13.3807 4.5 14.5 5.61929 14.5 7C14.5 8.38071 13.3807 9.5 12 9.5C10.6193 9.5 9.5 8.38071 9.5 7C9.5 5.61929 10.6193 4.5 12 4.5Z"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
+function ArtisticIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M2 12H4.5M4.5 12C5.88071 12 7 10.8807 7 9.5C7 8.11929 5.88071 7 4.5 7C3.11929 7 2 8.11929 2 9.5C2 10.8807 3.11929 12 4.5 12ZM19.5 12H22M19.5 12C18.1193 12 17 10.8807 17 9.5C17 8.11929 18.1193 7 19.5 7C20.8807 7 22 8.11929 22 9.5C22 10.8807 20.8807 12 19.5 12ZM12 19.5V22M12 19.5C10.6193 19.5 9.5 18.3807 9.5 17C9.5 15.6193 10.6193 14.5 12 14.5C13.3807 14.5 14.5 15.6193 14.5 17C14.5 18.3807 13.3807 19.5 12 19.5ZM12 4.5V2M12 4.5C13.3807 4.5 14.5 5.61929 14.5 7C14.5 8.38071 13.3807 9.5 12 9.5C10.6193 9.5 9.5 8.38071 9.5 7C9.5 5.61929 10.6193 4.5 12 4.5Z"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
-const AcademicIcon = () => (
-  <svg
-    width="18"
-    height="18"
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M12 14L3 8.5L12 3L21 8.5L12 14Z"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M3 13.5L12 19L21 13.5"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M3 18.5L12 24L21 18.5"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
+function AcademicIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M12 14L3 8.5L12 3L21 8.5L12 14Z"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M3 13.5L12 19L21 13.5"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M3 18.5L12 24L21 18.5"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
-const TrackingIcon = () => (
-  <svg
-    width="18"
-    height="18"
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M9 17L4 12L9 7M15 7L20 12L15 17"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
+function TrackingIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M9 17L4 12L9 7M15 7L20 12L15 17"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
 function ImpactSection(): JSX.Element {
   const [inView, setInView] = useState(false);
@@ -1079,8 +1087,11 @@ function ImpactSection(): JSX.Element {
               <span className="regular">?</span>
             </MeasureTitle>
             <SpotifySubtitle style={{ marginTop: '0.1rem' }}>
-              We use Hello Insight, a nationally recognized evaluation tool, to track students' self-reported growth across 6 Positive Youth Development (PYD)
-              pillars. Guitars Over Guns mentors use healing-centered, culturally affirming PYD practices in program sessions.
+              We use Hello Insight, a nationally recognized evaluation tool, to
+              track students' self-reported growth across 6 Positive Youth
+              Development (PYD) pillars. Guitars Over Guns mentors use
+              healing-centered, culturally affirming PYD practices in program
+              sessions.
             </SpotifySubtitle>
 
             <AudioWaveContainer>
@@ -1093,38 +1104,47 @@ function ImpactSection(): JSX.Element {
           <SpotifyGrid>
             <div>
               <SpotifyCard>
-                <h4 style={{
-                  color: 'white',
-                  fontWeight: 700,
-                  fontSize: '1.5rem',
-                  margin: '0 0 0.4rem 0',
-                  letterSpacing: '0.02em'
-                }}>
+                <h4
+                  style={{
+                    color: 'white',
+                    fontWeight: 700,
+                    fontSize: '1.5rem',
+                    margin: '0 0 0.4rem 0',
+                    letterSpacing: '0.02em',
+                  }}
+                >
                   Our Method Provides
                 </h4>
-                <div style={{
-                  width: '80px',
-                  height: '2.5px',
-                  background: 'linear-gradient(90deg, #1ed760,rgb(20, 105, 50))',
-                  borderRadius: '2px',
-                  marginBottom: '1.3rem'
-                }} />
+                <div
+                  style={{
+                    width: '80px',
+                    height: '2.5px',
+                    background:
+                      'linear-gradient(90deg, #1ed760,rgb(20, 105, 50))',
+                    borderRadius: '2px',
+                    marginBottom: '1.3rem',
+                  }}
+                />
                 <SpotifyMethodsList>
                   <SpotifyMethod>
                     <MethodName>
                       <InsightIcon /> Trusting relationships with caring adults
                     </MethodName>
                     <MethodDescription>
-                      Our model pairs youth with a caring adult mentor. Mentees self-report the number of supportive adults in their lives who support their growth and expand their interests
+                      Our model pairs youth with a caring adult mentor. Mentees
+                      self-report the number of supportive adults in their lives
+                      who support their growth and expand their interests
                     </MethodDescription>
                   </SpotifyMethod>
 
                   <SpotifyMethod>
                     <MethodName>
-                      <ArtisticIcon /> High-quality, no-cost arts education during typically unsupervised hours
+                      <ArtisticIcon /> High-quality, no-cost arts education
+                      during typically unsupervised hours
                     </MethodName>
                     <MethodDescription>
-                      Providing enriching, safe activities from a research-driven curriculum
+                      Providing enriching, safe activities from a
+                      research-driven curriculum
                     </MethodDescription>
                   </SpotifyMethod>
 
@@ -1133,7 +1153,8 @@ function ImpactSection(): JSX.Element {
                       <AcademicIcon /> Skill Development
                     </MethodName>
                     <MethodDescription>
-                      Through performance opportunities and after school programs
+                      Through performance opportunities and after school
+                      programs
                     </MethodDescription>
                   </SpotifyMethod>
 
@@ -1142,9 +1163,9 @@ function ImpactSection(): JSX.Element {
                       <TrackingIcon /> Trauma-informed mental health support
                     </MethodName>
                     <MethodDescription>
-                      By investing in the mental health and creative capacities of
-                      our young people, we create space for each student to work
-                      hard and own their path in life.
+                      By investing in the mental health and creative capacities
+                      of our young people, we create space for each student to
+                      work hard and own their path in life.
                     </MethodDescription>
                   </SpotifyMethod>
                 </SpotifyMethodsList>
@@ -1280,8 +1301,7 @@ function ImpactSection(): JSX.Element {
                   textAlign: 'center',
                 }}
               >
-                GOGO largely supports kids affected by systemic challenges that reduce their
-                access to opportunities
+                GOGO largely supports kids affected by systemic challenges that reduce their access to opportunities
               </SpotifySubtitle>
 
               <div
@@ -1292,6 +1312,8 @@ function ImpactSection(): JSX.Element {
                 }}
               >
                 <div
+                  role="button"
+                  tabIndex={0}
                   style={{
                     background: 'linear-gradient(90deg, #1ED760, #169C46)',
                     color: 'white',
@@ -1305,8 +1327,11 @@ function ImpactSection(): JSX.Element {
                     justifyContent: 'center',
                   }}
                   onClick={() => navigate('/population')}
+                  onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') navigate('/population'); }}
                 >
-                  <span style={{ marginRight: '0.5rem' }}>Learn More About Who We Serve</span>
+                  <span style={{ marginRight: '0.5rem' }}>
+                    Learn More About Who We Serve
+                  </span>
                   <svg
                     width="16"
                     height="16"

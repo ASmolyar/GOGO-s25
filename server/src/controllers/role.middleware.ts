@@ -11,11 +11,11 @@ import { IUser } from '../models/user.model.ts';
 export const isTeacher = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const user = req.user as IUser;
-    
+
     if (!user) {
       return next(createError(401, 'You must be logged in'));
     }
@@ -24,7 +24,9 @@ export const isTeacher = async (
       return next();
     }
 
-    return next(createError(403, 'You must be a teacher to access this resource'));
+    return next(
+      createError(403, 'You must be a teacher to access this resource'),
+    );
   } catch (error) {
     return next(error);
   }
@@ -36,11 +38,11 @@ export const isTeacher = async (
 export const isStudent = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const user = req.user as IUser;
-    
+
     if (!user) {
       return next(createError(401, 'You must be logged in'));
     }
@@ -49,8 +51,10 @@ export const isStudent = async (
       return next();
     }
 
-    return next(createError(403, 'You must be a student to access this resource'));
+    return next(
+      createError(403, 'You must be a student to access this resource'),
+    );
   } catch (error) {
     return next(error);
   }
-}; 
+};

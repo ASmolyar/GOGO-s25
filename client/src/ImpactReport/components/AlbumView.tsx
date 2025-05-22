@@ -422,14 +422,14 @@ const formatDuration = (seconds: number | undefined): string => {
   return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
 };
 
-const AlbumView = ({
+function AlbumView({
   albumId,
   onPlayTrack,
   onBackClick,
   currentlyPlayingId,
   isPlaying,
   modalState = 'full',
-}: AlbumViewProps): JSX.Element => {
+}: AlbumViewProps): JSX.Element {
   const [album, setAlbum] = useState<Album | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -702,6 +702,6 @@ const AlbumView = ({
       </AlbumViewContainer>
     </AlbumViewWrapper>
   );
-};
+}
 
 export default AlbumView;

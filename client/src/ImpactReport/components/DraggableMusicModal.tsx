@@ -183,7 +183,7 @@ const ModeButton = styled.button<{ active: boolean }>`
 
   &:hover {
     background: ${(props) =>
-    props.active ? COLORS.gogo_blue : 'rgba(255, 255, 255, 0.1)'};
+      props.active ? COLORS.gogo_blue : 'rgba(255, 255, 255, 0.1)'};
   }
 `;
 
@@ -423,10 +423,9 @@ function DraggableMusicModal() {
         // Re-enable scrolling when fullscreen mode ends
         document.body.style.overflow = '';
       };
-    } else {
-      // Ensure scrolling is enabled when not in fullscreen
-      document.body.style.overflow = '';
     }
+    // Ensure scrolling is enabled when not in fullscreen
+    document.body.style.overflow = '';
   }, [modalState, modalRef]);
 
   // Make the modal start in fullscreen mode

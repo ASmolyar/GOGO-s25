@@ -2,13 +2,13 @@
  * Types for the Map component
  */
 
-export type LocationType = 
-  | 'school' 
-  | 'community-center' 
-  | 'studio' 
-  | 'academy' 
-  | 'hub' 
-  | 'program' 
+export type LocationType =
+  | 'school'
+  | 'community-center'
+  | 'studio'
+  | 'academy'
+  | 'hub'
+  | 'program'
   | 'office'
   | 'summer-program'
   | 'default';
@@ -38,4 +38,4 @@ export interface Region {
   color?: string;
   sublocations: Sublocation[];
   description?: string;
-} 
+}

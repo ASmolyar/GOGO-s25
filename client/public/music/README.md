@@ -64,4 +64,4 @@ The `catalog.json` file maintains metadata for all albums and tracks. Each album
 
 ## Integration with the Impact Report
 
-This music library is used in the Impact Report to showcase student and mentor performances. The audio player components in the application will reference these files through the catalog.json metadata. 
+This music library is used in the Impact Report to showcase student and mentor performances. The audio player components in the application will reference these files through the catalog.json metadata.

@@ -245,9 +245,7 @@ const achievementsData = [
     title: 'New York Location Launch',
     description:
       'Launched GOGO New York with a pilot program in two Harlem schools, establishing lasting partnerships in the community.',
-    stats: [
-      { value: '23+', label: 'students served' },
-    ],
+    stats: [{ value: '23+', label: 'students served' }],
     mediaLink: 'Link?',
     backgroundColor: 'rgba(25, 70, 245, 0.1)', // Blue
   },
@@ -280,14 +278,15 @@ const achievementsData = [
   {
     id: 6,
     year: '2026?',
-    title: 'What\'s Next?',
+    title: "What's Next?",
     description:
       'Our goal is to serve 10,000 students annually across the U.S. as a national leader in arts-based youth development.',
     stats: [
       { value: '10K', label: 'students annually' },
       { value: '100', label: 'locations' },
     ],
-    mediaLink: 'Email info@guitarsoverguns.org for Audited Financial Statements and Form 990',
+    mediaLink:
+      'Email info@guitarsoverguns.org for Audited Financial Statements and Form 990',
     backgroundColor: 'rgba(177, 235, 242, 0.1)', // Teal
   },
 ];
@@ -359,7 +358,9 @@ function AchievementsSection(): JSX.Element {
       <SpotifyPattern />
       <ContentContainer>
         <SectionHeader>
-          <SectionTitle ref={titleRef}>Our Achievements and Strategic Highlights</SectionTitle>
+          <SectionTitle ref={titleRef}>
+            Our Achievements and Strategic Highlights
+          </SectionTitle>
           <SectionSubtitle>
             Milestones that showcase our commitment to empowering youth through
             music and mentorship
