@@ -157,7 +157,7 @@ const PrimaryButton = styled.button`
   font-size: 1rem;
   padding: 1rem 2rem;
   transition: all 0.3s ease;
-  opacity: 0;
+  opacity: 1;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -686,7 +686,12 @@ function HeroSection(): JSX.Element {
           <Motto ref={mottoRef}>Unlocking Youth Potential Through Music, Mentorship, and the Arts</Motto>
 
           <ButtonContainer>
-            <PrimaryButton ref={primaryButtonRef}>
+            <PrimaryButton
+              as="a"
+              href="https://youtu.be/21ufVKC5TEo?si=MT4VBj1PJvWG5s37"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <span>▶</span>
               <span>Watch Our Story</span>
             </PrimaryButton>

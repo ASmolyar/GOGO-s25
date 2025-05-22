@@ -374,10 +374,10 @@ function MissionSection(): JSX.Element {
         ))}
       </StatsContainer>
 
-      <ListenNow>
+      {/* <ListenNow>
         <div className="listen-icon">▶</div>
         <span>Listen to our students&apos; music</span>
-      </ListenNow>
+      </ListenNow> */}
     </SectionContainer>
   );
 }
