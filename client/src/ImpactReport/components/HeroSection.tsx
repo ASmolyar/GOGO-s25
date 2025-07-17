@@ -751,7 +751,7 @@ function HeroSection(): JSX.Element {
 
           <ButtonContainer>
             <a
-              href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" // Replace with actual video URL if needed
+              href="https://youtu.be/21ufVKC5TEo?si=3N7xugwbc3Z4RNm-"
               target="_blank"
               rel="noopener noreferrer"
               style={{ textDecoration: 'none' }}
