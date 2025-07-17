@@ -750,10 +750,17 @@ function HeroSection(): JSX.Element {
           <ReportYear ref={yearRef}>2024-2025</ReportYear>
 
           <ButtonContainer>
-            <PrimaryButton ref={primaryButtonRef}>
-              <span>▶</span>
-              <span>Watch Our Story</span>
-            </PrimaryButton>
+            <a
+              href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" // Replace with actual video URL if needed
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ textDecoration: 'none' }}
+            >
+              <PrimaryButton ref={primaryButtonRef}>
+                <span>▶</span>
+                <span>Watch Our Story</span>
+              </PrimaryButton>
+            </a>
             <SecondaryButton ref={secondaryButtonRef}>
               <span>Support Our Mission</span>
             </SecondaryButton>
