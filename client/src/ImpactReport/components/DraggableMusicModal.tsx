@@ -260,13 +260,14 @@ function useDraggable(
   };
 }
 
-// Styled components
-const ModalContainer = styled.div.attrs<{
+// Define a type for the props of ModalContainer
+interface ModalContainerProps {
   viewState: ModalState;
   style?: React.CSSProperties;
-}>((props) => ({
-  style: {},
-}))`
+}
+
+// Styled components
+const ModalContainer = styled.div<ModalContainerProps>`
   position: fixed;
   background: rgba(18, 18, 18, 0.95);
   backdrop-filter: blur(20px);
@@ -425,7 +426,7 @@ const ModeButton = styled.button<{ active: boolean }>`
 
   &:hover {
     background: ${(props) =>
-      props.active ? COLORS.gogo_blue : 'rgba(255, 255, 255, 0.1)'};
+    props.active ? COLORS.gogo_blue : 'rgba(255, 255, 255, 0.1)'};
   }
 `;
 
