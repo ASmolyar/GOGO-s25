@@ -176,6 +176,7 @@ const SectionTitle = styled.h2`
   color: white;
   margin-bottom: 1.5rem;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  letter-spacing: 0.02em;
 `;
 
 const Subtitle = styled.div`
@@ -652,6 +653,7 @@ const MethodName = styled.h4`
   font-weight: 700;
   display: flex;
   align-items: center;
+  letter-spacing: 0.02em;
 
   svg {
     margin-right: 0.5rem;
@@ -1088,16 +1090,19 @@ function ImpactSection(): JSX.Element {
             </MeasureTitle>
             <SpotifySubtitle style={{ marginTop: '0.1rem' }}>
               We use Hello Insight, a nationally recognized evaluation tool, to
-              track students' self-reported growth across 6 Positive Youth
+              track students&apos; self-reported growth across 6 Positive Youth
               Development (PYD) pillars. Guitars Over Guns mentors use
               healing-centered, culturally affirming PYD practices in program
               sessions.
             </SpotifySubtitle>
 
             <AudioWaveContainer>
-              {[...Array(18)].map((_, i) => (
-                <AudioBar key={`audio-bar-${i}`} index={i} />
-              ))}
+              {[...Array(18)].map((_, i) => {
+                const position = i.toString().padStart(2, '0');
+                return (
+                  <AudioBar key={`audio-bar-position-${position}`} index={i} />
+                );
+              })}
             </AudioWaveContainer>
           </MeasurementHeader>
 
@@ -1315,7 +1320,8 @@ function ImpactSection(): JSX.Element {
                   textAlign: 'center',
                 }}
               >
-                GOGO largely supports kids affected by systemic challenges that reduce their access to opportunities
+                GOGO largely supports kids affected by systemic challenges that
+                reduce their access to opportunities
               </SpotifySubtitle>
 
               <div
@@ -1341,7 +1347,10 @@ function ImpactSection(): JSX.Element {
                     justifyContent: 'center',
                   }}
                   onClick={() => navigate('/population')}
-                  onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') navigate('/population'); }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ')
+                      navigate('/population');
+                  }}
                 >
                   <span style={{ marginRight: '0.5rem' }}>
                     Learn More About Who We Serve

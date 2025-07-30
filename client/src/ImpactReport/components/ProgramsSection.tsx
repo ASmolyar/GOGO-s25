@@ -143,6 +143,7 @@ const SectionTitle = styled.h2`
   margin-bottom: 1.5rem;
   position: relative;
   display: inline-block;
+  letter-spacing: 0.02em;
   background: linear-gradient(
     to right,
     ${COLORS.gogo_blue} 0%,

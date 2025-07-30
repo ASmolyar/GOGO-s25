@@ -426,7 +426,7 @@ const ModeButton = styled.button<{ active: boolean }>`
 
   &:hover {
     background: ${(props) =>
-    props.active ? COLORS.gogo_blue : 'rgba(255, 255, 255, 0.1)'};
+      props.active ? COLORS.gogo_blue : 'rgba(255, 255, 255, 0.1)'};
   }
 `;
 

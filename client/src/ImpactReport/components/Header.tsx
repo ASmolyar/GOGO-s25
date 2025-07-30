@@ -85,18 +85,6 @@ function Header(): JSX.Element {
         <div className="header-center">
           <h2 className="header-title">Impact Report</h2>
         </div>
-
-        <div className="header-right">
-          <button
-            type="button"
-            className="spotify-icon-button heart-button"
-            aria-label="Like"
-          >
-            <svg viewBox="0 0 16 16" width="16" height="16">
-              <path d="M8 3.266C7.156 2.531 6.125 2 5 2 2.797 2 1 3.797 1 6c0 3.75 7 8 7 8s7-4.25 7-8c0-2.203-1.797-4-4-4-1.125 0-2.156.531-3 1.266z" />
-            </svg>
-          </button>
-        </div>
       </header>
 
       <div className={`side-nav ${menuOpen ? 'open' : ''}`}>
@@ -177,22 +165,6 @@ function Header(): JSX.Element {
 
           <div className="playlist-section">
             <h3>Playlists</h3>
-            <div
-              className="nav-item"
-              onClick={() => setMenuOpen(false)}
-              onKeyDown={(e) => e.key === 'Enter' && setMenuOpen(false)}
-              role="button"
-              tabIndex={0}
-            >
-              <div className="nav-icon playlist-icon">
-                <div className="playlist-icon-inner">
-                  <svg viewBox="0 0 24 24" width="16" height="16">
-                    <path d="M15.25 8a.75.75 0 01-.75.75H8.75v5.75a.75.75 0 01-1.5 0V8.75H1.5a.75.75 0 010-1.5h5.75V1.5a.75.75 0 011.5 0v5.75h5.75a.75.75 0 01.75.75z" />
-                  </svg>
-                </div>
-              </div>
-              <span>Create a playlist</span>
-            </div>
             <div
               className="nav-item"
               onClick={() => setMenuOpen(false)}

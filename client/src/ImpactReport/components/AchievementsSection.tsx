@@ -54,6 +54,7 @@ const SectionTitle = styled.h2`
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-block;
+  letter-spacing: 0.02em;
 `;
 
 const SectionSubtitle = styled.p`
@@ -131,6 +132,7 @@ const AchievementTitle = styled.h3`
   color: white;
   margin-bottom: 1rem;
   font-weight: 700;
+  letter-spacing: 0.02em;
 `;
 
 const AchievementDescription = styled.p`

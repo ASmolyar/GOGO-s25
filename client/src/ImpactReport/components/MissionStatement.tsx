@@ -207,8 +207,8 @@ const Statement = styled.div`
     background: linear-gradient(
       to right,
       #ffffff,
-      ${COLORS.gogo_blue},
-      ${COLORS.gogo_purple},
+      rgb(152, 174, 255),
+      rgb(191, 175, 255),
       #ffffff
     );
     background-size: 100% 100%;
@@ -278,17 +278,19 @@ function MissionStatement({
   return (
     <SectionContainer ref={containerRef}>
       <ConveyorBelt direction="left">
-        {extendedTopImages.map((src, index) => (
-          <ImageCard
-            key={`top-image-${index}`}
-            className="image-card"
-            style={
-              { '--index': index % topImages.length } as React.CSSProperties
-            }
-          >
-            <Image src={src} alt={`Illustration ${index + 1}`} />
-          </ImageCard>
-        ))}
+        {extendedTopImages.map((src, index) => {
+          const originalIndex = index % topImages.length;
+          const repetition = Math.floor(index / topImages.length);
+          return (
+            <ImageCard
+              key={`top-${originalIndex}-${repetition}`}
+              className="image-card"
+              style={{ '--index': originalIndex } as React.CSSProperties}
+            >
+              <Image src={src} alt={`Illustration ${index + 1}`} />
+            </ImageCard>
+          );
+        })}
       </ConveyorBelt>
 
       <Statement className="statement">
@@ -296,17 +298,19 @@ function MissionStatement({
       </Statement>
 
       <ConveyorBelt direction="right">
-        {extendedBottomImages.map((src, index) => (
-          <ImageCard
-            key={`bottom-image-${index}`}
-            className="image-card"
-            style={
-              { '--index': index % bottomImages.length } as React.CSSProperties
-            }
-          >
-            <Image src={src} alt={`Illustration ${index + 1}`} />
-          </ImageCard>
-        ))}
+        {extendedBottomImages.map((src, index) => {
+          const originalIndex = index % bottomImages.length;
+          const repetition = Math.floor(index / bottomImages.length);
+          return (
+            <ImageCard
+              key={`bottom-${originalIndex}-${repetition}`}
+              className="image-card"
+              style={{ '--index': originalIndex } as React.CSSProperties}
+            >
+              <Image src={src} alt={`Illustration ${index + 1}`} />
+            </ImageCard>
+          );
+        })}
       </ConveyorBelt>
     </SectionContainer>
   );

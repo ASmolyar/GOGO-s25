@@ -153,7 +153,6 @@ function LocationDetail({ location }: LocationDetailProps) {
         </Section>
       )}
 
-
       {location.description && (
         <Section>
           <SectionTitle>About</SectionTitle>

@@ -109,6 +109,7 @@ const SectionTitle = styled.h2`
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-block;
+  letter-spacing: 0.02em;
 `;
 
 const SectionSubtitle = styled.p`

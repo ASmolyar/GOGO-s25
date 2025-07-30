@@ -90,6 +90,7 @@ const MainTitle = styled.h1`
   opacity: 0; /* Start hidden for animation */
   text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   pointer-events: none; /* Let events pass through */
+  letter-spacing: 0.05em;
 `;
 
 // Subtitle - "GUITARS OVER GUNS"
@@ -104,6 +105,7 @@ const SubtitleText = styled.h2`
   position: relative;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   pointer-events: none; /* Let events pass through */
+  letter-spacing: 0.05em;
 `;
 
 // Green underline
@@ -129,6 +131,7 @@ const ReportYear = styled.div`
   opacity: 0;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   pointer-events: none; /* Let events pass through */
+  letter-spacing: 0.02em;
 `;
 
 // Button container
@@ -158,6 +161,7 @@ const PrimaryButton = styled.button`
   gap: 0.5rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   pointer-events: auto; /* Ensure buttons catch events */
+  letter-spacing: 0.02em;
 
   &:hover {
     background: var(--spotify-purple, #68369a);
@@ -181,6 +185,7 @@ const SecondaryButton = styled.button`
   opacity: 0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   pointer-events: auto; /* Ensure buttons catch events */
+  letter-spacing: 0.02em;
 
   &:hover {
     background: rgba(255, 255, 255, 0.2);
@@ -225,6 +230,26 @@ function HeroSection(): JSX.Element {
       : `rgba(0, 210, 180, 0.7)`;
   };
 
+  // Set idle wave pattern
+  const setIdleWavePattern = useCallback(() => {
+    if (!waveAnimatablesRef.current.length) return;
+
+    waveAnimatablesRef.current.forEach(({ animatable, position }) => {
+      // Create a more interesting pattern with sines
+      const baseHeight = 8 + Math.sin(position * Math.PI * 4) * 15;
+      const height = baseHeight + Math.random() * 5;
+      const halfHeight = height / 2;
+
+      // Use chained animatable methods
+      animatable
+        .height(height, 800, 'inOutSine')
+        .marginTop(-halfHeight, 800, 'inOutSine')
+        .marginBottom(-halfHeight, 800, 'inOutSine')
+        .opacity(0.5 + Math.random() * 0.3, 800, 'inOutSine')
+        .scale(1, 800, 'inOutSine');
+    });
+  }, []);
+
   // Initialize wave animatables - using createAnimatable for better performance
   const initializeWaveAnimatables = useCallback(() => {
     const waveBars = document.querySelectorAll('.wave-bar');
@@ -254,27 +279,7 @@ function HeroSection(): JSX.Element {
 
     // Set initial idle wave pattern
     setIdleWavePattern();
-  }, []);
-
-  // Set idle wave pattern
-  const setIdleWavePattern = useCallback(() => {
-    if (!waveAnimatablesRef.current.length) return;
-
-    waveAnimatablesRef.current.forEach(({ animatable, position }) => {
-      // Create a more interesting pattern with sines
-      const baseHeight = 8 + Math.sin(position * Math.PI * 4) * 15;
-      const height = baseHeight + Math.random() * 5;
-      const halfHeight = height / 2;
-
-      // Use chained animatable methods
-      animatable
-        .height(height, 800, 'inOutSine')
-        .marginTop(-halfHeight, 800, 'inOutSine')
-        .marginBottom(-halfHeight, 800, 'inOutSine')
-        .opacity(0.5 + Math.random() * 0.3, 800, 'inOutSine')
-        .scale(1, 800, 'inOutSine');
-    });
-  }, []);
+  }, [setIdleWavePattern]);
 
   // Throttled mouse move handler using animatables
   const handleMouseMove = useCallback(
@@ -324,7 +329,7 @@ function HeroSection(): JSX.Element {
         // Always calculate an intensity, but it drops off with distance
         // The active range is still 0.3, but we always calculate some effect
         const rawIntensity =
-          Math.pow(Math.max(0, 1 - distance / 0.3), 2) * intensityMultiplier;
+          Math.max(0, 1 - distance / 0.3) ** 2 * intensityMultiplier;
 
         // Only apply significant changes if we're in range
         if (distance < 0.3) {
@@ -427,8 +432,7 @@ function HeroSection(): JSX.Element {
 
         // Set initial spike height and properties using proper animatable methods
         if (distance < 0.15) {
-          const intensity =
-            Math.pow(1 - distance / 0.15, 2) * intensityMultiplier;
+          const intensity = (1 - distance / 0.15) ** 2 * intensityMultiplier;
           const height = Math.min(5 + intensity * 150, 180);
           const halfHeight = height / 2;
 
@@ -477,7 +481,7 @@ function HeroSection(): JSX.Element {
             return;
           }
 
-          currentStep++;
+          currentStep += 1;
           const progress = Math.min(currentStep / totalSteps, 1);
           const waveProgress = progress * 0.95; // Don't go all the way to edges
 
@@ -559,6 +563,7 @@ function HeroSection(): JSX.Element {
       }, 350);
 
       // Return a cleanup function that can be used to cancel animation
+      // eslint-disable-next-line consistent-return
       return () => {
         console.log(`⚠️ Cancelling shockwave at phase ${currentPhase}`);
         isCancelled = true;

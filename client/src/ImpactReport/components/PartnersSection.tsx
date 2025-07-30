@@ -21,6 +21,7 @@ const SectionHeading = styled.h2`
   margin-bottom: 0.5rem;
   text-align: center;
   color: ${COLORS.gogo_blue};
+  letter-spacing: 0.02em;
 `;
 
 const SectionSubheading = styled.p`
@@ -86,6 +87,7 @@ const CategoryTitle = styled.h3`
   color: ${COLORS.gogo_purple};
   text-align: center;
   position: relative;
+  letter-spacing: 0.02em;
 
   &:after {
     content: '';

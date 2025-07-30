@@ -11,7 +11,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx}' ",
-    "lint": "eslint --fix 'src/**/*.{js,jsx,ts,tsx} .'",
+    "lint": "eslint --fix 'src/**/*.{js,jsx,ts,tsx}'",
     "postinstall": "echo \"Package install attempted in client directory\""
   },
   "eslintConfig": {
@@ -46,7 +46,6 @@
     "@reduxjs/toolkit": "^1.8.1",
     "axios": "^1.1.2",
     "cross-env": "^7.0.3",
-    "eslint": "^9.31.0",
     "leaflet": "^1.9.4",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
@@ -62,8 +61,6 @@
     "web-vitals": "^3.0.3"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.1",
-    "@eslint/js": "^9.31.0",
     "@mui/styled-engine": "npm:@mui/styled-engine-sc@5.12.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.4.0",

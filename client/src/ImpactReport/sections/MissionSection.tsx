@@ -79,15 +79,16 @@ const SectionTitle = styled.h2`
   font-weight: 900;
   background: linear-gradient(
     to right,
-    ${COLORS.gogo_blue},
-    ${COLORS.gogo_purple},
-    ${COLORS.gogo_teal}
+    rgb(126, 154, 255),
+    rgb(191, 175, 255),
+    rgb(178, 255, 241)
   );
   background-size: 100% 100%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin: 0;
   position: relative;
+  letter-spacing: 0.02em;
 
   &::after {
     content: '';
