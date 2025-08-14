@@ -9,6 +9,9 @@ import {
     deleteLocation,
 } from '../controllers/location.controller.ts';
 import 'dotenv/config';
+import { ILocation } from '../models/location.model.ts';
+import ApiError from '../util/apiError.ts';
+import StatusCode from '../util/statusCode.ts';
 
 const router = express.Router();
 

@@ -6,7 +6,7 @@ import {
     getAllLocations,
     getLocationByName,
     deleteLocationByName,
-} from '../services/location.service';
+} from '../services/location.service.ts';
 import StatusCode from '../util/statusCode.ts';
 
 const addLocation = async (
@@ -19,8 +19,8 @@ const addLocation = async (
         next(ApiError.missingFields(['Location']));
         return;
     }
-    // eslint-disable-next-line consistent-return
-    return createLocation(Location);
+    const result = await createLocation(Location);
+    res.status(StatusCode.CREATED).json({ data: result });
 };
 
 const getLocations = async (
