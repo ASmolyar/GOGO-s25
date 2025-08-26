@@ -8,7 +8,7 @@ import {
   nameRegex,
   passwordRegex,
 } from '../util/inputvalidation.ts';
-import { register } from './api.ts';
+import { register } from './api.tsx';
 import AlertDialog from '../components/AlertDialog.tsx';
 import PrimaryButton from '../components/buttons/PrimaryButton.tsx';
 import ScreenGrid from '../components/ScreenGrid.tsx';
