@@ -60,11 +60,8 @@ function App() {
           {/* Impact Report (Spotify-style) route */}
           <Route path="/population" element={<Population />} />
 
-          {/* Route which redirects to a different page depending on if the user is authenticated or not */}
-          <Route
-            path="/"
-            element={<DynamicRedirect unAuthPath="/login" authPath="/users" />}
-          />
+          {/* Default route: always show Impact Report first */}
+          <Route path="/" element={<Navigate to="/impact-report" />} />
           {/* Route which is accessed if no other route is matched */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
