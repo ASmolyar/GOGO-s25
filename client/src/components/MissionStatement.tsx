@@ -250,30 +250,32 @@ function MissionStatement({
     if (!containerRef.current) return;
 
     // Animate in the statement
-    animate(
-      {
-        targets: containerRef.current.querySelector('.statement'),
-        translateY: [40, 0],
-        opacity: [0, 1],
-        easing: 'easeOutCubic',
-        duration: 1000,
-        delay: 300,
-      },
-      {},
-    );
+    {
+      const statementEl = containerRef.current.querySelector('.statement');
+      if (statementEl) {
+        animate(statementEl as Element, {
+          translateY: [40, 0],
+          opacity: [0, 1],
+          easing: 'easeOutCubic',
+          duration: 1000,
+          delay: 300,
+        });
+      }
+    }
 
     // Animate in stats cards
-    animate(
-      {
-        targets: containerRef.current.querySelectorAll('.stat-card'),
-        scale: [0.9, 1],
-        opacity: [0, 1],
-        delay: stagger(100, { start: 600 }),
-        easing: 'easeOutElastic(1, 0.6)',
-        duration: 1200,
-      },
-      {},
-    );
+    {
+      const statCards = containerRef.current.querySelectorAll('.stat-card');
+      if (statCards && statCards.length > 0) {
+        animate(statCards as unknown as Element[], {
+          scale: [0.9, 1],
+          opacity: [0, 1],
+          delay: stagger(100, { start: 600 }),
+          easing: 'easeOutElastic(1, 0.6)',
+          duration: 1200,
+        });
+      }
+    }
   }, []);
 
   return (
@@ -281,7 +283,7 @@ function MissionStatement({
       <ConveyorBelt direction="left">
         {extendedTopImages.map((src, index) => (
           <ImageCard
-            key={`top-image-${index}`}
+            key={`top-image-${src}-${index}`}
             className="image-card"
             style={
               { '--index': index % topImages.length } as React.CSSProperties
@@ -299,7 +301,7 @@ function MissionStatement({
       <ConveyorBelt direction="right">
         {extendedBottomImages.map((src, index) => (
           <ImageCard
-            key={`bottom-image-${index}`}
+            key={`bottom-image-${src}-${index}`}
             className="image-card"
             style={
               { '--index': index % bottomImages.length } as React.CSSProperties

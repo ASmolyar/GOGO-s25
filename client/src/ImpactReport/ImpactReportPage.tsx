@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, memo } from 'react';
 import 'leaflet/dist/leaflet.css'; // Ensure Leaflet CSS is imported first
 import './ImpactReportStructure.css';
 import '../assets/fonts/fonts.css'; // Import GOGO fonts
@@ -9,27 +9,27 @@ import Header from './components/Header';
 import HeroSection from './components/HeroSection';
 import MissionSection from './sections/MissionSection';
 import ImpactSection from './components/ImpactSection';
-import ArtisticDisciplinesSection from './components/ArtisticDisciplinesSection';
+import OurMethodSection from './components/OurMethodSection';
 import ProgramsSection from './components/ProgramsSection';
+import CurriculumSection from './components/CurriculumSection';
 import LocationsSection from './sections/LocationsSection';
-import TestimonialSection from './components/TestimonialSection';
-import AchievementsSection from './components/AchievementsSection';
+// Replaced Stories of Impact carousel with a single quote section
+import SingleQuoteSection from './components/SingleQuoteSection';
+import FlexA from './components/FlexA';
+import FlexB from './components/FlexB';
+import FlexC from './components/FlexC';
 import PartnersSection from './components/PartnersSection';
-import FutureVisionSection from './components/FutureVisionSection';
-import MusicLibrary from './components/MusicLibrary';
+// import FutureVisionSection from './components/FutureVisionSection';
+import ImpactLevelsSection from './components/ImpactLevelsSection';
 import MissionStatement from './components/MissionStatement';
+import Population from './components/Population';
 import photo1 from '../assets/missionPhotos/Photo1.jpg';
 import gogoLogo from '../assets/GOGO_LOGO_STACKED_WH.png';
 import gogoWideLogo from '../assets/GOGO_LOGO_WIDE_WH.png';
 import Modal from './components/Modal';
-import AlbumModal from './components/AlbumModal';
-import { Album, Song } from './types/music';
-import {
-  MusicPlayerProvider,
-  useMusicPlayer,
-} from './contexts/MusicPlayerContext';
-import NowPlayingBar from './components/NowPlayingBar';
-import DraggableMusicModal from './components/DraggableMusicModal';
+import SpotifyEmbedsSection from './components/SpotifyEmbedsSection';
+import FinancialAnalysisSection from './components/FinancialAnalysisSection';
+// IntroOverlay temporarily disabled
 
 // Styled components for Spotify-like footer
 const SpotifyFooter = styled.footer`
@@ -271,181 +271,28 @@ function YouTubeIcon() {
   );
 }
 
-// Create a wrapper component for the NowPlayingBar that gets data from context
-function MusicPlayerBar() {
-  const {
-    currentSong,
-    currentAlbum,
-    isPlaying,
-    currentTime,
-    duration,
-    volume,
-    modalState,
-    setModalState,
-    playPause,
-    nextTrack,
-    previousTrack,
-    seek,
-    setVolume,
-  } = useMusicPlayer();
-
-  // Always render the NowPlayingBar, regardless of whether there's a song playing
-  return (
-    <div className="now-playing-bar-wrapper">
-      <NowPlayingBar
-        currentSong={currentSong}
-        currentAlbum={currentAlbum}
-        isPlaying={isPlaying}
-        progress={currentTime}
-        duration={duration}
-        onPlayPause={playPause}
-        onNext={nextTrack}
-        onPrevious={previousTrack}
-        onSeek={seek}
-        onToggleModal={() => {
-          console.log(
-            '[NowPlayingBar] Toggle modal clicked, current state:',
-            modalState,
-          );
-
-          // Fix the state logic to ensure proper toggling
-          if (modalState === 'hidden') {
-            console.log('[NowPlayingBar] Setting from hidden to pip');
-            setModalState('pip');
-          } else if (modalState === 'minimized') {
-            console.log('[NowPlayingBar] Setting from minimized to pip');
-            setModalState('pip');
-          } else if (modalState === 'full') {
-            console.log('[NowPlayingBar] Setting from full to pip');
-            setModalState('pip');
-          } else {
-            console.log('[NowPlayingBar] Setting from pip to full');
-            setModalState('full');
-          }
-        }}
-      />
-    </div>
-  );
-}
+// Music player removed; replaced with Spotify embeds section
 
 // Main component
 function ImpactReportPage() {
-  console.log('ImpactReportPage rendering');
+  // Perf: avoid noisy logs in production
   // Refs for each section to animate
   const heroRef = useRef<HTMLDivElement>(null);
   const missionRef = useRef<HTMLDivElement>(null);
   const impactRef = useRef<HTMLDivElement>(null);
+  const methodRef = useRef<HTMLDivElement>(null);
   const disciplinesRef = useRef<HTMLDivElement>(null);
-  const achievementsRef = useRef<HTMLDivElement>(null);
   const programsRef = useRef<HTMLDivElement>(null);
   const testimonialRef = useRef<HTMLDivElement>(null);
   const musicRef = useRef<HTMLDivElement>(null);
   const locationsRef = useRef<HTMLDivElement>(null);
   const partnersRef = useRef<HTMLDivElement>(null);
-  const futureRef = useRef<HTMLDivElement>(null);
+  const financialRef = useRef<HTMLDivElement>(null);
+  const flexRef = useRef<HTMLDivElement>(null);
+  // const futureRef = useRef<HTMLDivElement>(null);
   const footerRef = useRef<HTMLDivElement>(null);
 
-  // Add state for album modal
-  const [isAlbumModalOpen, setIsAlbumModalOpen] = useState(false);
-  const [selectedAlbumId, setSelectedAlbumId] = useState<string | null>(null);
-
-  // State for music player initialization
-  const [isMusicInitialized, setIsMusicInitialized] = useState(false);
-
-  // Mock data for testing
-  const mockSong: Song = {
-    song_id: 'mock-song-1',
-    title: 'Test Song',
-    audio_file: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-    album_id: 'mock-album-1',
-    duration: 230, // 3:50 in seconds
-    artists: [{ artist_id: 'artist-1', name: 'Test Artist' }],
-  };
-
-  const mockAlbum: Album = {
-    album_id: 'mock-album-1',
-    name: 'Test Album',
-    type: 'album',
-    cover: 'https://via.placeholder.com/300',
-    date: '2024-01-01',
-    artists: [{ artist_id: 'artist-1', name: 'Test Artist' }],
-    songs: [mockSong],
-  };
-
-  // Init music player function for testing
-  const initMusicPlayer = async () => {
-    console.log('initMusicPlayer function called');
-    try {
-      // Fetch the music catalog
-      console.log('Fetching music catalog...');
-      const response = await fetch('/music/catalog.json');
-      if (!response.ok) {
-        console.error('Failed to load catalog with status:', response.status);
-        throw new Error('Failed to load music catalog');
-      }
-
-      const data = await response.json();
-      console.log('Catalog loaded successfully:', {
-        albumCount: data?.albums?.length || 0,
-      });
-
-      // Check if there are albums in the catalog
-      if (data && data.albums && data.albums.length > 0) {
-        const firstAlbum = data.albums[0];
-
-        // Check if the album has songs
-        if (firstAlbum.songs && firstAlbum.songs.length > 0) {
-          const firstSong = firstAlbum.songs[0];
-
-          console.log('Initializing music player with:', {
-            song: firstSong.title,
-            album: firstAlbum.name,
-          });
-
-          // Use IIFE to access the context within JSX
-          (() => {
-            const { playSong, setModalState } = useMusicPlayer();
-            // First make sure modal is visible
-            console.log('Setting modal state to pip to ensure visibility');
-            setModalState('pip');
-            // Then play the song
-            playSong(firstSong, firstAlbum);
-          })();
-
-          setIsMusicInitialized(true);
-          return;
-        }
-      }
-
-      // Fallback to mock song if no real songs found
-      console.log('No albums or songs found in catalog, using mock data');
-      (() => {
-        const { playSong, setModalState } = useMusicPlayer();
-        // First make sure modal is visible
-        console.log('Setting modal state to pip to ensure visibility');
-        setModalState('pip');
-        // Then play the song
-        playSong(mockSong, mockAlbum);
-      })();
-
-      setIsMusicInitialized(true);
-    } catch (error) {
-      console.error('Error initializing music player:', error);
-
-      // Use mock data as fallback
-      console.log('Using mock data as fallback after error');
-      (() => {
-        const { playSong, setModalState } = useMusicPlayer();
-        // First make sure modal is visible
-        console.log('Setting modal state to pip to ensure visibility');
-        setModalState('pip');
-        // Then play the song
-        playSong(mockSong, mockAlbum);
-      })();
-
-      setIsMusicInitialized(true);
-    }
-  };
+  // Music player state and initialization removed
 
   // Apply GOGO-like styles to body when component mounts
   useEffect(() => {
@@ -475,21 +322,36 @@ function ImpactReportPage() {
     };
   }, []);
 
+  // Intro overlay disabled
+
   // Set up Intersection Observer for animations
   useEffect(() => {
+    const prefersReduced =
+      typeof window !== 'undefined' &&
+      typeof window.matchMedia !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     // Initial animation for hero section
     if (heroRef.current) {
-      setTimeout(() => {
-        const heroElement = heroRef.current;
-        if (heroElement) {
-          animate(heroElement, {
-            opacity: [0, 1],
-            translateY: [50, 0],
-            duration: 1000,
-            easing: 'easeOutExpo',
-          });
-        }
-      }, 300); // Increased delay to ensure DOM is ready
+      const heroElement = heroRef.current;
+      // Set initial state cheaply
+      heroElement.style.opacity = '0';
+      heroElement.style.transform = 'translateY(16px)';
+      heroElement.style.willChange = 'opacity, transform';
+      if (!prefersReduced) {
+        animate(heroElement, {
+          opacity: [0, 1],
+          translateY: [16, 0],
+          duration: 700,
+          easing: 'easeOutCubic',
+          complete: () => {
+            heroElement.style.willChange = '';
+          },
+        });
+      } else {
+        heroElement.style.opacity = '1';
+        heroElement.style.transform = 'none';
+      }
     }
 
     // Observer for other sections
@@ -505,64 +367,122 @@ function ImpactReportPage() {
               // Store the target element safely
               const targetElement = target;
 
-              setTimeout(() => {
-                // Verify target is still available
-                if (document.body.contains(targetElement)) {
+              // Verify target is still available
+              if (document.body.contains(targetElement)) {
+                const isFinancial =
+                  (targetElement as HTMLElement).id === 'financial' ||
+                  targetElement === financialRef.current;
+                if (isFinancial) {
+                  console.log('[ImpactReport] Financial section intersecting', {
+                    prefersReduced,
+                    hasAnimate: typeof animate,
+                    target: (targetElement as HTMLElement).id,
+                  });
+                }
+                if (!prefersReduced) {
+                  if (isFinancial) {
+                    console.log(
+                      '[ImpactReport] Financial: starting section animation',
+                    );
+                  }
                   animate(targetElement, {
                     opacity: [0, 1],
-                    translateY: [50, 0],
-                    duration: 800,
-                    easing: 'easeOutExpo',
-                    delay: 200,
+                    translateY: [16, 0],
+                    duration: 600,
+                    easing: 'easeOutCubic',
                     complete: () => {
-                      // Animate child elements after the section appears
-                      const children =
-                        targetElement.querySelectorAll('.animate-child');
-                      if (children && children.length > 0) {
-                        animate(children, {
-                          opacity: [0, 1],
-                          translateY: [20, 0],
-                          scale: [0.98, 1],
-                          duration: 600,
-                          delay: stagger(100),
-                          easing: 'easeOutExpo',
-                        });
+                      // drop will-change after animation completes
+                      (targetElement as HTMLElement).style.willChange = '';
+                      if (isFinancial) {
+                        console.log(
+                          '[ImpactReport] Financial: section animation complete',
+                        );
                       }
                     },
                   });
+
+                  // Animate child elements after the section appears (if marked)
+                  const children =
+                    targetElement.querySelectorAll('.animate-child');
+                  if (children && children.length > 0) {
+                    if (isFinancial) {
+                      console.log(
+                        '[ImpactReport] Financial: animating children',
+                        {
+                          count: children.length,
+                        },
+                      );
+                    }
+                    animate(children, {
+                      opacity: [0, 1],
+                      translateY: [12, 0],
+                      scale: [0.98, 1],
+                      duration: 480,
+                      delay: stagger(80),
+                      easing: 'easeOutCubic',
+                    });
+                  }
+                } else {
+                  if (isFinancial) {
+                    console.log(
+                      '[ImpactReport] Financial: prefers-reduced-motion, skipping animations',
+                    );
+                  }
+                  targetElement.setAttribute(
+                    'style',
+                    'opacity: 1; transform: none;',
+                  );
                 }
-              }, 300); // Increased delay to ensure DOM is ready
+              }
 
               // Unobserve after animation is triggered
               observer.unobserve(target);
+              if (
+                (target as HTMLElement).id === 'financial' ||
+                target === financialRef.current
+              ) {
+                console.log(
+                  '[ImpactReport] Financial: unobserved after triggering',
+                );
+              }
             }
           }
         });
       },
-      { threshold: 0.1 }, // 10% of the element is visible
+      {
+        threshold: 0,
+        // Pre-trigger slightly before sections enter viewport
+        rootMargin: '200px 0px -10% 0px',
+      },
     );
 
     // Observe all sections except hero (which is animated on load)
     const sections = [
-      missionRef.current,
       impactRef.current,
+      methodRef.current,
       disciplinesRef.current,
-      achievementsRef.current,
       programsRef.current,
       testimonialRef.current,
       musicRef.current,
-      locationsRef.current,
+      financialRef.current,
       partnersRef.current,
-      futureRef.current,
+      // futureRef.current,
       footerRef.current,
     ];
 
-    sections.forEach((section) => {
-      if (section) {
-        // Set initial opacity to 0 for all sections
-        // Using inline styles directly instead of modifying the parameter
-        section.setAttribute('style', 'opacity: 0');
-        observer.observe(section);
+    sections.forEach((node) => {
+      if (node) {
+        // Set initial styles to hint the compositor and reduce layout
+        const el = node as HTMLElement;
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(16px)';
+        el.style.willChange = 'opacity, transform';
+        observer.observe(node);
+        if (node === financialRef.current) {
+          console.log(
+            '[ImpactReport] Financial: observing with initial hidden styles',
+          );
+        }
       }
     });
 
@@ -570,103 +490,95 @@ function ImpactReportPage() {
     return () => observer.disconnect();
   }, []);
 
-  // Music section handlers
-  const handleArtistClick = (artistId: string) => {
-    console.log('Artist clicked:', artistId);
-    // This would navigate to artist page in a full implementation
-  };
+  // Music handlers removed with music player
 
-  const handlePlayTrack = (track: any) => {
-    console.log('Track to play:', track);
-    // This would play the track in a full implementation
-  };
+  // Debug-only log removed for performance
 
-  // Add album click handler
-  const handleAlbumClick = (albumId: string) => {
-    console.log('Album clicked:', albumId);
-    setSelectedAlbumId(albumId);
-    setIsAlbumModalOpen(true);
-  };
-
-  // Add close modal handler
-  const handleCloseAlbum = () => {
-    console.log('Album modal closed');
-    setIsAlbumModalOpen(false);
-  };
-
-  console.log('Current state in ImpactReportPage:', {
-    isMusicInitialized,
-    isAlbumModalOpen,
-    hasSelectedAlbum: !!selectedAlbumId,
-  });
+  // Support hash-based deep links on initial load
+  useEffect(() => {
+    let timeoutId: number | undefined;
+    const hash = window.location.hash?.replace('#', '');
+    if (hash) {
+      timeoutId = window.setTimeout(() => {
+        const el = document.getElementById(hash);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 300);
+    }
+    return () => {
+      if (timeoutId !== undefined) clearTimeout(timeoutId);
+    };
+  }, []);
 
   return (
     <div className="impact-report">
+      {/* IntroOverlay disabled */}
       <div className="spotify-gradient-background" />
       <Header />
       <div className="main-content" style={{ paddingBottom: '120px' }}>
-        <div ref={heroRef} style={{ opacity: 0 }}>
+        <div id="hero" ref={heroRef} style={{ opacity: 0 }}>
           <HeroSection />
         </div>
-        <div ref={missionRef}>
+        <div id="mission" ref={missionRef}>
           <MissionSection />
         </div>
-        <div ref={impactRef}>
-          <ImpactSection />
+        {/* Who We Serve (moved up) */}
+        <div id="population">
+          <Population inline />
         </div>
-        <div ref={disciplinesRef}>
-          <ArtisticDisciplinesSection />
+        {/* Financial Overview (moved higher) */}
+        <div id="financial" ref={financialRef}>
+          <FinancialAnalysisSection />
         </div>
-        <div ref={achievementsRef}>
-          <AchievementsSection />
+        <div id="method" ref={methodRef}>
+          <OurMethodSection />
         </div>
-        <div ref={programsRef}>
+        {/* ArtisticDisciplinesSection removed; content now appears in Mission modal */}
+        <div id="curriculum">
+          <CurriculumSection />
+        </div>
+
+        <div id="programs" ref={programsRef}>
           <ProgramsSection />
         </div>
-        <div ref={testimonialRef}>
-          <TestimonialSection />
+        {/* Impact section (moved lower, includes measurement) */}
+        <div id="impact" ref={impactRef}>
+          <ImpactSection />
         </div>
-        <div ref={locationsRef}>
+        {/* Hear Our Impact (Spotify) moved later */}
+        <div id="music" ref={musicRef}>
+          <SpotifyEmbedsSection />
+        </div>
+        <div id="quote" ref={testimonialRef}>
+          <SingleQuoteSection />
+        </div>
+        <div id="locations" ref={locationsRef}>
           <LocationsSection />
         </div>
-        <div ref={partnersRef}>
+        <div id="flex" ref={flexRef} style={{ opacity: 1 }}>
+          <FlexA />
+          <FlexB />
+          <FlexC />
+        </div>
+        <div id="impact-levels">
+          <ImpactLevelsSection />
+        </div>
+        <div id="partners" ref={partnersRef}>
           <PartnersSection />
         </div>
-        <div ref={futureRef}>
-          <FutureVisionSection />
-        </div>
+        {/* FutureVisionSection removed per redesign */}
       </div>
 
-      {/* Album modal */}
-      <Modal
-        isOpen={isAlbumModalOpen}
-        onClose={handleCloseAlbum}
-        width="95%"
-        maxHeight="90vh"
-      >
-        {selectedAlbumId && (
-          <AlbumModal
-            albumId={selectedAlbumId}
-            onPlayTrack={(song, album) => {
-              // Just log the track for now
-              console.log(
-                'Playing track:',
-                song.title,
-                'from album:',
-                album.name,
-              );
-            }}
-            onClose={handleCloseAlbum}
-          />
-        )}
-      </Modal>
-
-      <SpotifyFooter ref={footerRef}>
+      <SpotifyFooter id="footer" className="spotify-footer" ref={footerRef}>
         <FooterPattern />
         <FooterGrid>
           <FooterColumn>
             <FooterLogo>
-              <img src={gogoWideLogo} alt="Guitars Over Guns Logo" />
+              <img
+                src={gogoWideLogo}
+                alt="Guitars Over Guns Logo"
+                loading="lazy"
+                decoding="async"
+              />
             </FooterLogo>
             <FooterAbout>
               Guitars Over Guns is a 501(c)(3) organization that connects youth
@@ -740,7 +652,7 @@ function ImpactReportPage() {
                 <a href="/locations/chicago">Chicago</a>
               </FooterLink>
               <FooterLink>
-                <a href="/locations/nashville">Nashville</a>
+                <a href="/locations/new-york">New York</a>
               </FooterLink>
               <FooterLink>
                 <a href="/locations/los-angeles">Los Angeles</a>
@@ -758,7 +670,13 @@ function ImpactReportPage() {
             <FooterColumnTitle>Get Involved</FooterColumnTitle>
             <FooterLinks>
               <FooterLink>
-                <a href="/donate">Donate</a>
+                <a
+                  href="https://www.classy.org/give/352794/#!/donation/checkout"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Donate
+                </a>
               </FooterLink>
               <FooterLink>
                 <a href="/volunteer">Volunteer</a>
@@ -794,53 +712,9 @@ function ImpactReportPage() {
           </SpotifyCredit>
         </FooterBottom>
       </SpotifyFooter>
-
-      {/* Music player integration */}
-      <MusicPlayerProvider>
-        <>
-          {/* Debug logging */}
-          {(() => {
-            console.log('MusicPlayerProvider children rendering');
-            return null;
-          })()}
-          <DraggableMusicModal />
-          <MusicPlayerBar />
-
-          {/* Hidden initialization for testing */}
-          {isMusicInitialized && (
-            <div style={{ display: 'none' }}>
-              <InitializationComponent
-                mockSong={mockSong}
-                mockAlbum={mockAlbum}
-              />
-            </div>
-          )}
-        </>
-      </MusicPlayerProvider>
+      {/* Music player removed */}
     </div>
   );
 }
 
-// Define a separate component for initialization to use hooks properly
-function InitializationComponent({
-  mockSong,
-  mockAlbum,
-}: {
-  mockSong: Song;
-  mockAlbum: Album;
-}) {
-  const { playSong, setModalState } = useMusicPlayer();
-
-  useEffect(() => {
-    console.log('Init effect running, playing mock song');
-    // Make sure modal is visible first
-    setModalState('pip');
-    console.log('Set modal state to pip');
-    // Initialize with mock data when the flag is set
-    playSong(mockSong, mockAlbum);
-  }, [playSong, setModalState, mockSong, mockAlbum]);
-
-  return null;
-}
-
-export default ImpactReportPage;
+export default memo(ImpactReportPage);

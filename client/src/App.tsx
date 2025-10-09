@@ -17,11 +17,6 @@ import ResetPasswordPage from './Authentication/ResetPasswordPage.tsx';
 import AlertPopup from './components/AlertPopup.tsx';
 import InviteRegisterPage from './Authentication/InviteRegisterPage.tsx';
 import ImpactReportPage from './ImpactReport/ImpactReportPage.tsx';
-import MusicPage from './ImpactReport/MusicPage.tsx';
-import ArtistView from './ImpactReport/components/ArtistView.tsx';
-import MapDemo from './ImpactReport/components/map/MapDemo';
-import Impact from './ImpactReport/components/Impact';
-import AlbumUploadPage from './AdminDashboard/AlbumUploadPage.tsx';
 import { Population } from './ImpactReport/components';
 import './assets/fonts/fonts.css';
 
@@ -54,7 +49,6 @@ function App() {
             />
           </Route>
           <Route path="/invite/:token" element={<InviteRegisterPage />} />
-          <Route path="/album-upload" element={<AlbumUploadPage />} />
           <Route path="/impact-report" element={<ImpactReportPage />} />
           {/* Routes accessed only if user is authenticated */}
           <Route element={<ProtectedRoutesWrapper />}>

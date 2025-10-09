@@ -15,7 +15,14 @@
   --font-body: 'Century Gothic', 'Arial', sans-serif;
 
   --transition-standard: all 0.3s ease;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --shadow-1: 0 6px 16px rgba(0, 0, 0, 0.25);
+  --shadow-2: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
+
+/* Global resets */
+*, *::before, *::after { box-sizing: border-box; }
 
 body {
   background-color: var(--spotify-black);
@@ -32,6 +39,13 @@ html {
   scroll-padding-top: 80px; /* Prevents scrolling behind the header */
   scroll-padding-bottom: 90px; /* Prevents scrolling behind the now playing bar */
   scroll-behavior: smooth;
+}
+
+/* Accessible focus styles */
+button:focus-visible, a:focus-visible, [role="button"]:focus-visible {
+  outline: 2px solid var(--spotify-blue);
+  outline-offset: 2px;
+  border-radius: 6px;
 }
 
 .impact-report {
@@ -119,6 +133,7 @@ section:hover h2::after {
   position: relative;
   z-index: 1;
   background: linear-gradient(90deg, #fff, var(--spotify-neon-green) 70%);
+  background-clip: text;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -151,10 +166,10 @@ section:hover h2::after {
 
 .mission-section p {
   font-size: 1.2rem;
-  line-height: 1.6;
+  line-height: 1.7;
   margin-bottom: 40px;
   max-width: 800px;
-  color: var(--spotify-light-gray);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .stats-container {
@@ -208,6 +223,7 @@ section:hover h2::after {
   font-weight: 700;
   margin-bottom: 10px;
   background: linear-gradient(45deg, #fff, var(--spotify-neon-green));
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   position: relative;
@@ -216,19 +232,21 @@ section:hover h2::after {
 
 .stat-item:nth-child(2) h3 {
   background: linear-gradient(45deg, #fff, var(--spotify-blue));
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .stat-item:nth-child(3) h3 {
   background: linear-gradient(45deg, #fff, var(--spotify-purple));
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .stat-item p {
   margin: 0;
-  color: var(--spotify-light-gray);
+  color: rgba(255, 255, 255, 0.85);
   font-weight: 600;
   font-size: 1rem;
   position: relative;
@@ -302,27 +320,30 @@ section:hover h2::after {
   font-size: 4rem;
   margin-bottom: 16px;
   background: linear-gradient(45deg, #fff 30%, var(--spotify-green));
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .impact-stat:nth-child(2) h3 {
   background: linear-gradient(45deg, #fff 30%, var(--spotify-blue));
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .impact-stat:nth-child(3) h3 {
   background: linear-gradient(45deg, #fff 30%, var(--spotify-purple));
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .impact-stat p {
   margin: 0;
-  color: var(--spotify-light-gray);
-  font-size: 1.1rem;
-  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1.08rem;
+  line-height: 1.6;
 }
 
 /* Programs Section */
@@ -485,6 +506,25 @@ section:hover h2::after {
   .mission-section,
   .locations-section {
     margin: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  section {
+    padding: 44px 16px;
+  }
+
+  section h2 {
+    font-size: 2rem;
+  }
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
   }
 }
 
@@ -1144,6 +1184,7 @@ section:hover h2::after {
   font-weight: 700;
   margin-bottom: 20px;
   background: linear-gradient(45deg, #fff, var(--spotify-green));
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -1528,6 +1569,42 @@ section:hover h2::after {
   padding: 16px;
 }
 
+.section-group h3 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--spotify-light-gray);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 8px 24px 12px;
+}
+
+.nav-item .section-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background-color 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+
+.nav-item:hover .section-icon {
+  background-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.12);
+  transform: scale(1.02);
+}
+
+.nav-item .section-icon svg {
+  width: 16px;
+  height: 16px;
+  stroke: rgba(255, 255, 255, 0.95);
+  fill: none;
+  stroke-width: 2px;
+}
+
 .nav-section {
   margin-bottom: 24px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -1663,6 +1740,27 @@ body.has-spotify-header {
   .side-nav {
     width: 75%;
     max-width: 280px;
+  }
+}
+
+/* Performance: avoid work for offscreen sections */
+@supports (content-visibility: auto) {
+  #impact,
+  #method,
+  #curriculum,
+  #programs,
+  #quote,
+  #music,
+  #locations,
+  #flex,
+  #financial,
+  #impact-levels,
+  #partners,
+  #contact,
+  #footer {
+    content-visibility: auto;
+    contain: layout style paint;
+    contain-intrinsic-size: 1000px;
   }
 }
 

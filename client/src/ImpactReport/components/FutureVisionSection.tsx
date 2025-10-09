@@ -758,7 +758,13 @@ function FutureVisionSection(): JSX.Element {
             Guns. Together, we can amplify our impact and create harmony in
             communities nationwide.
           </CTADescription>
-          <PlaylistButton href="/donate">Support Our Vision</PlaylistButton>
+          <PlaylistButton
+            href="https://www.classy.org/give/352794/#!/donation/checkout"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Support Our Vision
+          </PlaylistButton>
         </BottomCTA>
       </MainContainer>
     </FutureVisionWrapper>

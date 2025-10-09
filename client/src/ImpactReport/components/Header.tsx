@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import gogoWideLogo from '../../assets/GOGO_LOGO_WIDE_WH.png';
+import Modal from './Modal';
 
 function Header(): JSX.Element {
   const [isScrolled, setIsScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showStudentMusic, setShowStudentMusic] = useState(false);
+  const [showMentorPerformances, setShowMentorPerformances] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -14,45 +17,162 @@ function Header(): JSX.Element {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
+  const toggleMenu = () => setMenuOpen(!menuOpen);
 
-  const handleNavItemClick = (index: number) => {
-    // Close the menu
+  const navigateTo = useCallback((id: string) => {
     setMenuOpen(false);
-
-    // Scroll to the corresponding section
-    let targetSection;
-    switch (index) {
-      case 0:
-        // Scroll to top/hero section
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        return;
-      case 1:
-        targetSection = document.querySelector('.mission-section');
-        break;
-      case 2:
-        targetSection = document.querySelector('.impact-section');
-        break;
-      case 3:
-        targetSection = document.querySelector('.programs-section');
-        break;
-      case 4:
-        targetSection = document.querySelector('.locations-section');
-        break;
-      case 5:
-        // Scroll to footer for "Contact"
-        targetSection = document.querySelector('.spotify-footer');
-        break;
-      default:
-        targetSection = null;
+    const el = document.getElementById(id);
+    if (el) {
+      try {
+        window.history.replaceState(null, '', `#${id}`);
+      } catch {}
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  }, []);
 
-    if (targetSection) {
-      targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const navItems: Array<{ label: string; id: string; icon?: JSX.Element }> = [
+    { label: 'Home', id: 'hero' },
+    { label: 'Our Mission', id: 'mission' },
+    { label: 'Music', id: 'music' },
+    { label: 'Impact', id: 'impact' },
+    { label: 'Curriculum', id: 'curriculum' },
+    { label: 'Programs', id: 'programs' },
+    { label: 'Quote', id: 'quote' },
+    { label: 'Locations', id: 'locations' },
+    { label: 'Financials', id: 'financial' },
+    { label: 'Impact Levels', id: 'impact-levels' },
+    { label: 'Partners', id: 'partners' },
+    { label: 'Contact', id: 'footer' },
+  ];
+
+  const renderIcon = (id: string): JSX.Element => {
+    switch (id) {
+      case 'hero':
+        return (
+          <svg viewBox="0 0 24 24" aria-hidden>
+            <path d="M3 10l9-7 9 7" />
+            <path d="M5 21h5v-6h4v6h5" />
+          </svg>
+        );
+      case 'mission':
+        return (
+          <svg viewBox="0 0 24 24" aria-hidden>
+            <path d="M12 2v8" />
+            <circle cx="12" cy="14" r="7" />
+          </svg>
+        );
+      case 'music':
+        return (
+          <svg viewBox="0 0 24 24" aria-hidden>
+            <path d="M9 3v10" />
+            <circle cx="7" cy="18" r="3" />
+            <path d="M9 7h8v-4" />
+          </svg>
+        );
+      case 'impact':
+        return (
+          <svg viewBox="0 0 24 24" aria-hidden>
+            <path d="M4 20V9" />
+            <path d="M10 20V5" />
+            <path d="M16 20v-8" />
+            <path d="M20 20v-5" />
+          </svg>
+        );
+      case 'curriculum':
+        return (
+          <svg viewBox="0 0 24 24" aria-hidden>
+            <path d="M4 6h14v12H6a2 2 0 0 1-2-2z" />
+            <path d="M6 8h10" />
+            <path d="M6 12h10" />
+          </svg>
+        );
+      case 'programs':
+        return (
+          <svg viewBox="0 0 24 24" aria-hidden>
+            <rect x="3" y="3" width="7" height="7" rx="1" />
+            <rect x="14" y="3" width="7" height="7" rx="1" />
+            <rect x="3" y="14" width="7" height="7" rx="1" />
+            <rect x="14" y="14" width="7" height="7" rx="1" />
+          </svg>
+        );
+      case 'quote':
+        return (
+          <svg viewBox="0 0 24 24" aria-hidden>
+            <path d="M7 7h5v5H6v5H2v-4a6 6 0 0 1 5-6z" />
+            <path d="M17 7h5v5h-6v5h-4v-4a6 6 0 0 1 5-6z" />
+          </svg>
+        );
+      case 'locations':
+        return (
+          <svg viewBox="0 0 24 24" aria-hidden>
+            <path d="M12 21s7-7 7-12a7 7 0 0 0-14 0c0 5 7 12 7 12z" />
+            <circle cx="12" cy="9" r="2.5" />
+          </svg>
+        );
+      case 'financial':
+        return (
+          <svg viewBox="0 0 24 24" aria-hidden>
+            <circle cx="12" cy="12" r="8" />
+            <path d="M8 12h8" />
+            <path d="M12 8v8" />
+          </svg>
+        );
+      case 'impact-levels':
+        return (
+          <svg viewBox="0 0 24 24" aria-hidden>
+            <circle cx="12" cy="12" r="9" />
+            <circle cx="12" cy="12" r="5" />
+            <circle cx="12" cy="12" r="2" />
+          </svg>
+        );
+      case 'partners':
+        return (
+          <svg viewBox="0 0 24 24" aria-hidden>
+            <path d="M8 12a4 4 0 1 0 8 0" />
+            <path d="M3 7h6v6H3zM15 11h6v6h-6z" />
+          </svg>
+        );
+      case 'footer':
+        return (
+          <svg viewBox="0 0 24 24" aria-hidden>
+            <path d="M4 8l8 5 8-5" />
+            <path d="M4 12v8h16v-8" />
+          </svg>
+        );
+      default:
+        return (
+          <svg viewBox="0 0 24 24" aria-hidden>
+            <circle cx="12" cy="12" r="10" />
+          </svg>
+        );
     }
   };
+
+  const studentEmbeds: string[] = [
+    'https://open.spotify.com/embed/track/7ouMYWpwJ422jRcDASZB7P',
+    'https://open.spotify.com/embed/track/3AJwUDP919kvQ9QcozQPxg',
+    'https://open.spotify.com/embed/track/0VjIjW4GlUZAMYd2vXMi3b',
+    'https://open.spotify.com/embed/track/35mvY5S1H3J2QZyna3TFe0',
+    'https://open.spotify.com/embed/track/6habFhsOp2NvshLv26DqMb',
+    'https://open.spotify.com/embed/track/0e7ipj03S05BNilyu5bRzt',
+    'https://open.spotify.com/embed/track/2X485T9Z5Ly0xyaghN73ed',
+    'https://open.spotify.com/embed/track/0tlYHi3bndRfZHO9x9m1W1',
+    'https://open.spotify.com/embed/track/4OMJGnvZfDvsePyCwRGO7X',
+    'https://open.spotify.com/embed/track/24Yi9hE78yPEbZ4kxyoXAI',
+  ];
+
+  const mentorEmbeds: string[] = [
+    'https://open.spotify.com/embed/track/2xLMifQCjDGFmkHkpNLD9h',
+    'https://open.spotify.com/embed/track/0V3wPSX9YGgSxc8IaG3S0M',
+    'https://open.spotify.com/embed/track/2fQrGHiQOvpL9UgPvtYy6G',
+    'https://open.spotify.com/embed/track/2Z8WuEywRWYTKe1NybPQEW',
+    'https://open.spotify.com/embed/track/1rqqCSm0Qe4I9rUvWncaom',
+    'https://open.spotify.com/embed/track/0u2P5u6lvoDfwTYjAADbn4',
+    'https://open.spotify.com/embed/track/4iJyoBOLtHqaGxP12qzhQI',
+    'https://open.spotify.com/embed/track/6K4t31amVTZDgR3sKmwUJJ',
+    'https://open.spotify.com/embed/track/1yJ9I7Z4Zx2drTUu4iGi4M',
+    'https://open.spotify.com/embed/track/0e7ipj03S05BNilyu5bRzt',
+  ];
 
   return (
     <>
@@ -89,86 +209,33 @@ function Header(): JSX.Element {
 
       <div className={`side-nav ${menuOpen ? 'open' : ''}`}>
         <nav className="nav-content">
-          <div className="nav-section">
-            <div
-              className="nav-item active"
-              onClick={() => handleNavItemClick(0)}
-              onKeyDown={(e) => e.key === 'Enter' && handleNavItemClick(0)}
-              role="button"
-              tabIndex={0}
-            >
-              <div className="nav-icon">
-                <svg viewBox="0 0 24 24" width="24" height="24">
-                  <path d="M12.5 3.247a1 1 0 0 0-1 0L4 7.577V20h4.5v-6a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v6H20V7.577l-7.5-4.33zm-2-1.732a3 3 0 0 1 3 0l7.5 4.33a2 2 0 0 1 1 1.732V21a1 1 0 0 1-1 1h-6.5a1 1 0 0 1-1-1v-6h-3v6a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7.577a2 2 0 0 1 1-1.732l7.5-4.33z" />
-                </svg>
+          <div className="nav-section section-group">
+            <h3>Sections</h3>
+            {navItems.map((item, idx) => (
+              <div
+                key={`nav-${item.id}`}
+                className={`nav-item ${idx === 0 ? 'active' : ''}`}
+                onClick={() => navigateTo(item.id)}
+                onKeyDown={(e) => e.key === 'Enter' && navigateTo(item.id)}
+                role="button"
+                tabIndex={0}
+              >
+                <div className="section-icon">{renderIcon(item.id)}</div>
+                <span>{item.label}</span>
               </div>
-              <span>Home</span>
-            </div>
-            <div
-              className="nav-item"
-              onClick={() => handleNavItemClick(1)}
-              onKeyDown={(e) => e.key === 'Enter' && handleNavItemClick(1)}
-              role="button"
-              tabIndex={0}
-            >
-              <div className="nav-icon">
-                <svg viewBox="0 0 24 24" width="24" height="24">
-                  <path d="M10.533 1.27893C10.751 0.791759 11.2239 0.5 11.7553 0.5H12.2447C12.7761 0.5 13.249 0.791759 13.467 1.27893L15.071 5.00197L19.1818 5.38868C19.7084 5.43415 20.1563 5.79977 20.3231 6.31043C20.49 6.8211 20.3328 7.38893 19.9287 7.75279L16.8581 10.5855L17.594 14.6512C17.6849 15.1726 17.4565 15.7009 17.0262 15.9971C16.5959 16.2933 16.0359 16.3011 15.5981 16.0178L12 14.0784L8.40191 16.0178C7.96407 16.3011 7.40414 16.2933 6.97385 15.9971C6.54356 15.7009 6.3151 15.1726 6.40601 14.6512L7.14185 10.5855L4.07127 7.75279C3.66724 7.38893 3.51004 6.8211 3.67686 6.31043C3.84368 5.79977 4.2916 5.43415 4.81823 5.38868L8.92898 5.00197L10.533 1.27893Z" />
-                </svg>
-              </div>
-              <span>Our Mission</span>
-            </div>
-            <div
-              className="nav-item"
-              onClick={() => handleNavItemClick(3)}
-              onKeyDown={(e) => e.key === 'Enter' && handleNavItemClick(3)}
-              role="button"
-              tabIndex={0}
-            >
-              <div className="nav-icon">
-                <svg viewBox="0 0 24 24" width="24" height="24">
-                  <path d="M12 1C5.925 1 1 5.925 1 12s4.925 11 11 11 11-4.925 11-11S18.075 1 12 1zm0 2c4.971 0 9 4.029 9 9s-4.029 9-9 9-9-4.029-9-9 4.029-9 9-9zm-1 11.5H9v2h2v-2zm1.976-7.219c-.208-.273-.48-.487-.817-.642-.336-.155-.703-.232-1.1-.232-.391 0-.748.068-1.073.204a2.75 2.75 0 00-.833.54c-.233.23-.412.49-.538.777-.125.287-.189.585-.19.895h2c0-.27.073-.493.219-.669a.725.725 0 01.603-.293c.253 0 .453.087.603.26.15.173.226.352.226.536 0 .184-.053.337-.16.46a1.542 1.542 0 01-.369.334 5.97 5.97 0 01-.457.26 6.256 6.256 0 00-.418.232c-.235.141-.43.306-.587.495-.156.19-.278.393-.366.611-.088.218-.141.458-.16.72v.766h2v-.525a.98.98 0 01.112-.436c.075-.13.17-.241.286-.334.116-.092.24-.171.375-.236.135-.065.26-.132.375-.2.115-.069.219-.148.312-.237.92.088.179.186.261.292.082.107.15.226.203.356.053.13.092.275.118.435.026.16.039.335.039.524 0 .405-.086.762-.258 1.071a2.388 2.388 0 01-.684.778c-.285.206-.615.362-.991.469-.377.107-.771.16-1.18.16-.408 0-.802-.054-1.179-.16a3.011 3.011 0 01-.993-.468 2.314 2.314 0 01-.683-.778c-.173-.31-.26-.667-.26-1.072H7c0 .68.158 1.296.475 1.845.316.549.738.995 1.264 1.338.527.343 1.129.597 1.806.762.678.165 1.384.248 2.12.248.735 0 1.437-.075 2.106-.226.67-.15 1.267-.39 1.792-.718.525-.328.945-.75 1.26-1.266.315-.516.473-1.14.473-1.872 0-.42-.085-.8-.254-1.14-.17-.34-.397-.627-.683-.862z" />
-                </svg>
-              </div>
-              <span>Programs</span>
-            </div>
-            <div
-              className="nav-item"
-              onClick={() => handleNavItemClick(2)}
-              onKeyDown={(e) => e.key === 'Enter' && handleNavItemClick(2)}
-              role="button"
-              tabIndex={0}
-            >
-              <div className="nav-icon">
-                <svg viewBox="0 0 24 24" width="24" height="24">
-                  <path d="M15 4v12.167a3.5 3.5 0 11-3.5-3.5H13V4h2zm-2 10.667h-1.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" />
-                </svg>
-              </div>
-              <span>Impact</span>
-            </div>
-            <div
-              className="nav-item"
-              onClick={() => handleNavItemClick(4)}
-              onKeyDown={(e) => e.key === 'Enter' && handleNavItemClick(4)}
-              role="button"
-              tabIndex={0}
-            >
-              <div className="nav-icon">
-                <svg viewBox="0 0 24 24" width="24" height="24">
-                  <path d="M12 3a9 9 0 100 18 9 9 0 000-18zM1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12z" />
-                  <path d="M12 6.05a1 1 0 011 1v4.566l3.7 2.135a1 1 0 11-1 1.732l-4.2-2.424A1 1 0 0111 12.05V7.05a1 1 0 011-1z" />
-                </svg>
-              </div>
-              <span>Locations</span>
-            </div>
+            ))}
           </div>
 
           <div className="playlist-section">
             <h3>Playlists</h3>
             <div
               className="nav-item"
-              onClick={() => setMenuOpen(false)}
-              onKeyDown={(e) => e.key === 'Enter' && setMenuOpen(false)}
+              onClick={() => {
+                setShowStudentMusic(true);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') setShowStudentMusic(true);
+              }}
               role="button"
               tabIndex={0}
             >
@@ -181,8 +248,12 @@ function Header(): JSX.Element {
             </div>
             <div
               className="nav-item"
-              onClick={() => setMenuOpen(false)}
-              onKeyDown={(e) => e.key === 'Enter' && setMenuOpen(false)}
+              onClick={() => {
+                setShowMentorPerformances(true);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') setShowMentorPerformances(true);
+              }}
               role="button"
               tabIndex={0}
             >
@@ -190,75 +261,6 @@ function Header(): JSX.Element {
                 <span>♫</span>
               </div>
               <span>Mentor Performances</span>
-            </div>
-          </div>
-
-          <div className="playlist-tracks">
-            <h4
-              style={{
-                margin: '20px 0 12px',
-                fontSize: '14px',
-                color: 'var(--spotify-light-gray)',
-              }}
-            >
-              Student Tracks
-            </h4>
-
-            <div
-              className="playlist-track"
-              onClick={() => setMenuOpen(false)}
-              onKeyDown={(e) => e.key === 'Enter' && setMenuOpen(false)}
-              role="button"
-              tabIndex={0}
-            >
-              <div className="track-number">1</div>
-              <div className="track-details">
-                <div className="track-title">Urban Rhythms</div>
-                <div className="track-artist">Chicago Youth Ensemble</div>
-              </div>
-              <div className="play-icon">
-                <svg viewBox="0 0 24 24" width="12" height="12">
-                  <path d="M8 5.14v14l11-7-11-7z" />
-                </svg>
-              </div>
-            </div>
-
-            <div
-              className="playlist-track"
-              onClick={() => setMenuOpen(false)}
-              onKeyDown={(e) => e.key === 'Enter' && setMenuOpen(false)}
-              role="button"
-              tabIndex={0}
-            >
-              <div className="track-number">2</div>
-              <div className="track-details">
-                <div className="track-title">Rise Up</div>
-                <div className="track-artist">Miami Beat Makers</div>
-              </div>
-              <div className="play-icon">
-                <svg viewBox="0 0 24 24" width="12" height="12">
-                  <path d="M8 5.14v14l11-7-11-7z" />
-                </svg>
-              </div>
-            </div>
-
-            <div
-              className="playlist-track"
-              onClick={() => setMenuOpen(false)}
-              onKeyDown={(e) => e.key === 'Enter' && setMenuOpen(false)}
-              role="button"
-              tabIndex={0}
-            >
-              <div className="track-number">3</div>
-              <div className="track-details">
-                <div className="track-title">Dreams and Determination</div>
-                <div className="track-artist">Youth Voice Collective</div>
-              </div>
-              <div className="play-icon">
-                <svg viewBox="0 0 24 24" width="12" height="12">
-                  <path d="M8 5.14v14l11-7-11-7z" />
-                </svg>
-              </div>
             </div>
           </div>
         </nav>
@@ -274,6 +276,84 @@ function Header(): JSX.Element {
           aria-label="Close menu"
         />
       )}
+
+      {/* Student Music Modal */}
+      <Modal
+        isOpen={showStudentMusic}
+        onClose={() => setShowStudentMusic(false)}
+        title="Student Music"
+        width="min(1200px, 92vw)"
+      >
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '16px',
+            padding: '16px',
+          }}
+        >
+          {studentEmbeds.map((url) => (
+            <div
+              key={`student-embed-${url}`}
+              style={{
+                borderRadius: 12,
+                overflow: 'hidden',
+                background: 'rgba(255,255,255,0.06)',
+                border: '1px solid rgba(255,255,255,0.08)',
+              }}
+            >
+              <iframe
+                title={url}
+                src={url}
+                width="100%"
+                height="352"
+                frameBorder={0}
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                loading="lazy"
+              />
+            </div>
+          ))}
+        </div>
+      </Modal>
+
+      {/* Mentor Performances Modal */}
+      <Modal
+        isOpen={showMentorPerformances}
+        onClose={() => setShowMentorPerformances(false)}
+        title="Mentor Performances"
+        width="min(1200px, 92vw)"
+      >
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '16px',
+            padding: '16px',
+          }}
+        >
+          {mentorEmbeds.map((url) => (
+            <div
+              key={`mentor-embed-${url}`}
+              style={{
+                borderRadius: 12,
+                overflow: 'hidden',
+                background: 'rgba(255,255,255,0.06)',
+                border: '1px solid rgba(255,255,255,0.08)',
+              }}
+            >
+              <iframe
+                title={url}
+                src={url}
+                width="100%"
+                height="352"
+                frameBorder={0}
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                loading="lazy"
+              />
+            </div>
+          ))}
+        </div>
+      </Modal>
     </>
   );
 }

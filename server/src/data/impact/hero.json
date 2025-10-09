@@ -1,0 +1,19 @@
+{
+  "backgroundColor": "linear-gradient(180deg, #5038a0 0%, #121242 100%)",
+  "backgroundImage": null,
+  "title": "IMPACT REPORT",
+  "subtitle": "GUITARS OVER GUNS",
+  "year": "2024-2025",
+  "tagline": "CHOOSE YOUR SOUND",
+  "bubbles": ["Miami", "Chicago", "Losas Angeles", "New York"],
+  "primaryCta": {
+    "label": "Watch Our Story",
+    "href": "https://youtu.be/21ufVKC5TEo?si=3N7xugwbc3Z4RNm-"
+  },
+  "secondaryCta": {
+    "label": "Support Our Mission",
+    "href": "https://www.classy.org/give/352794/#!/donation/checkout"
+  }
+}
+
+

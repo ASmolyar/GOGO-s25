@@ -14,3 +14,6 @@ export * from './presets/app-specific';
 
 // Export React hooks for animations
 export * from './hooks/useAnimation';
+
+// Export reusable components
+export { Reveal } from './components/Reveal';

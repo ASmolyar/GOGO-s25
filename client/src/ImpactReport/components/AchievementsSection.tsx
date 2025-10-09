@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useMemo } from 'react';
+import { Reveal } from '../../animations';
 import styled from 'styled-components';
 import { animate, stagger } from 'animejs';
 import COLORS from '../../assets/colors';
@@ -321,93 +322,63 @@ function AchievementsSection(): JSX.Element {
     [],
   );
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          // Animate title when section enters viewport
-          if (titleRef.current) {
-            animate(titleRef.current, titleAnimationParams);
-          }
-
-          // Staggered animation for cards
-          const validCardRefs = cardRefs.current.filter(Boolean);
-          if (validCardRefs.length > 0) {
-            animate(
-              validCardRefs.filter(Boolean) as HTMLDivElement[],
-              cardsAnimationParams,
-            );
-          }
-        }
-      },
-      { threshold: 0.1 },
-    );
-
-    // Store reference to the current section ref
-    const currentSectionRef = sectionRef.current;
-
-    if (currentSectionRef) {
-      observer.observe(currentSectionRef);
-    }
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [cardsAnimationParams, titleAnimationParams]);
+  // Existing anime-based observer not needed when using <Reveal/>
 
   return (
     <AchievementsContainer ref={sectionRef}>
       <SpotifyPattern />
       <ContentContainer>
         <SectionHeader>
-          <SectionTitle ref={titleRef}>
-            Our Achievements and Strategic Highlights
-          </SectionTitle>
-          <SectionSubtitle>
-            Milestones that showcase our commitment to empowering youth through
-            music and mentorship
-          </SectionSubtitle>
+          <Reveal variant="fade-up" distance={30}>
+            <SectionTitle>
+              Our Achievements and Strategic Highlights
+            </SectionTitle>
+          </Reveal>
+          <Reveal variant="fade-up" delay={150}>
+            <SectionSubtitle>
+              Milestones that showcase our commitment to empowering youth
+              through music and mentorship
+            </SectionSubtitle>
+          </Reveal>
         </SectionHeader>
 
-        <AchievementsGrid>
-          {achievementsData.map((achievement, index) => (
-            <AchievementCard
-              key={`achievement-${achievement.id}-${achievement.year}`}
-              ref={(el) => {
-                cardRefs.current[index] = el;
-              }}
-              style={{ opacity: 0 }}
-            >
-              <AchievementBackground
-                className="achievement-bg"
-                style={{ background: achievement.backgroundColor }}
-              />
-              <AchievementContent>
-                <AchievementYear>{achievement.year}</AchievementYear>
-                <AchievementTitle>{achievement.title}</AchievementTitle>
-                <AchievementDescription>
-                  {achievement.description}
-                </AchievementDescription>
+        <Reveal variant="stagger-up" staggerSelector=":scope > div">
+          <AchievementsGrid>
+            {achievementsData.map((achievement) => (
+              <AchievementCard
+                key={`achievement-${achievement.id}-${achievement.year}`}
+              >
+                <AchievementBackground
+                  className="achievement-bg"
+                  style={{ background: achievement.backgroundColor }}
+                />
+                <AchievementContent>
+                  <AchievementYear>{achievement.year}</AchievementYear>
+                  <AchievementTitle>{achievement.title}</AchievementTitle>
+                  <AchievementDescription>
+                    {achievement.description}
+                  </AchievementDescription>
 
-                <AchievementStats>
-                  {achievement.stats.map((stat, i) => (
-                    <AchievementStat
-                      key={`stat-${achievement.id}-${stat.label}`}
-                    >
-                      <StatValue>{stat.value}</StatValue>
-                      <StatLabel>{stat.label}</StatLabel>
-                    </AchievementStat>
-                  ))}
-                </AchievementStats>
+                  <AchievementStats>
+                    {achievement.stats.map((stat) => (
+                      <AchievementStat
+                        key={`stat-${achievement.id}-${stat.label}`}
+                      >
+                        <StatValue>{stat.value}</StatValue>
+                        <StatLabel>{stat.label}</StatLabel>
+                      </AchievementStat>
+                    ))}
+                  </AchievementStats>
 
-                <MediaLink href="#">
-                  <span className="play-icon">▶</span>
-                  {achievement.mediaLink}
-                </MediaLink>
-              </AchievementContent>
-            </AchievementCard>
-          ))}
-        </AchievementsGrid>
+                  <MediaLink href="#">
+                    <span className="play-icon">▶</span>
+                    {achievement.mediaLink}
+                  </MediaLink>
+                </AchievementContent>
+              </AchievementCard>
+            ))}
+          </AchievementsGrid>
+        </Reveal>
       </ContentContainer>
     </AchievementsContainer>
   );

@@ -2,14 +2,36 @@ import React, {
   useEffect,
   useState,
   useRef,
-  useMemo,
   useCallback,
+  memo,
+  FC,
 } from 'react';
-import { Box, Typography, useTheme, useMediaQuery } from '@mui/material';
 import styled, { keyframes } from 'styled-components';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { animate, stagger } from 'animejs';
 import COLORS from '../../assets/colors';
+import photo1 from '../../assets/missionPhotos/Photo1.jpg';
+import photo2 from '../../assets/missionPhotos/Photo2.jpg';
+import photo3 from '../../assets/missionPhotos/Photo3.jpg';
+import photo4 from '../../assets/missionPhotos/Photo4.jpg';
+import photo5 from '../../assets/missionPhotos/Photo5.jpg';
+import photo6 from '../../assets/missionPhotos/Photo6.jpg';
+import photo7 from '../../assets/missionPhotos/Photo7.jpg';
+import photo8 from '../../assets/missionPhotos/Photo8.jpg';
+import photo9 from '../../assets/missionPhotos/Photo9.jpg';
+import photo10 from '../../assets/missionPhotos/Photo10.jpg';
+import photo11 from '../../assets/missionPhotos/Photo11.jpg';
+import photo12 from '../../assets/missionPhotos/Photo12.jpg';
+import photo13 from '../../assets/missionPhotos/Photo13.jpg';
+import photo14 from '../../assets/missionPhotos/Photo14.jpg';
+
+// Label colors for TurntableStat
+const TURNTABLE_LABEL_COLORS: Array<{ a: string; b: string }> = [
+  { a: COLORS.gogo_yellow, b: COLORS.gogo_pink },
+  { a: COLORS.gogo_teal, b: COLORS.gogo_blue },
+  { a: COLORS.gogo_purple, b: COLORS.gogo_green },
+  { a: COLORS.gogo_pink, b: COLORS.gogo_yellow },
+];
 
 // Ambient gradient animation
 const ambientShift = keyframes`
@@ -24,30 +46,7 @@ const ambientShift = keyframes`
   }
 `;
 
-// Pulse animation for stats
-const pulse = keyframes`
-  0% {
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.1);
-  }
-  70% {
-    box-shadow: 0 0 0 15px rgba(255, 255, 255, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
-  }
-`;
-
-// Number counter animation
-const countUp = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
+// (removed: pulse/countUp animations as stats were removed)
 
 // Add these new keyframes at the top with other animations
 const blobAnimation = keyframes`
@@ -162,6 +161,7 @@ const GradientBg = styled.div`
   z-index: 0;
   filter: blur(60px);
   opacity: 0.5;
+  pointer-events: none;
 `;
 
 const SectionHeader = styled.div`
@@ -202,64 +202,280 @@ const StatsTitle = styled.h3`
 
 const StatsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
-  margin-bottom: 3rem;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
   position: relative;
   overflow: hidden;
-  padding: 3rem 2rem;
+  padding: 1.2rem 1.2rem 1.6rem;
   border-radius: 16px;
-  background: rgba(0, 0, 0, 0.3);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  background: repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.03) 0 2px,
+      rgba(0, 0, 0, 0) 2px 6px
+    ),
+    linear-gradient(180deg, rgba(18, 18, 18, 0.9), rgba(12, 12, 12, 0.9));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
   text-align: center;
+`;
 
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(
-        circle at 20% 20%,
-        ${COLORS.gogo_purple}22 0%,
-        transparent 50%
-      ),
-      radial-gradient(
-        circle at 80% 80%,
-        ${COLORS.gogo_blue}22 0%,
-        transparent 50%
-      ),
-      radial-gradient(
-        circle at 50% 50%,
-        ${COLORS.gogo_teal}22 0%,
-        transparent 50%
-      );
-    z-index: 0;
-    animation: ${ambientShift} 20s ease infinite;
-  }
+// Turntable stats styling
+const TurntableGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+`;
 
-  &:after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(
-        circle at 30% 30%,
-        ${COLORS.gogo_pink}15 0%,
-        transparent 40%
-      ),
-      radial-gradient(
-        circle at 70% 70%,
-        ${COLORS.gogo_yellow}15 0%,
-        transparent 40%
-      );
-    z-index: 0;
-    animation: ${ambientShift} 25s ease-in-out infinite reverse;
+const TurntableCard = styled.div`
+  position: relative;
+  border-radius: 16px;
+  padding: 1.25rem 1.25rem 1.5rem;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0.03)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  user-select: none;
+
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.08),
+      rgba(255, 255, 255, 0.04)
+    );
   }
 `;
+
+// Outcomes highlights chips styling (under records)
+const HighlightsContainer = styled.div`
+  margin-top: 1.75rem;
+  padding: 1rem 1.25rem;
+  border-radius: 14px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.03),
+    rgba(255, 255, 255, 0.02)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.07);
+`;
+
+const HighlightsTitle = styled.div`
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.75rem;
+`;
+
+const HighlightsSubtitle = styled.div`
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.98rem;
+  margin-bottom: 1rem;
+`;
+
+const HighlightsRow = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+`;
+
+const HighlightChip = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  color: white;
+  font-weight: 700;
+  font-size: 0.92rem;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    color: ${COLORS.gogo_blue};
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.14);
+  }
+`;
+
+const HighlightCardsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+`;
+
+const HighlightCard = styled.div`
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  transition: transform 0.25s ease, background 0.25s ease,
+    border-color 0.25s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.14);
+  }
+`;
+
+const HighlightCardTitle = styled.div`
+  color: #fff;
+  font-weight: 800;
+  margin-bottom: 0.35rem;
+  letter-spacing: 0.01em;
+`;
+
+const HighlightCardText = styled.div`
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.95rem;
+  line-height: 1.5;
+`;
+
+const Deck = styled.div`
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  height: auto;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #1b1b1b, #101010);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  margin: 0 auto;
+  max-width: 240px;
+`;
+
+const spin = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
+
+const Record = styled.div`
+  --spin-speed: 4.5s;
+  position: relative;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: radial-gradient(
+      closest-side,
+      rgba(0, 0, 0, 0) 77%,
+      rgba(0, 0, 0, 0.6) 78%,
+      rgba(0, 0, 0, 0) 79%
+    ),
+    repeating-radial-gradient(
+      circle at center,
+      #121212 0px,
+      #121212 2px,
+      #0c0c0c 2px,
+      #0c0c0c 4px
+    );
+  animation: ${spin} var(--spin-speed) linear infinite;
+  animation-play-state: paused;
+  will-change: transform;
+
+  &.playing {
+    animation-play-state: running;
+  }
+`;
+
+const RecordLabel = styled.div<{ colorA: string; colorB: string }>`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60px;
+  height: 60px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 30%,
+    ${(p) => p.colorA},
+    ${(p) => p.colorB}
+  );
+  color: white;
+  font-weight: 1100;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: -0.5px;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.35);
+`;
+
+const Spindle = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 3px;
+  height: 3px;
+  transform: translate(-50%, -50%);
+  background: #d9d9d9;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px #111, 0 0 0 3px rgba(255, 255, 255, 0.08);
+`;
+
+const Tonearm = styled.div<{ engaged: boolean }>`
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  width: 160px;
+  height: 160px;
+  pointer-events: none;
+
+  &::before {
+    content: '';
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    width: 96px;
+    height: 6px;
+    background: linear-gradient(90deg, #bfbfbf, #6f6f6f);
+    border-radius: 6px;
+    transform-origin: calc(100% - 8px) 50%;
+    transform: rotate(${(p) => (p.engaged ? '-28deg' : '0deg')});
+    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: 94px;
+    top: 4px;
+    width: 14px;
+    height: 14px;
+    background: #eee;
+    border-radius: 50%;
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.4);
+  }
+`;
+
+const StatCaption = styled.div`
+  margin-top: 0.9rem;
+  color: rgba(255, 255, 255, 0.85);
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.05rem;
+  line-height: 1.4;
+`;
+
+// Removed confetti
 
 const StatItem = styled.div`
   background: rgba(255, 255, 255, 0.05);
@@ -283,44 +499,9 @@ const StatItem = styled.div`
   }
 `;
 
-const PercentageCircle = styled.div`
-  position: relative;
-  width: 140px;
-  height: 140px;
-  margin-bottom: 2rem;
-  animation: ${pulse} 2s infinite;
-  z-index: 1;
+// (removed: PercentageCircle/PercentageText as stats were removed)
 
-  svg {
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
-  }
-`;
-
-const PercentageText = styled.h3`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 2.5rem;
-  font-weight: 900;
-  color: white;
-  margin: 0;
-  transition: all 0.3s ease;
-
-  .percent {
-    font-size: 1.2rem;
-    font-weight: 400;
-    vertical-align: super;
-    margin-left: 2px;
-  }
-
-  .number {
-    display: inline-block;
-    opacity: 0;
-    transform: translateY(10px);
-    animation: ${countUp} 0.5s forwards;
-  }
-`;
+// (removed: vinyl stat visualization)
 
 const StatDescription = styled.p`
   font-size: 1.1rem;
@@ -734,6 +915,159 @@ const ToolDescription = styled.div`
   margin-top: 0.2rem;
 `;
 
+// Top/bottom image belts with brand duotone treatment
+const BeltContainer = styled.div`
+  overflow: hidden;
+  position: relative;
+  padding: 1.25rem 0;
+  z-index: 0;
+`;
+
+const BeltTrack = styled.div<{ direction: 'left' | 'right' }>`
+  display: inline-flex;
+  width: max-content;
+  will-change: transform;
+  animation: ${(p) => (p.direction === 'left' ? 'scroll-left' : 'scroll-right')}
+    28s linear infinite;
+
+  @keyframes scroll-left {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @keyframes scroll-right {
+    from {
+      transform: translateX(-50%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+`;
+
+const BeltCard = styled.div`
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: 0 0.8rem;
+  flex-shrink: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #111;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%) contrast(1.05) brightness(0.9) sepia(12%)
+      hue-rotate(320deg) saturate(110%);
+    mix-blend-mode: screen;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      ${COLORS.gogo_blue}33,
+      ${COLORS.gogo_purple}22
+    );
+    pointer-events: none;
+  }
+`;
+
+// Outcomes and PYD capacities
+const OutcomesContainer = styled.section`
+  background: linear-gradient(180deg, #121212 0%, #0e0e0e 100%);
+  position: relative;
+  padding: 4rem 0 1rem;
+  overflow: hidden;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    right: -10%;
+    width: 50%;
+    height: 70%;
+    background: radial-gradient(circle, ${COLORS.gogo_blue}22, transparent 70%);
+  }
+`;
+
+const CapacitiesGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+`;
+
+const CapacityCard = styled.div`
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 1.25rem;
+  min-height: 130px;
+  transition: transform 0.25s ease, background 0.25s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    background: rgba(255, 255, 255, 0.08);
+  }
+`;
+
+const CapacityTitle = styled.h4`
+  margin: 0 0 0.5rem 0;
+  color: white;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+`;
+
+const CapacityText = styled.p`
+  margin: 0;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.95rem;
+  line-height: 1.5;
+`;
+
+const OutcomesGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+`;
+
+const OutcomeCard = styled.div`
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: transform 0.25s ease, background 0.25s ease;
+
+  &:hover {
+    transform: translateY(-6px);
+    background: rgba(255, 255, 255, 0.08);
+  }
+`;
+
+const OutcomeNumber = styled.div`
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: white;
+  margin-bottom: 0.5rem;
+`;
+
+const OutcomeLabel = styled.div`
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+`;
+
+// (removed guitar-specific styled components)
+
 // SVG Icon components for method icons
 function InsightIcon() {
   return (
@@ -829,82 +1163,122 @@ function TrackingIcon() {
   );
 }
 
+// Hoisted out of ImpactSection to satisfy react/no-unstable-nested-components
+const TurntableStat: FC<{ n: number; l: string; i: number }> =
+  function TurntableStat({ n, l, i }) {
+    const storageKey = `turntable:${l}`;
+    const [playing, setPlaying] = useState(false);
+    const recordRef = useRef<HTMLDivElement | null>(null);
+    const [speedMs, setSpeedMs] = useState(4500);
+    const [hovered, setHovered] = useState(false);
+
+    const toggle = useCallback(() => setPlaying((p) => !p), []);
+
+    const onHover = useCallback(() => {
+      setHovered(true);
+      setPlaying(true);
+    }, []);
+    const onLeave = useCallback(() => {
+      setHovered(false);
+      setPlaying(false);
+    }, []);
+
+    const onWheel = useCallback((e: React.WheelEvent) => {
+      setSpeedMs((prev) => {
+        const next = Math.min(
+          7000,
+          Math.max(1200, prev + (e.deltaY > 0 ? 350 : -350)),
+        );
+        return next;
+      });
+    }, []);
+
+    useEffect(() => {
+      if (recordRef.current) {
+        recordRef.current.style.setProperty('--spin-speed', `${speedMs}ms`);
+      }
+    }, [speedMs]);
+
+    // Load persisted state (speed only)
+    useEffect(() => {
+      try {
+        const raw = localStorage.getItem(storageKey);
+        if (raw) {
+          const parsed = JSON.parse(raw) as { speedMs?: number };
+          if (typeof parsed.speedMs === 'number') setSpeedMs(parsed.speedMs);
+        }
+      } catch {
+        /* no-op */
+      }
+    }, [storageKey]);
+
+    // Persist on change (speed only)
+    useEffect(() => {
+      try {
+        localStorage.setItem(storageKey, JSON.stringify({ speedMs }));
+      } catch {
+        /* no-op */
+      }
+    }, [speedMs, storageKey]);
+
+    return (
+      <TurntableCard
+        role="group"
+        aria-label={`${n}% ${l}`}
+        onMouseEnter={onHover}
+        onMouseLeave={onLeave}
+      >
+        <Deck onWheel={onWheel}>
+          <Record
+            ref={recordRef}
+            className={playing ? 'playing' : ''}
+            onClick={toggle}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') toggle();
+            }}
+            aria-pressed={playing}
+          >
+            <RecordLabel
+              colorA={
+                TURNTABLE_LABEL_COLORS[i % TURNTABLE_LABEL_COLORS.length].a
+              }
+              colorB={
+                TURNTABLE_LABEL_COLORS[i % TURNTABLE_LABEL_COLORS.length].b
+              }
+            >
+              {n}
+              <span style={{ fontSize: '0.7rem', marginLeft: 2 }}>%</span>
+            </RecordLabel>
+            <Spindle />
+          </Record>
+          <Tonearm engaged={hovered || playing} />
+        </Deck>
+        <StatCaption>{l}</StatCaption>
+      </TurntableCard>
+    );
+  };
+
 function ImpactSection(): JSX.Element {
   const [inView, setInView] = useState(false);
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [counting, setCounting] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
 
   // Create refs for each impact stat
   const sectionRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
-  const statRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const progressRefs = useRef<(SVGCircleElement | null)[]>([]);
-  const percentageRefs = useRef<(HTMLHeadingElement | null)[]>([]);
   const measureRef = useRef(null);
+  const stringsRef = useRef<HTMLDivElement[] | null[]>([]);
 
-  // Define impact data with useMemo to avoid recreating it on every render
-  const impactData = useMemo(
-    () => [
-      {
-        id: 'mentor-trust',
-        percentage: 90,
-        description:
-          'of students said that their mentor pays attention to their lives and can be counted on for help',
-        color: '#d159a3', // Pink
-      },
-      {
-        id: 'challenge-encouragement',
-        percentage: 87,
-        description:
-          'of students felt encouraged to work through difficult challenges',
-        color: '#6d51a3', // Purple
-      },
-      {
-        id: 'goal-setting',
-        percentage: 87,
-        description:
-          'of students reported that GOGO gave them opportunities to set and reflect on goals',
-        color: '#6d51a3', // Purple
-      },
-      {
-        id: 'measurable-growth',
-        percentage: 85,
-        description:
-          'of students demonstrated measurable growth in multiple core Positive Youth Development capacities',
-        color: '#3d3d3d', // Dark gray
-      },
-      {
-        id: 'envisioning-future',
-        percentage: 80,
-        description:
-          'of students reported that their mentor encourages them to envision their future',
-        color: '#6dae84', // Green
-      },
-    ],
-    [],
-  );
+  // (removed guitar refs/geometry)
+
+  // (removed impactData)
 
   // Function to animate progress circles - wrap in useCallback
-  const animateProgress = useCallback(() => {
-    progressRefs.current.forEach((circle, index) => {
-      if (circle) {
-        const { percentage } = impactData[index];
-        const circumference = 2 * Math.PI * 50; // 50 is the radius
-        const offset = circumference - (percentage / 100) * circumference;
+  // (removed animateProgress)
 
-        // Animate the progress using anime.js
-        animate(circle, {
-          strokeDashoffset: [circumference, offset],
-          duration: 1500,
-          easing: 'easeOutCubic',
-        });
-      }
-    });
-  }, [impactData]);
-
-  // Intersection observer to trigger animations when section is in view
+  // Intersection observer to trigger header animation when section is in view
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -914,33 +1288,17 @@ function ImpactSection(): JSX.Element {
 
           // Animate header with staggered entrance
           if (headerRef.current) {
-            animate(headerRef.current.querySelectorAll('.animate-item'), {
-              opacity: [0, 1],
-              translateY: [30, 0],
-              delay: stagger(150),
-              duration: 800,
-              easing: 'easeOutCubic',
-            });
-          }
-
-          // Delay before starting circle animations
-          setTimeout(() => {
-            // Animate stat items
-            if (statRefs.current.length > 0) {
-              animate(statRefs.current.filter(Boolean), {
+            const items = headerRef.current.querySelectorAll('.animate-item');
+            if (items && items.length > 0) {
+              animate(items, {
                 opacity: [0, 1],
-                translateY: [50, 0],
-                delay: stagger(200),
+                translateY: [30, 0],
+                delay: stagger(150),
                 duration: 800,
                 easing: 'easeOutCubic',
-                complete: () => {
-                  // Once stats are visible, start progress animations
-                  animateProgress();
-                  setCounting(true);
-                },
               });
             }
-          }, 400);
+          }
         }
       },
       { threshold: 0.2 },
@@ -958,23 +1316,9 @@ function ImpactSection(): JSX.Element {
         observer.disconnect();
       }
     };
-  }, [animateProgress]);
+  }, []);
 
-  // Function to create number counters with staggered animation
-  const renderCounter = (value: number) => {
-    return value
-      .toString()
-      .split('')
-      .map((digit, i) => (
-        <span
-          key={`${value}-digit-${digit}-${Math.random()}`}
-          className="number"
-          style={{ animationDelay: `${i * 0.1 + 0.3}s` }}
-        >
-          {digit}
-        </span>
-      ));
-  };
+  // (removed count up logic)
 
   useEffect(() => {
     const observer = new window.IntersectionObserver(
@@ -987,97 +1331,224 @@ function ImpactSection(): JSX.Element {
     return () => observer.disconnect();
   }, []);
 
+  // Build a sine-like path for a string with damping over time
+  /* const buildSinePath = useCallback(
+    (y0: number, amp: number, tSeconds: number, freqHz: number): string => {
+      const damping = 3.2; // exponential damping factor
+      const width = endX - startX;
+      const wavesAlong = 2; // number of spatial waves along the length
+      const samples = 40;
+      const A = amp * Math.exp(-damping * tSeconds);
+      let d = `M ${startX} ${y0}`;
+      for (let i = 1; i <= samples; i += 1) {
+        const x = startX + (i * width) / samples;
+        const kx = 2 * Math.PI * wavesAlong * ((x - startX) / width);
+        const y = y0 + A * Math.sin(kx - 2 * Math.PI * freqHz * tSeconds);
+        d += ` L ${x} ${y}`;
+      }
+      return d;
+    },
+    [endX, startX],
+  ); */
+
+  /* const animateString = useCallback(
+    (index: number, intensity: number = 14) => {
+      const path = stringPathRefs.current[index];
+      if (!path) return;
+
+      // Cancel previous animation for this string
+      const prev = stringAnimsRef.current[index];
+      if (prev && typeof prev.pause === 'function') prev.pause();
+
+      const baseY = stringY[index] ?? 140;
+      const freqHz = 5 - index * 0.5; // higher strings vibrate faster
+      const duration = 1400;
+      const animState = { elapsedMs: 0 } as { elapsedMs: number };
+      const anim = animate(animState, {
+        elapsedMs: [0, duration],
+        duration,
+        easing: 'linear',
+        update: () => {
+          const tSeconds = animState.elapsedMs / 1000;
+          const d = buildSinePath(baseY, intensity, tSeconds, freqHz);
+          path.setAttribute('d', d);
+        },
+        complete: () => {
+          // settle back to straight line
+          path.setAttribute('d', `M ${startX} ${baseY} L ${endX} ${baseY}`);
+        },
+      });
+      stringAnimsRef.current[index] = anim as any;
+    },
+    [buildSinePath, endX, startX, stringY],
+  ); */
+
+  /* const handleGuitarMouseMove = useCallback(
+    (e: React.MouseEvent<SVGSVGElement>) => {
+      if (!guitarSvgRef.current) return;
+      const rect = guitarSvgRef.current.getBoundingClientRect();
+      const mouseY = e.clientY - rect.top;
+      const prevY = lastMouseYRef.current;
+      const now = performance.now();
+      if (prevY != null) {
+        stringY.forEach((y, i) => {
+          const crossed =
+            (prevY - y) * (mouseY - y) <= 0 && Math.abs(mouseY - y) < 16;
+          if (crossed && now - lastTriggerTimesRef.current[i] > 180) {
+            lastTriggerTimesRef.current[i] = now;
+            animateString(i, 12);
+          }
+        });
+      }
+      lastMouseYRef.current = mouseY;
+    },
+    [animateString, stringY],
+  ); */
+
+  /* const handleStringVibrate = useCallback(() => {
+    // apply a quick wobble to all strings
+    stringsRef.current.forEach((el, i) => {
+      if (!el) return;
+      animate(el, {
+        rotateZ: [0, i % 2 === 0 ? 4 : -4, 0],
+        duration: 240,
+        easing: 'easeOutSine',
+      });
+    });
+  }, []); */
+
+  const impactStats = [
+    { n: 94, l: 'made or maintained academic gains' },
+    { n: 85, l: 'showed measurable growth across PYD capacities' },
+    { n: 90, l: 'felt their mentor can be counted on for help' },
+    { n: 87, l: 'felt encouraged to work through difficult challenges' },
+  ];
+
   return (
     <>
       <ImpactContainer ref={sectionRef}>
         <SectionContainer>
-          <SectionHeader ref={headerRef}>
-            <SectionTitle>Our Impact</SectionTitle>
-          </SectionHeader>
+          <BeltContainer style={{ marginBottom: '1.5rem' }}>
+            <BeltTrack direction="left">
+              {[photo1, photo2, photo3, photo4, photo5, photo6, photo7]
+                .concat([
+                  photo1,
+                  photo2,
+                  photo3,
+                  photo4,
+                  photo5,
+                  photo6,
+                  photo7,
+                ])
+                .map((src, i) => (
+                  <BeltCard
+                    key={`top-belt-${src}-${String(i).padStart(2, '0')}`}
+                  >
+                    <img
+                      src={src}
+                      alt="Program"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </BeltCard>
+                ))}
+            </BeltTrack>
+          </BeltContainer>
 
-          <StatsGrid>
-            <Blob
-              color={COLORS.gogo_purple}
-              size="300px"
-              top="10%"
-              left="10%"
-              delay="0s"
-            />
-            <Blob2
-              color={COLORS.gogo_blue}
-              size="250px"
-              top="60%"
-              left="70%"
-              delay="-5s"
-            />
-            <Blob
-              color={COLORS.gogo_teal}
-              size="200px"
-              top="40%"
-              left="40%"
-              delay="-2s"
-            />
-            <Blob2
-              color={COLORS.gogo_pink}
-              size="280px"
-              top="20%"
-              left="80%"
-              delay="-7s"
-            />
-            <Blob
-              color={COLORS.gogo_yellow}
-              size="220px"
-              top="70%"
-              left="20%"
-              delay="-3s"
-            />
-            <StatsTitle>IN 2023-2024...</StatsTitle>
-            {impactData.map((item, index) => (
-              <StatItem
-                key={item.id}
-                ref={(el) => {
-                  statRefs.current[index] = el;
-                }}
-                style={{ opacity: 0 }}
-                onMouseEnter={() => setActiveIndex(index)}
-                onMouseLeave={() => setActiveIndex(null)}
-              >
-                <PercentageCircle>
-                  <svg viewBox="0 0 140 140" width="140" height="140">
-                    <circle
-                      cx="70"
-                      cy="70"
-                      r="60"
-                      fill="none"
-                      stroke="rgba(255, 255, 255, 0.1)"
-                      strokeWidth="8"
-                    />
-                    <circle
-                      cx="70"
-                      cy="70"
-                      r="60"
-                      fill="none"
-                      stroke={item.color}
-                      strokeWidth="8"
-                      strokeDasharray="339.292"
-                      strokeDashoffset={339.292}
-                      ref={(el) => {
-                        progressRefs.current[index] = el;
-                      }}
-                      transform="rotate(-90 70 70)"
-                    />
-                  </svg>
-                  <PercentageText>
-                    <span className="percent">%</span>
-                    <span className="number">{item.percentage}</span>
-                  </PercentageText>
-                </PercentageCircle>
-                <StatDescription>{item.description}</StatDescription>
-              </StatItem>
-            ))}
+          <StatsGrid
+            style={{
+              background: 'transparent',
+              border: 'none',
+              boxShadow: 'none',
+              padding: 0,
+              margin: '0.5rem 0 1rem',
+            }}
+          >
+            <StatsTitle style={{ margin: '0.25rem 0 0.75rem' }}>
+              IN 2024-2025...
+            </StatsTitle>
           </StatsGrid>
+          <TurntableGrid>
+            {impactStats.map(({ n, l }, idx) => (
+              <TurntableStat key={l} n={n} l={l} i={idx} />
+            ))}
+          </TurntableGrid>
+          <HighlightsContainer aria-label="Program capacities">
+            <HighlightsTitle>Core Capacities We Build</HighlightsTitle>
+            <HighlightsSubtitle>
+              Growth we cultivate through mentorship, music-making, and
+              healing-centered practice.
+            </HighlightsSubtitle>
+            <HighlightsRow>
+              {[
+                { t: 'Academic Self‑Efficacy', Icon: AcademicIcon },
+                { t: 'Positive Identity', Icon: InsightIcon },
+                { t: 'Self‑Management', Icon: TrackingIcon },
+                { t: 'Social Skills', Icon: InsightIcon },
+                { t: 'Contribution', Icon: ArtisticIcon },
+              ].map(({ t, Icon }) => (
+                <HighlightChip key={t}>
+                  <Icon />
+                  <span>{t}</span>
+                </HighlightChip>
+              ))}
+            </HighlightsRow>
+            <HighlightCardsGrid>
+              {[
+                {
+                  title: 'Trusting Relationships',
+                  text: 'Caring adult mentors expand students’ support networks and sense of belonging.',
+                },
+                {
+                  title: 'Creative Mastery',
+                  text: 'High-quality arts education builds persistence, collaboration, and leadership.',
+                },
+                {
+                  title: 'Skill Development',
+                  text: 'Goal-setting and feedback translate into academic confidence and achievement.',
+                },
+                {
+                  title: 'Healing-Centered Practice',
+                  text: 'Trauma-informed approaches help students regulate, reflect, and thrive.',
+                },
+              ].map(({ title, text }) => (
+                <HighlightCard key={title}>
+                  <HighlightCardTitle>{title}</HighlightCardTitle>
+                  <HighlightCardText>{text}</HighlightCardText>
+                </HighlightCard>
+              ))}
+            </HighlightCardsGrid>
+          </HighlightsContainer>
+          <BeltContainer style={{ marginTop: '1.5rem' }}>
+            <BeltTrack direction="right">
+              {[photo8, photo9, photo10, photo11, photo12, photo13, photo14]
+                .concat([
+                  photo8,
+                  photo9,
+                  photo10,
+                  photo11,
+                  photo12,
+                  photo13,
+                  photo14,
+                ])
+                .map((src, i) => (
+                  <BeltCard
+                    key={`bottom-belt-${src}-${String(i).padStart(2, '0')}`}
+                  >
+                    <img
+                      src={src}
+                      alt="Program"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </BeltCard>
+                ))}
+            </BeltTrack>
+          </BeltContainer>
         </SectionContainer>
       </ImpactContainer>
+
+      {/* Outcomes section replaced by expanded highlights in Impact */}
 
       {/* New Spotify-inspired measurement section */}
       <MeasurementContainer ref={measureRef}>
@@ -1323,61 +1794,14 @@ function ImpactSection(): JSX.Element {
                 GOGO largely supports kids affected by systemic challenges that
                 reduce their access to opportunities
               </SpotifySubtitle>
-
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  margin: '2rem 0 1rem',
-                }}
-              >
-                <div
-                  role="button"
-                  tabIndex={0}
-                  style={{
-                    background: 'linear-gradient(90deg, #1ED760, #169C46)',
-                    color: 'white',
-                    padding: '0.7rem 1.5rem',
-                    borderRadius: '50px',
-                    fontWeight: 'bold',
-                    boxShadow: '0 2px 10px rgba(30, 215, 96, 0.4)',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                  onClick={() => navigate('/population')}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ')
-                      navigate('/population');
-                  }}
-                >
-                  <span style={{ marginRight: '0.5rem' }}>
-                    Learn More About Who We Serve
-                  </span>
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M5 12H19M19 12L12 5M19 12L12 19"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </div>
-              </div>
             </div>
           </SpotifyGrid>
         </MeasurementWrapper>
       </MeasurementContainer>
+
+      {/* Who We Serve moved higher in ImpactReportPage */}
     </>
   );
 }
 
-export default ImpactSection;
+export default memo(ImpactSection);

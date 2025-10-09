@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, ReactNode, PropsWithChildren } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import ReactDOM from 'react-dom';
 import styled from 'styled-components';
-import { animate, createAnimatable } from 'animejs';
+import { animate } from 'animejs';
 import { useLocation } from 'react-router-dom';
 
 interface ModalProps {
@@ -22,7 +23,7 @@ const ModalOverlay = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1500;
+  z-index: 5000;
   opacity: 0;
   transition: opacity 0.3s ease;
   backdrop-filter: blur(5px);
@@ -115,6 +116,7 @@ const Modal: React.FC<ModalProps> = ({
 }) => {
   const overlayRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [shouldRender, setShouldRender] = useState<boolean>(isOpen);
 
   // Handle ESC key to close modal
   useEffect(() => {
@@ -130,24 +132,58 @@ const Modal: React.FC<ModalProps> = ({
     };
   }, [isOpen, onClose]);
 
-  // Handle animations
+  // Handle enter/exit animations and unmount timing
   useEffect(() => {
-    if (isOpen && overlayRef.current && containerRef.current) {
-      // Play animations when modal opens
-      animate(overlayRef.current, {
+    const overlay = overlayRef.current;
+    const container = containerRef.current;
+    if (!overlay || !container) return;
+
+    const reduceMotion =
+      typeof window !== 'undefined' &&
+      typeof window.matchMedia !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (isOpen) {
+      setShouldRender(true);
+      if (reduceMotion) {
+        overlay.style.opacity = '1';
+        container.style.opacity = '1';
+        container.style.transform = 'translateY(0)';
+        return;
+      }
+      animate(overlay, {
         opacity: [0, 1],
-        duration: 300,
+        duration: 220,
         easing: 'easeOutCubic',
       });
-
-      animate(containerRef.current, {
+      animate(container, {
         opacity: [0, 1],
         translateY: [20, 0],
-        duration: 400,
+        scale: [0.98, 1],
+        duration: 280,
         easing: 'easeOutCubic',
       });
+    } else if (shouldRender) {
+      if (reduceMotion) {
+        setShouldRender(false);
+        return;
+      }
+      animate(container, {
+        opacity: [1, 0],
+        translateY: [0, 12],
+        scale: [1, 0.98],
+        duration: 220,
+        easing: 'easeInCubic',
+      });
+      animate(overlay, {
+        opacity: [1, 0],
+        duration: 240,
+        easing: 'easeInCubic',
+      });
+      const timeout = setTimeout(() => setShouldRender(false), 240);
+      return () => clearTimeout(timeout);
     }
-  }, [isOpen]);
+  }, [isOpen, shouldRender]);
 
   // Prevent body scrolling when modal is open
   useEffect(() => {
@@ -162,9 +198,9 @@ const Modal: React.FC<ModalProps> = ({
     };
   }, [isOpen]);
 
-  if (!isOpen) return null;
+  if (!shouldRender) return null;
 
-  return (
+  const modalNode = (
     <ModalOverlay
       ref={overlayRef}
       onClick={(e) => {
@@ -198,6 +234,12 @@ const Modal: React.FC<ModalProps> = ({
       </ModalContainer>
     </ModalOverlay>
   );
+
+  if (typeof document !== 'undefined' && document.body) {
+    return ReactDOM.createPortal(modalNode, document.body);
+  }
+
+  return modalNode;
 };
 
 export default Modal;

@@ -5,6 +5,7 @@ import COLORS from '../../assets/colors';
 import photo1 from '../../assets/programPhotos/photo1.png';
 import photo2 from '../../assets/programPhotos/photo2.png';
 import photo3 from '../../assets/programPhotos/photo3.png';
+import { Reveal } from '../../animations';
 
 // Animation keyframes
 const shimmer = keyframes`
@@ -184,440 +185,98 @@ const SectionSubtitle = styled.p`
   line-height: 1.7;
 `;
 
-const FilterContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 0.8rem;
-  margin: 3rem 0;
-  flex-wrap: wrap;
-  position: relative;
-  z-index: 3;
-  padding: 0.5rem;
-
-  &:before {
-    content: '';
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 1px;
-    height: 20px;
-    background: rgba(255, 255, 255, 0.1);
-  }
-`;
-
-const FilterItem = styled.div<{ active: boolean }>`
-  padding: 0.8rem 1.8rem;
-  border-radius: 500px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  background: ${(props) =>
-    props.active ? COLORS.gogo_green : 'rgba(255, 255, 255, 0.05)'};
-  color: ${(props) => (props.active ? '#000' : 'rgba(255, 255, 255, 0.8)')};
-  border: 1px solid
-    ${(props) =>
-      props.active ? COLORS.gogo_green : 'rgba(255, 255, 255, 0.05)'};
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: ${(props) =>
-    props.active ? '0 5px 15px rgba(30, 215, 96, 0.3)' : 'none'};
-  position: relative;
-  overflow: hidden;
-
-  &:hover {
-    background: ${(props) =>
-      props.active ? COLORS.gogo_green : 'rgba(255, 255, 255, 0.1)'};
-    color: ${(props) => (props.active ? '#000' : 'white')};
-    transform: translateY(-3px);
-    border-color: ${(props) =>
-      props.active ? COLORS.gogo_green : 'rgba(255, 255, 255, 0.1)'};
-  }
-
-  &:after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(
-      circle,
-      rgba(255, 255, 255, 0.3) 0%,
-      rgba(255, 255, 255, 0) 60%
-    );
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  &:active:after {
-    opacity: 1;
-  }
-`;
-
-const ProgramGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 2.5rem;
-  margin-bottom: 2rem;
-`;
-
-const ProgramCard = styled.div<{
-  hovered: boolean;
-  color: string;
-  delay: number;
-}>`
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
-  padding: 2.5rem;
-  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  position: relative;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(10px);
-  opacity: 0;
-  transform: translateY(30px);
-  animation: fadeIn 0.8s forwards;
-  animation-delay: ${(props) => props.delay * 0.1}s;
-  animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-
-  @keyframes fadeIn {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  ${({ hovered, color }) =>
-    hovered &&
-    `
-    transform: translateY(-10px) scale(1.02);
-    background: rgba(255, 255, 255, 0.08);
-    border-color: ${color}66;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25), 0 0 30px ${color}22;
-  `}
-
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background: ${(props) => props.color};
-    opacity: ${(props) => (props.hovered ? 1 : 0.5)};
-    transition: opacity 0.3s ease;
-  }
-`;
-
-const ProgramBackground = styled.div<{ color: string }>`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(
-    circle at bottom right,
-    ${(props) => props.color}33,
-    transparent 70%
-  );
-  opacity: 0;
-  transition: all 0.5s ease;
-  z-index: 0;
-  transform: scale(0.8);
-
-  ${ProgramCard}:hover & {
-    opacity: 1;
-    transform: scale(1);
-  }
-`;
-
-const CircleDecoration = styled.div<{ color: string }>`
-  position: absolute;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  border: 1px solid ${(props) => props.color}33;
-  top: -100px;
-  right: -100px;
-  transition: all 0.5s ease;
-  z-index: 0;
-  opacity: 0;
-
-  ${ProgramCard}:hover & {
-    opacity: 1;
-    transform: scale(1.1) rotate(10deg);
-  }
-`;
-
-const ProgramContent = styled.div`
-  position: relative;
-  z-index: 1;
-`;
-
-const ProgramIcon = styled.div<{ color: string }>`
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  background-color: ${(props) => props.color};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 10px 20px ${(props) => props.color}66;
-  position: relative;
-  overflow: hidden;
-
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.3) 0%,
-      transparent 50%
-    );
-  }
-
-  &:after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    right: -50%;
-    bottom: -50%;
-    background: radial-gradient(
-      circle,
-      ${(props) => props.color}00 30%,
-      ${(props) => props.color}55 100%
-    );
-    animation: ${rotateSlowly} 10s linear infinite;
-  }
-
-  ${ProgramCard}:hover & {
-    animation: ${pulse} 2s infinite;
-  }
-`;
-
-const ProgramTitle = styled.h3`
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: white;
-  margin-bottom: 1.2rem;
-  transition: transform 0.3s ease;
-
-  ${ProgramCard}:hover & {
-    transform: translateY(-3px);
-  }
-`;
-
-const ProgramDescription = styled.p`
-  font-size: 1rem;
-  line-height: 1.7;
-  color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 1.8rem;
-  transition: opacity 0.3s ease;
-`;
-
-const ProgramFeatures = styled.ul`
-  list-style: none;
-  padding: 0;
-  margin: 0 0 2rem 0;
-`;
-
-const ProgramFeatureItem = styled.li`
-  display: flex;
-  align-items: flex-start;
-  margin-bottom: 0.8rem;
-  font-size: 0.95rem;
-  color: rgba(255, 255, 255, 0.7);
-  transition: transform 0.3s ease, color 0.3s ease;
-
-  &:before {
-    content: '•';
-    color: ${COLORS.gogo_green};
-    margin-right: 0.8rem;
-    font-size: 1.3rem;
-    line-height: 1;
-  }
-
-  ${ProgramCard}:hover & {
-    transform: translateX(3px);
-    color: rgba(255, 255, 255, 0.9);
-  }
-
-  &:hover {
-    color: white;
-  }
-`;
-
-const PlayButton = styled.div<{ visible: boolean }>`
-  position: absolute;
-  bottom: 2.5rem;
-  right: 2.5rem;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: ${COLORS.gogo_green};
-  color: black;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: ${(props) => (props.visible ? 1 : 0)};
-  transform: ${(props) =>
-    props.visible ? 'translateY(0) scale(1)' : 'translateY(10px) scale(0.9)'};
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  cursor: pointer;
-  box-shadow: 0 8px 15px rgba(30, 215, 96, 0.3);
-  z-index: 2;
-
-  &:hover {
-    transform: scale(1.1);
-    background: ${COLORS.gogo_green};
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
-
-  &:before,
-  &:after {
-    content: '';
-    position: absolute;
-    background: ${COLORS.gogo_green}33;
-    border-radius: 50%;
-    animation: ${ripple} 2s infinite;
-  }
-
-  &:before {
-    width: 100%;
-    height: 100%;
-    animation-delay: 0s;
-  }
-
-  &:after {
-    width: 100%;
-    height: 100%;
-    animation-delay: 0.5s;
-  }
-`;
-
-const PlayIcon = styled.div`
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-width: 7px 0 7px 12px;
-  border-color: transparent transparent transparent black;
-  margin-left: 3px;
-  z-index: 1;
-`;
-
-const NumberIndicator = styled.div`
-  position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
-  font-size: 4.5rem;
-  font-weight: 900;
-  color: rgba(255, 255, 255, 0.04);
-  line-height: 1;
-  user-select: none;
-  pointer-events: none;
-  transition: color 0.3s ease, transform 0.5s ease;
-
-  ${ProgramCard}:hover & {
-    color: rgba(255, 255, 255, 0.08);
-    transform: rotate(5deg) scale(1.1);
-  }
-`;
-
-const FooterContainer = styled.div`
+// Spotlight-styled elements (borrowed from FlexSections)
+const SpotlightWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin-top: 3rem;
-  gap: 2rem;
-  position: relative;
-  padding-top: 3rem;
-
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100px;
-    height: 1px;
-    background: rgba(255, 255, 255, 0.1);
-  }
+  gap: 1rem;
+  background: #121212;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
 `;
 
-const FooterText = styled.div`
-  font-size: 1.3rem;
-  color: rgba(255, 255, 255, 0.8);
-  line-height: 1.6;
-  text-align: center;
-  max-width: 700px;
-`;
-
-const SpotifyButton = styled.a`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem 2rem;
-  border-radius: 500px;
+const SpotlightLabel = styled.div<{ $bg: string }>`
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 6px;
   font-weight: 700;
-  font-size: 1rem;
-  text-decoration: none;
-  color: #000;
-  background: ${COLORS.gogo_green};
-  transition: all 0.3s ease;
-  cursor: pointer;
-  box-shadow: 0 10px 20px rgba(30, 215, 96, 0.3);
-  border: none;
-  position: relative;
-  overflow: hidden;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  background: ${(p) => p.$bg};
+  color: #111;
+`;
 
-  &:hover {
-    transform: scale(1.05);
-    box-shadow: 0 15px 25px rgba(30, 215, 96, 0.4);
-  }
+const SpotlightTitle = styled.h3`
+  margin: 12px 0 8px;
+  font-size: clamp(1.5rem, 4.5vw, 2.4rem);
+  font-weight: 900;
+  line-height: 1.1;
+  color: #fff;
+`;
 
-  &:active {
-    transform: scale(0.98);
-  }
+const SpotlightCopy = styled.p`
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 1.05rem;
+  line-height: 1.8;
+  margin: 0 0 0.5rem;
+`;
 
-  &:after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(
-      to right,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0.3) 50%,
-      rgba(255, 255, 255, 0) 100%
-    );
-    transform: translateX(-100%);
-    transition: transform 0.5s ease;
-  }
+const SpotlightImage = styled.div<{ $src: string }>`
+  margin-top: 1rem;
+  border-radius: 12px;
+  background: url('${(p) => p.$src}') center/cover no-repeat;
+  width: 100%;
+  height: 360px;
+`;
 
-  &:hover:after {
-    transform: translateX(100%);
+const Split = styled.div`
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 2rem;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
   }
 `;
 
-const ProgramImage = styled.img`
-  width: 100%;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-top: 1.5rem;
+const SplitBox = styled.div`
+  background: #121212;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 2rem;
+`;
+
+const SplitImage = styled.div<{ $src: string }>`
+  border-radius: 16px;
+  min-height: 380px;
+  background: url('${(p) => p.$src}') center/cover no-repeat;
+`;
+
+const Band = styled.div`
+  background: linear-gradient(90deg, ${COLORS.gogo_teal}, ${COLORS.gogo_blue});
+  border-radius: 18px;
+  padding: 1.25rem;
+  margin-top: 1rem;
+`;
+
+const BandInner = styled.div`
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 12px;
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const BandItem = styled.div`
+  color: #fff;
 `;
 
 // Define the program data
@@ -653,18 +312,17 @@ const programData = [
     ],
   },
   {
-    id: 'oyc',
-    title: 'Overtown Youth Center (OYC)',
+    id: 'career-coaching',
+    title: 'College and Career Coaching',
     description:
-      'In partnership with the Playing for Change and We The Best Foundations, Guitars Over Guns collaborated with the community hub of Overtown, OYC.',
-    icon: '🎨',
-    category: 'music',
+      'Through individualized mentorship and partnerships, students receive guidance on college access, vocational pathways, and early career readiness — building on Zaya’s model across regions.',
+    icon: '🎓',
+    category: 'readiness',
     color: COLORS.gogo_teal,
     features: [
-      'Dedicated mentors led trauma-informed programming after school and during summer',
-      'Students wrote, produced, and recorded original RnB tracks like "All I Do" and "Future Role Model"',
-      'Friendly competition fostered creativity, confidence, and collaboration',
-      'The summer showcase spotlighted student talent and built a strong sense of community',
+      'Application and FAFSA support sessions with mentors',
+      'Career days with industry professionals and alumni mentors',
+      'Portfolio, resume, and audition prep integrated into programming',
     ],
   },
 ];
@@ -672,13 +330,10 @@ const programData = [
 const programImages = {
   'm-power': photo1,
   tasc: photo2,
-  oyc: photo3,
+  'career-coaching': photo3,
 };
 
 function ProgramsSection(): JSX.Element {
-  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
-  const [filter, setFilter] = useState<string>('all');
-  const [filteredPrograms, setFilteredPrograms] = useState(programData);
   const [inView, setInView] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -694,18 +349,7 @@ function ProgramsSection(): JSX.Element {
 
   const [soundBars] = useState(() => generateSoundBars());
 
-  // Filter programs when filter changes
-  useEffect(() => {
-    if (filter === 'all') {
-      setFilteredPrograms(programData);
-    } else {
-      setFilteredPrograms(
-        programData.filter(
-          (program) => program.category.toLowerCase() === filter.toLowerCase(),
-        ),
-      );
-    }
-  }, [filter]);
+  // No filters for spotlight layout
 
   // Setup intersection observer
   useEffect(() => {
@@ -717,13 +361,16 @@ function ProgramsSection(): JSX.Element {
           // Animate the header
           const header = headerRef.current;
           if (header) {
-            animate(header.querySelectorAll('.animate-item'), {
-              opacity: [0, 1],
-              translateY: [30, 0],
-              delay: stagger(150),
-              duration: 800,
-              easing: 'easeOutCubic',
-            });
+            const items = header.querySelectorAll('.animate-item');
+            if (items && items.length > 0) {
+              animate(items, {
+                opacity: [0, 1],
+                translateY: [30, 0],
+                delay: stagger(150),
+                duration: 800,
+                easing: 'easeOutCubic',
+              });
+            }
           }
 
           observer.unobserve(entries[0].target);
@@ -763,7 +410,7 @@ function ProgramsSection(): JSX.Element {
       <SoundWave>
         {soundBars.map((bar, index) => (
           <SoundBar
-            key={`sound-bar-${index}-${bar.height}`}
+            key={`sound-bar-${index}-${bar.height}-${bar.delay}`}
             height={bar.height}
             delay={bar.delay}
           />
@@ -783,69 +430,83 @@ function ProgramsSection(): JSX.Element {
           </SectionSubtitle>
         </SectionHeader>
 
-        <FilterContainer>
-          <FilterItem
-            active={filter === 'all'}
-            onClick={() => setFilter('all')}
-          >
-            All Programs
-          </FilterItem>
-          <FilterItem
-            active={filter === 'music'}
-            onClick={() => setFilter('music')}
-          >
-            Music
-          </FilterItem>
-          <FilterItem
-            active={filter === 'wellness'}
-            onClick={() => setFilter('wellness')}
-          >
-            Wellness
-          </FilterItem>
-        </FilterContainer>
+        {programData.map((program, index) => {
+          const imageSrc =
+            programImages[program.id as keyof typeof programImages];
 
-        <ProgramGrid>
-          {filteredPrograms.map((program, index) => (
-            <ProgramCard
-              key={program.id}
-              hovered={hoveredCard === program.id}
-              color={program.color}
-              delay={index}
-              onMouseEnter={() => setHoveredCard(program.id)}
-              onMouseLeave={() => setHoveredCard(null)}
-            >
-              <ProgramBackground color={program.color} />
-              <CircleDecoration color={program.color} />
-              <ProgramContent>
-                <ProgramIcon color={program.color}>{program.icon}</ProgramIcon>
-                <ProgramTitle>{program.title}</ProgramTitle>
-                <ProgramDescription>{program.description}</ProgramDescription>
-                <ProgramFeatures>
-                  {program.features.map((feature, i) => (
-                    <ProgramFeatureItem
-                      key={`feature-${program.id}-${feature.replace(
-                        /\s+/g,
-                        '-',
-                      )}`}
+          // Alternate layouts inspired by FlexSections
+          if (index % 3 === 1) {
+            return (
+              <Reveal key={program.id} variant="fade-up">
+                <Split>
+                  <SplitBox>
+                    <SpotlightLabel $bg={program.color}>
+                      Program Spotlight
+                    </SpotlightLabel>
+                    <SpotlightTitle style={{ marginTop: 12 }}>
+                      {program.title}
+                    </SpotlightTitle>
+                    <SpotlightCopy>{program.description}</SpotlightCopy>
+                    <ul
+                      style={{
+                        paddingLeft: '1.2rem',
+                        marginTop: '0.75rem',
+                        color: 'rgba(255,255,255,0.8)',
+                      }}
                     >
-                      {feature}
-                    </ProgramFeatureItem>
-                  ))}
-                </ProgramFeatures>
-                <ProgramImage
-                  src={programImages[program.id as keyof typeof programImages]}
-                  alt={`${program.title} image`}
-                />
-              </ProgramContent>
-              <NumberIndicator>{index + 1}</NumberIndicator>
-              <PlayButton visible={hoveredCard === program.id}>
-                <PlayIcon />
-              </PlayButton>
-            </ProgramCard>
-          ))}
-        </ProgramGrid>
+                      {program.features.slice(0, 3).map((feature) => (
+                        <li
+                          key={`f-${program.id}-${feature}`}
+                          style={{ marginBottom: '0.4rem' }}
+                        >
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  </SplitBox>
+                  <SplitImage $src={imageSrc} />
+                </Split>
+              </Reveal>
+            );
+          }
 
-        {/* was a footer here i deleted */}
+          if (index % 3 === 2) {
+            return (
+              <Reveal key={program.id} variant="fade-up">
+                <div>
+                  <SpotlightLabel $bg={COLORS.gogo_teal}>
+                    Program Spotlight
+                  </SpotlightLabel>
+                  <SpotlightTitle>{program.title}</SpotlightTitle>
+                  <SpotlightCopy>{program.description}</SpotlightCopy>
+                  <SpotlightImage $src={imageSrc} />
+                  <Band>
+                    <BandInner>
+                      {program.features.slice(0, 3).map((feature) => (
+                        <BandItem key={`band-${program.id}-${feature}`}>
+                          <strong>{feature}</strong>
+                        </BandItem>
+                      ))}
+                    </BandInner>
+                  </Band>
+                </div>
+              </Reveal>
+            );
+          }
+
+          return (
+            <Reveal key={program.id} variant="fade-up">
+              <SpotlightWrapper>
+                <SpotlightLabel $bg={COLORS.gogo_yellow}>
+                  Program Spotlight
+                </SpotlightLabel>
+                <SpotlightTitle>{program.title}</SpotlightTitle>
+                <SpotlightCopy>{program.description}</SpotlightCopy>
+                <SpotlightImage $src={imageSrc} />
+              </SpotlightWrapper>
+            </Reveal>
+          );
+        })}
       </ContentContainer>
     </ProgramsContainer>
   );
