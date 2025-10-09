@@ -13,995 +13,1424 @@ import {
   FormHelperText,
   InputLabel,
   Select,
+  Tabs,
+  Tab,
+  Card,
+  CardContent,
+  Switch,
+  FormControlLabel,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import PreviewIcon from '@mui/icons-material/Preview';
+import SaveIcon from '@mui/icons-material/Save';
 import { v4 as uuidv4 } from 'uuid';
 import ScreenGrid from '../components/ScreenGrid.tsx';
 import COLORS from '../assets/colors.ts';
-import { AlbumType } from '../ImpactReport/types/music.ts';
+import styled from 'styled-components';
 
-// Artist form type
-interface ArtistForm {
-  tempId: string;
-  artist_id: string;
-  name: string;
-}
+// Styled components for dark theme
+const CustomPaper = styled(Paper)`
+  background: #121212;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+`;
 
-// Song form type
-interface SongForm {
-  tempId: string;
-  song_id: string;
+const CustomTextField = styled(TextField)`
+  & .MuiOutlinedInput-root {
+    color: white;
+    & fieldset {
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    &:hover fieldset {
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+    &.Mui-focused fieldset {
+      border-color: ${COLORS.gogo_blue};
+    }
+  }
+  & .MuiInputLabel-root {
+    color: rgba(255, 255, 255, 0.7);
+    &.Mui-focused {
+      color: ${COLORS.gogo_blue};
+    }
+  }
+`;
+
+const CustomSelect = styled(Select)`
+  color: white;
+  & .MuiOutlinedInput-notchedOutline {
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+  &:hover .MuiOutlinedInput-notchedOutline {
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+  &.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: ${COLORS.gogo_blue};
+  }
+`;
+
+// Impact Report Section Types
+interface HeroSection {
   title: string;
-  audio_file: File | null;
-  artists: ArtistForm[];
+  subtitle: string;
+  backgroundImage: File | null;
+  backgroundImagePreview: string | null;
+  enabled: boolean;
 }
 
-// Album form type
-interface AlbumForm {
-  album_id: string;
-  name: string;
-  album_url: string;
-  type: AlbumType;
-  cover: File | null;
-  date: string;
-  artists: ArtistForm[];
-  songs: SongForm[];
+interface MissionSection {
+  title: string;
+  content: string;
+  image: File | null;
+  imagePreview: string | null;
+  enabled: boolean;
+}
+
+interface ImpactSection {
+  title: string;
+  stats: Array<{
+    id: string;
+    number: string;
+    label: string;
+  }>;
+  enabled: boolean;
+}
+
+interface ProgramsSection {
+  title: string;
+  programs: Array<{
+    id: string;
+    name: string;
+    description: string;
+    image: File | null;
+    imagePreview: string | null;
+  }>;
+  enabled: boolean;
+}
+
+interface LocationsSection {
+  title: string;
+  locations: Array<{
+    id: string;
+    name: string;
+    address: string;
+    coordinates: { lat: number; lng: number };
+  }>;
+  enabled: boolean;
+}
+
+interface TestimonialSection {
+  title: string;
+  testimonials: Array<{
+    id: string;
+    name: string;
+    role: string;
+    content: string;
+    image: File | null;
+    imagePreview: string | null;
+  }>;
+  enabled: boolean;
+}
+
+interface ImpactReportForm {
+  hero: HeroSection;
+  mission: MissionSection;
+  impact: ImpactSection;
+  programs: ProgramsSection;
+  locations: LocationsSection;
+  testimonials: TestimonialSection;
 }
 
 /**
- * A page for uploading new albums to the music section
+ * A page for customizing the entire impact report
  */
-function AlbumUploadPage() {
-  // Album form state with default values
-  const [albumForm, setAlbumForm] = useState<AlbumForm>({
-    album_id: uuidv4(),
-    name: '',
-    album_url: '',
-    type: 'album',
-    cover: null,
-    date: new Date().toISOString().split('T')[0],
-    artists: [{ tempId: uuidv4(), artist_id: uuidv4(), name: '' }],
-    songs: [],
-  });
+function ImpactReportCustomizationPage() {
+  // Current tab state
+  const [currentTab, setCurrentTab] = useState(0);
 
-  // Cover image preview
-  const [coverPreview, setCoverPreview] = useState<string | null>(null);
+  // Impact report form state with default values
+  const [impactReportForm, setImpactReportForm] = useState<ImpactReportForm>({
+    hero: {
+      title: 'Transforming Lives Through Music',
+      subtitle:
+        'Connecting youth with professional musician mentors to help them overcome hardship and reach their potential',
+      backgroundImage: null,
+      backgroundImagePreview: null,
+      enabled: true,
+    },
+    mission: {
+      title: 'Our Mission',
+      content:
+        'Guitars Over Guns is a 501(c)(3) organization that connects youth with professional musician mentors to help them overcome hardship, find their voice and reach their potential through music, art and mentorship.',
+      image: null,
+      imagePreview: null,
+      enabled: true,
+    },
+    impact: {
+      title: 'Our Impact',
+      stats: [
+        { id: '1', number: '500+', label: 'Students Served' },
+        { id: '2', number: '15', label: 'Years of Service' },
+        { id: '3', number: '95%', label: 'Graduation Rate' },
+        { id: '4', number: '4', label: 'Cities' },
+      ],
+      enabled: true,
+    },
+    programs: {
+      title: 'Our Programs',
+      programs: [
+        {
+          id: '1',
+          name: 'Music Mentorship',
+          description: 'One-on-one mentorship with professional musicians',
+          image: null,
+          imagePreview: null,
+        },
+        {
+          id: '2',
+          name: 'Group Sessions',
+          description: 'Collaborative learning in small groups',
+          image: null,
+          imagePreview: null,
+        },
+      ],
+      enabled: true,
+    },
+    locations: {
+      title: 'Our Locations',
+      locations: [
+        {
+          id: '1',
+          name: 'Miami',
+          address: 'Miami, FL',
+          coordinates: { lat: 25.7617, lng: -80.1918 },
+        },
+        {
+          id: '2',
+          name: 'Chicago',
+          address: 'Chicago, IL',
+          coordinates: { lat: 41.8781, lng: -87.6298 },
+        },
+      ],
+      enabled: true,
+    },
+    testimonials: {
+      title: 'What Our Students Say',
+      testimonials: [
+        {
+          id: '1',
+          name: 'Maria Rodriguez',
+          role: 'Student, Miami',
+          content:
+            'Guitars Over Guns changed my life. I found my voice through music.',
+          image: null,
+          imagePreview: null,
+        },
+      ],
+      enabled: true,
+    },
+  });
 
   // Error states
   const [errors, setErrors] = useState<{
-    name: string;
-    cover: string;
-    artists: string;
-    songs: string;
     general: string;
   }>({
-    name: '',
-    cover: '',
-    artists: '',
-    songs: '',
     general: '',
   });
 
   // Loading state
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
   // Refs for file inputs
-  const coverInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRefs = useRef<{ [key: string]: HTMLInputElement | null }>({});
 
-  // Handle album form changes
-  const handleAlbumChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  // Handle section changes
+  const handleSectionChange = (
+    section: keyof ImpactReportForm,
+    field: string,
+    value: any,
   ) => {
-    const { name, value } = e.target;
-    setAlbumForm((prev) => ({
+    setImpactReportForm((prev) => ({
       ...prev,
-      [name]: value,
-    }));
-
-    // Clear related error
-    if (errors[name as keyof typeof errors]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: '',
-      }));
-    }
-  };
-
-  // Handle album type change
-  const handleAlbumTypeChange = (e: React.ChangeEvent<{ value: unknown }>) => {
-    setAlbumForm((prev) => ({
-      ...prev,
-      type: e.target.value as AlbumType,
+      [section]: {
+        ...prev[section],
+        [field]: value,
+      },
     }));
   };
 
-  // Handle artist changes
-  const handleArtistChange = (
-    index: number,
+  // Handle image upload
+  const handleImageUpload = (
+    section: keyof ImpactReportForm,
+    field: string,
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    const { name, value } = e.target;
-    const updatedArtists = [...albumForm.artists];
-    updatedArtists[index] = {
-      ...updatedArtists[index],
-      [name]: value,
-    };
-
-    setAlbumForm((prev) => ({
-      ...prev,
-      artists: updatedArtists,
-    }));
-
-    // Clear artists error if needed
-    if (errors.artists && value.trim()) {
-      setErrors((prev) => ({
-        ...prev,
-        artists: '',
-      }));
-    }
-  };
-
-  // Add artist
-  const handleAddArtist = () => {
-    setAlbumForm((prev) => ({
-      ...prev,
-      artists: [
-        ...prev.artists,
-        { tempId: uuidv4(), artist_id: uuidv4(), name: '' },
-      ],
-    }));
-  };
-
-  // Remove artist
-  const handleRemoveArtist = (index: number) => {
-    if (albumForm.artists.length <= 1) {
-      setErrors((prev) => ({
-        ...prev,
-        artists: 'At least one artist is required',
-      }));
-      return;
-    }
-
-    const updatedArtists = [...albumForm.artists];
-    updatedArtists.splice(index, 1);
-
-    setAlbumForm((prev) => ({
-      ...prev,
-      artists: updatedArtists,
-    }));
-  };
-
-  // Handle song changes
-  const handleSongChange = (
-    songIndex: number,
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const { name, value } = e.target;
-    const updatedSongs = [...albumForm.songs];
-    updatedSongs[songIndex] = {
-      ...updatedSongs[songIndex],
-      [name]: value,
-    };
-
-    setAlbumForm((prev) => ({
-      ...prev,
-      songs: updatedSongs,
-    }));
-
-    // Clear songs error if needed
-    if (errors.songs && value.trim()) {
-      setErrors((prev) => ({
-        ...prev,
-        songs: '',
-      }));
-    }
-  };
-
-  // Add song
-  const handleAddSong = () => {
-    setAlbumForm((prev) => ({
-      ...prev,
-      songs: [
-        ...prev.songs,
-        {
-          tempId: uuidv4(),
-          song_id: uuidv4(),
-          title: '',
-          audio_file: null,
-          artists: [...prev.artists], // Default to all album artists
-        },
-      ],
-    }));
-  };
-
-  // Remove song
-  const handleRemoveSong = (index: number) => {
-    const updatedSongs = [...albumForm.songs];
-    updatedSongs.splice(index, 1);
-
-    setAlbumForm((prev) => ({
-      ...prev,
-      songs: updatedSongs,
-    }));
-  };
-
-  // Handle song artist changes
-  const handleSongArtistChange = (
-    songIndex: number,
-    artistIndex: number,
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const { name, value } = e.target;
-    const updatedSongs = [...albumForm.songs];
-    const updatedArtists = [...updatedSongs[songIndex].artists];
-
-    updatedArtists[artistIndex] = {
-      ...updatedArtists[artistIndex],
-      [name]: value,
-    };
-
-    updatedSongs[songIndex] = {
-      ...updatedSongs[songIndex],
-      artists: updatedArtists,
-    };
-
-    setAlbumForm((prev) => ({
-      ...prev,
-      songs: updatedSongs,
-    }));
-  };
-
-  // Add artist to song
-  const handleAddSongArtist = (songIndex: number) => {
-    const updatedSongs = [...albumForm.songs];
-    updatedSongs[songIndex] = {
-      ...updatedSongs[songIndex],
-      artists: [
-        ...updatedSongs[songIndex].artists,
-        { tempId: uuidv4(), artist_id: uuidv4(), name: '' },
-      ],
-    };
-
-    setAlbumForm((prev) => ({
-      ...prev,
-      songs: updatedSongs,
-    }));
-  };
-
-  // Remove artist from song
-  const handleRemoveSongArtist = (songIndex: number, artistIndex: number) => {
-    if (albumForm.songs[songIndex].artists.length <= 1) {
-      return; // Don't remove the last artist
-    }
-
-    const updatedSongs = [...albumForm.songs];
-    const updatedArtists = [...updatedSongs[songIndex].artists];
-    updatedArtists.splice(artistIndex, 1);
-
-    updatedSongs[songIndex] = {
-      ...updatedSongs[songIndex],
-      artists: updatedArtists,
-    };
-
-    setAlbumForm((prev) => ({
-      ...prev,
-      songs: updatedSongs,
-    }));
-  };
-
-  // Handle cover image upload
-  const handleCoverUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      setAlbumForm((prev) => ({
-        ...prev,
-        cover: file,
-      }));
-
-      // Create preview
       const reader = new FileReader();
       reader.onload = (readerEvent) => {
-        setCoverPreview(readerEvent.target?.result as string);
+        setImpactReportForm((prev) => ({
+          ...prev,
+          [section]: {
+            ...prev[section],
+            [field]: file,
+            [`${field}Preview`]: readerEvent.target?.result as string,
+          },
+        }));
       };
       reader.readAsDataURL(file);
-
-      // Clear cover error
-      setErrors((prev) => ({
-        ...prev,
-        cover: '',
-      }));
     }
   };
 
-  // Handle audio file upload
-  const handleAudioUpload = (
-    songIndex: number,
-    e: React.ChangeEvent<HTMLInputElement>,
+  // Handle stat changes
+  const handleStatChange = (
+    statIndex: number,
+    field: string,
+    value: string,
   ) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      const updatedSongs = [...albumForm.songs];
-      updatedSongs[songIndex] = {
-        ...updatedSongs[songIndex],
-        audio_file: file,
-      };
-
-      setAlbumForm((prev) => ({
-        ...prev,
-        songs: updatedSongs,
-      }));
-    }
+    const updatedStats = [...impactReportForm.impact.stats];
+    updatedStats[statIndex] = {
+      ...updatedStats[statIndex],
+      [field]: value,
+    };
+    handleSectionChange('impact', 'stats', updatedStats);
   };
 
-  // Validate the form
-  const validateForm = (): boolean => {
-    const newErrors = {
-      name: '',
-      cover: '',
-      artists: '',
-      songs: '',
-      general: '',
+  // Add stat
+  const handleAddStat = () => {
+    const newStat = {
+      id: uuidv4(),
+      number: '',
+      label: '',
     };
+    handleSectionChange('impact', 'stats', [
+      ...impactReportForm.impact.stats,
+      newStat,
+    ]);
+  };
 
-    let isValid = true;
+  // Remove stat
+  const handleRemoveStat = (index: number) => {
+    const updatedStats = impactReportForm.impact.stats.filter(
+      (_, i) => i !== index,
+    );
+    handleSectionChange('impact', 'stats', updatedStats);
+  };
 
-    // Check album name
-    if (!albumForm.name.trim()) {
-      newErrors.name = 'Album name is required';
-      isValid = false;
-    }
+  // Handle program changes
+  const handleProgramChange = (
+    programIndex: number,
+    field: string,
+    value: any,
+  ) => {
+    const updatedPrograms = [...impactReportForm.programs.programs];
+    updatedPrograms[programIndex] = {
+      ...updatedPrograms[programIndex],
+      [field]: value,
+    };
+    handleSectionChange('programs', 'programs', updatedPrograms);
+  };
 
-    // Check cover image
-    if (!albumForm.cover) {
-      newErrors.cover = 'Album cover is required';
-      isValid = false;
-    }
+  // Add program
+  const handleAddProgram = () => {
+    const newProgram = {
+      id: uuidv4(),
+      name: '',
+      description: '',
+      image: null,
+      imagePreview: null,
+    };
+    handleSectionChange('programs', 'programs', [
+      ...impactReportForm.programs.programs,
+      newProgram,
+    ]);
+  };
 
-    // Check artists
-    if (albumForm.artists.length === 0) {
-      newErrors.artists = 'At least one artist is required';
-      isValid = false;
-    } else {
-      // Check if any artist name is empty
-      const hasEmptyArtist = albumForm.artists.some(
-        (artist) => !artist.name.trim(),
-      );
-      if (hasEmptyArtist) {
-        newErrors.artists = 'All artist names are required';
-        isValid = false;
-      }
-    }
+  // Remove program
+  const handleRemoveProgram = (index: number) => {
+    const updatedPrograms = impactReportForm.programs.programs.filter(
+      (_, i) => i !== index,
+    );
+    handleSectionChange('programs', 'programs', updatedPrograms);
+  };
 
-    // Check songs
-    if (albumForm.songs.length === 0) {
-      newErrors.songs = 'At least one song is required';
-      isValid = false;
-    } else {
-      // Check if any song has empty title or missing audio file
-      const hasInvalidSong = albumForm.songs.some(
-        (song) => !song.title.trim() || !song.audio_file,
-      );
-      if (hasInvalidSong) {
-        newErrors.songs = 'All songs must have a title and audio file';
-        isValid = false;
-      }
+  // Handle testimonial changes
+  const handleTestimonialChange = (
+    testimonialIndex: number,
+    field: string,
+    value: any,
+  ) => {
+    const updatedTestimonials = [...impactReportForm.testimonials.testimonials];
+    updatedTestimonials[testimonialIndex] = {
+      ...updatedTestimonials[testimonialIndex],
+      [field]: value,
+    };
+    handleSectionChange('testimonials', 'testimonials', updatedTestimonials);
+  };
 
-      // Check if any song has empty artist name
-      const hasEmptySongArtist = albumForm.songs.some((song) =>
-        song.artists.some((artist) => !artist.name.trim()),
-      );
-      if (hasEmptySongArtist) {
-        newErrors.songs = 'All song artists must have a name';
-        isValid = false;
-      }
-    }
+  // Add testimonial
+  const handleAddTestimonial = () => {
+    const newTestimonial = {
+      id: uuidv4(),
+      name: '',
+      role: '',
+      content: '',
+      image: null,
+      imagePreview: null,
+    };
+    handleSectionChange('testimonials', 'testimonials', [
+      ...impactReportForm.testimonials.testimonials,
+      newTestimonial,
+    ]);
+  };
 
-    setErrors(newErrors);
-    return isValid;
+  // Remove testimonial
+  const handleRemoveTestimonial = (index: number) => {
+    const updatedTestimonials =
+      impactReportForm.testimonials.testimonials.filter((_, i) => i !== index);
+    handleSectionChange('testimonials', 'testimonials', updatedTestimonials);
   };
 
   // Handle form submission
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
-
+  const handleSave = async () => {
     setIsSubmitting(true);
 
     try {
-      // Create FormData to handle file uploads
-      const formData = new FormData();
+      // For demo purposes, just log the form data
+      console.log('Impact Report data:', impactReportForm);
 
-      // Add album basic details
-      formData.append('album_id', albumForm.album_id);
-      formData.append('name', albumForm.name);
-      formData.append('album_url', albumForm.album_url);
-      formData.append('type', albumForm.type);
-      formData.append('date', albumForm.date);
-
-      // Add cover image
-      if (albumForm.cover) {
-        formData.append('cover', albumForm.cover);
-      }
-
-      // Add album artists
-      formData.append('artists', JSON.stringify(albumForm.artists));
-
-      // Add songs
-      const songsData = albumForm.songs.map((song) => ({
-        song_id: song.song_id,
-        title: song.title,
-        album_id: albumForm.album_id,
-        artists: song.artists,
-      }));
-      formData.append('songs', JSON.stringify(songsData));
-
-      // Add song audio files
-      albumForm.songs.forEach((song, index) => {
-        if (song.audio_file) {
-          formData.append(`audio_${song.song_id}`, song.audio_file);
-        }
-      });
-
-      // Here you would make an API call to upload the album
-      // For now we'll just log the form data
-      console.log('Album data:', Object.fromEntries(formData.entries()));
-      console.log('Raw album form data:', albumForm);
-
-      // Show success message (in a real app, this would be after API response)
-      alert('Album uploaded successfully!');
-
-      // Reset form
-      setAlbumForm({
-        album_id: uuidv4(),
-        name: '',
-        album_url: '',
-        type: 'album',
-        cover: null,
-        date: new Date().toISOString().split('T')[0],
-        artists: [{ tempId: uuidv4(), artist_id: uuidv4(), name: '' }],
-        songs: [],
-      });
-      setCoverPreview(null);
+      // Show success message
+      alert('Impact Report saved successfully!');
     } catch (error) {
-      console.error('Error uploading album:', error);
+      console.error('Error saving impact report:', error);
       setErrors((prev) => ({
         ...prev,
-        general:
-          'An error occurred while uploading the album. Please try again.',
+        general: 'An error occurred while saving. Please try again.',
       }));
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  // Handle preview toggle
+  const handlePreview = () => {
+    setShowPreview(!showPreview);
+  };
+
+  // Tab configuration
+  const tabs = [
+    { label: 'Hero Section', value: 0 },
+    { label: 'Mission', value: 1 },
+    { label: 'Impact Stats', value: 2 },
+    { label: 'Programs', value: 3 },
+    { label: 'Locations', value: 4 },
+    { label: 'Testimonials', value: 5 },
+  ];
+
   return (
     <ScreenGrid>
       <Grid item>
-        <Typography variant="h2" color="white">
-          Upload New Album
+        <Typography
+          variant="h2"
+          color="white"
+          sx={{ mb: 1, textAlign: 'center' }}
+        >
+          Customize Impact Report
         </Typography>
-        <Typography variant="subtitle1" color="white" sx={{ mt: 1, mb: 3 }}>
-          Add a new album to the music library
+        <Typography
+          variant="subtitle1"
+          color="white"
+          sx={{ mb: 3, textAlign: 'center', maxWidth: 600, margin: '0 auto' }}
+        >
+          Customize all sections of the impact report to match your
+          organization's needs
         </Typography>
       </Grid>
 
       <Grid
         item
         container
-        spacing={3}
-        sx={{ maxWidth: 1200, margin: '0 auto' }}
+        spacing={{ xs: 2, md: 3 }}
+        sx={{ maxWidth: 1400, margin: '0 auto', px: { xs: 1, sm: 2, md: 3 } }}
       >
-        <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-          {/* General album information */}
-          <Paper sx={{ p: 3, mb: 4, bgcolor: '#121212', color: 'white' }}>
-            <Typography variant="h5" gutterBottom>
-              Album Information
-            </Typography>
-            <Divider sx={{ mb: 3, bgcolor: 'rgba(255,255,255,0.1)' }} />
+        {/* Action buttons */}
+        <Grid item xs={12}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: { xs: 'center', sm: 'space-between' },
+              flexDirection: { xs: 'column', sm: 'row' },
+              gap: 2,
+              mb: 3,
+            }}
+          >
+            <Box
+              sx={{
+                display: 'flex',
+                gap: 2,
+                flexWrap: 'wrap',
+                justifyContent: 'center',
+              }}
+            >
+              <Button
+                variant="contained"
+                startIcon={<SaveIcon />}
+                onClick={handleSave}
+                disabled={isSubmitting}
+                sx={{
+                  bgcolor: COLORS.gogo_blue,
+                  '&:hover': { bgcolor: '#0066cc' },
+                  minWidth: { xs: '100%', sm: 'auto' },
+                }}
+              >
+                {isSubmitting ? 'Saving...' : 'Save Changes'}
+              </Button>
+              <Button
+                variant="outlined"
+                startIcon={<PreviewIcon />}
+                onClick={handlePreview}
+                sx={{
+                  color: 'white',
+                  borderColor: 'rgba(255,255,255,0.3)',
+                  minWidth: { xs: '100%', sm: 'auto' },
+                }}
+              >
+                {showPreview ? 'Hide Preview' : 'Show Preview'}
+              </Button>
+            </Box>
+          </Box>
+        </Grid>
 
-            <Grid container spacing={3}>
-              {/* Album title */}
-              <Grid item xs={12} md={6}>
-                <TextField
-                  label="Album Name"
-                  name="name"
-                  value={albumForm.name}
-                  onChange={handleAlbumChange}
-                  fullWidth
-                  required
-                  error={!!errors.name}
-                  helperText={errors.name}
-                  InputLabelProps={{ style: { color: 'white' } }}
-                  InputProps={{ style: { color: 'white' } }}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      '& fieldset': {
-                        borderColor: 'rgba(255, 255, 255, 0.3)',
-                      },
-                      '&:hover fieldset': {
-                        borderColor: 'rgba(255, 255, 255, 0.5)',
-                      },
-                    },
-                  }}
-                />
-              </Grid>
+        {/* Tabs */}
+        <Grid item xs={12}>
+          <CustomPaper sx={{ p: 0, overflow: 'hidden' }}>
+            <Tabs
+              value={currentTab}
+              onChange={(_, newValue) => setCurrentTab(newValue)}
+              variant="scrollable"
+              scrollButtons="auto"
+              sx={{
+                borderBottom: '1px solid rgba(255,255,255,0.1)',
+                '& .MuiTab-root': {
+                  color: 'rgba(255,255,255,0.7)',
+                  minWidth: { xs: 'auto', sm: 120 },
+                  fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                  '&.Mui-selected': {
+                    color: COLORS.gogo_blue,
+                  },
+                },
+                '& .MuiTabs-indicator': {
+                  backgroundColor: COLORS.gogo_blue,
+                },
+              }}
+            >
+              {tabs.map((tab) => (
+                <Tab key={tab.value} label={tab.label} value={tab.value} />
+              ))}
+            </Tabs>
+          </CustomPaper>
+        </Grid>
 
-              {/* Album type */}
-              <Grid item xs={12} md={6}>
-                <FormControl fullWidth required>
-                  <InputLabel id="album-type-label" sx={{ color: 'white' }}>
-                    Album Type
-                  </InputLabel>
-                  <Select
-                    labelId="album-type-label"
-                    id="album-type"
-                    value={albumForm.type}
-                    label="Album Type"
-                    onChange={(e) => handleAlbumTypeChange(e as any)}
-                    sx={{
-                      color: 'white',
-                      '.MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'rgba(255, 255, 255, 0.3)',
-                      },
-                      '&:hover .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'rgba(255, 255, 255, 0.5)',
-                      },
-                    }}
-                  >
-                    <MenuItem value="single">Single</MenuItem>
-                    <MenuItem value="EP">EP</MenuItem>
-                    <MenuItem value="album">Album</MenuItem>
-                    <MenuItem value="mixtape">Mixtape</MenuItem>
-                    <MenuItem value="podcast">Podcast</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-
-              {/* Album URL */}
-              <Grid item xs={12} md={6}>
-                <TextField
-                  label="Album URL (optional)"
-                  name="album_url"
-                  value={albumForm.album_url}
-                  onChange={handleAlbumChange}
-                  fullWidth
-                  placeholder="e.g., https://open.spotify.com/album/..."
-                  InputLabelProps={{ style: { color: 'white' } }}
-                  InputProps={{ style: { color: 'white' } }}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      '& fieldset': {
-                        borderColor: 'rgba(255, 255, 255, 0.3)',
-                      },
-                      '&:hover fieldset': {
-                        borderColor: 'rgba(255, 255, 255, 0.5)',
-                      },
-                    },
-                  }}
-                />
-              </Grid>
-
-              {/* Release date */}
-              <Grid item xs={12} md={6}>
-                <TextField
-                  label="Release Date"
-                  name="date"
-                  type="date"
-                  value={albumForm.date}
-                  onChange={handleAlbumChange}
-                  fullWidth
-                  required
-                  InputLabelProps={{
-                    shrink: true,
-                    style: { color: 'white' },
-                  }}
-                  InputProps={{ style: { color: 'white' } }}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      '& fieldset': {
-                        borderColor: 'rgba(255, 255, 255, 0.3)',
-                      },
-                      '&:hover fieldset': {
-                        borderColor: 'rgba(255, 255, 255, 0.5)',
-                      },
-                    },
-                  }}
-                />
-              </Grid>
-
-              {/* Album cover */}
-              <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom>
-                  Album Cover (Required)
-                </Typography>
-
+        {/* Tab content */}
+        <Grid item xs={12}>
+          <CustomPaper
+            sx={{
+              p: { xs: 2, sm: 3 },
+              minHeight: { xs: 400, md: 600 },
+              overflow: 'auto',
+            }}
+          >
+            {/* Hero Section */}
+            {currentTab === 0 && (
+              <Box>
                 <Box
                   sx={{
                     display: 'flex',
-                    flexDirection: { xs: 'column', sm: 'row' },
+                    justifyContent: 'space-between',
                     alignItems: 'center',
-                    gap: 3,
+                    mb: 3,
                   }}
                 >
-                  {/* Cover preview */}
-                  <Box
-                    sx={{
-                      width: 200,
-                      height: 200,
-                      border: coverPreview
-                        ? 'none'
-                        : '2px dashed rgba(255,255,255,0.3)',
-                      borderRadius: 1,
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      overflow: 'hidden',
-                      bgcolor: coverPreview ? 'transparent' : 'rgba(0,0,0,0.2)',
-                    }}
-                  >
-                    {coverPreview ? (
-                      <img
-                        src={coverPreview}
-                        alt="Album cover preview"
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover',
-                        }}
-                      />
-                    ) : (
-                      <Typography variant="body2" color="rgba(255,255,255,0.5)">
-                        No cover uploaded
-                      </Typography>
-                    )}
-                  </Box>
-
-                  <Box>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleCoverUpload}
-                      style={{ display: 'none' }}
-                      ref={coverInputRef}
-                    />
-                    <Button
-                      variant="outlined"
-                      startIcon={<CloudUploadIcon />}
-                      onClick={() => coverInputRef.current?.click()}
-                      sx={{ mb: 1 }}
-                    >
-                      Upload Cover
-                    </Button>
-
-                    <Typography
-                      variant="caption"
-                      display="block"
-                      color="rgba(255,255,255,0.6)"
-                    >
-                      Recommended size: 500x500px, JPG or PNG format
-                    </Typography>
-
-                    {errors.cover && (
-                      <Typography variant="caption" color="error">
-                        {errors.cover}
-                      </Typography>
-                    )}
-                  </Box>
-                </Box>
-              </Grid>
-            </Grid>
-          </Paper>
-
-          {/* Album artists */}
-          <Paper sx={{ p: 3, mb: 4, bgcolor: '#121212', color: 'white' }}>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                mb: 2,
-              }}
-            >
-              <Typography variant="h5">Album Artists</Typography>
-              <Button
-                startIcon={<AddIcon />}
-                onClick={handleAddArtist}
-                variant="outlined"
-                size="small"
-              >
-                Add Artist
-              </Button>
-            </Box>
-            <Divider sx={{ mb: 3, bgcolor: 'rgba(255,255,255,0.1)' }} />
-
-            {errors.artists && (
-              <Typography variant="body2" color="error" sx={{ mb: 2 }}>
-                {errors.artists}
-              </Typography>
-            )}
-
-            {albumForm.artists.map((artist, index) => (
-              <Grid container spacing={2} key={artist.tempId} sx={{ mb: 2 }}>
-                <Grid item xs={10}>
-                  <TextField
-                    label="Artist Name"
-                    name="name"
-                    value={artist.name}
-                    onChange={(e) =>
-                      handleArtistChange(
-                        index,
-                        e as React.ChangeEvent<HTMLInputElement>,
-                      )
-                    }
-                    fullWidth
-                    required
-                    InputLabelProps={{ style: { color: 'white' } }}
-                    InputProps={{ style: { color: 'white' } }}
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        '& fieldset': {
-                          borderColor: 'rgba(255, 255, 255, 0.3)',
-                        },
-                        '&:hover fieldset': {
-                          borderColor: 'rgba(255, 255, 255, 0.5)',
-                        },
-                      },
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={2}>
-                  <IconButton
-                    onClick={() => handleRemoveArtist(index)}
-                    disabled={albumForm.artists.length <= 1}
-                    sx={{ color: 'rgba(255,255,255,0.7)' }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </Grid>
-              </Grid>
-            ))}
-          </Paper>
-
-          {/* Songs */}
-          <Paper sx={{ p: 3, mb: 4, bgcolor: '#121212', color: 'white' }}>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                mb: 2,
-              }}
-            >
-              <Typography variant="h5">Songs</Typography>
-              <Button
-                startIcon={<AddIcon />}
-                onClick={handleAddSong}
-                variant="outlined"
-                size="small"
-              >
-                Add Song
-              </Button>
-            </Box>
-            <Divider sx={{ mb: 3, bgcolor: 'rgba(255,255,255,0.1)' }} />
-
-            {errors.songs && (
-              <Typography variant="body2" color="error" sx={{ mb: 2 }}>
-                {errors.songs}
-              </Typography>
-            )}
-
-            {albumForm.songs.length === 0 ? (
-              <Typography
-                variant="body2"
-                color="rgba(255,255,255,0.6)"
-                align="center"
-                sx={{ py: 4 }}
-              >
-                No songs added yet. Click &quot;Add Song&quot; to add songs to
-                this album.
-              </Typography>
-            ) : (
-              albumForm.songs.map((song, songIndex) => (
-                <Paper
-                  key={song.tempId}
-                  sx={{ p: 2, mb: 3, bgcolor: 'rgba(255,255,255,0.05)' }}
-                >
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      mb: 2,
-                    }}
-                  >
-                    <Typography variant="h6">Song {songIndex + 1}</Typography>
-                    <IconButton
-                      onClick={() => handleRemoveSong(songIndex)}
-                      sx={{ color: 'rgba(255,255,255,0.7)' }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </Box>
-
-                  <Grid container spacing={2}>
-                    {/* Song title */}
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        label="Song Title"
-                        name="title"
-                        value={song.title}
+                  <Typography variant="h5">Hero Section</Typography>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={impactReportForm.hero.enabled}
                         onChange={(e) =>
-                          handleSongChange(
-                            songIndex,
-                            e as React.ChangeEvent<HTMLInputElement>,
+                          handleSectionChange(
+                            'hero',
+                            'enabled',
+                            e.target.checked,
                           )
                         }
-                        fullWidth
-                        required
-                        InputLabelProps={{ style: { color: 'white' } }}
-                        InputProps={{ style: { color: 'white' } }}
                         sx={{
-                          '& .MuiOutlinedInput-root': {
-                            '& fieldset': {
-                              borderColor: 'rgba(255, 255, 255, 0.3)',
-                            },
-                            '&:hover fieldset': {
-                              borderColor: 'rgba(255, 255, 255, 0.5)',
-                            },
+                          '& .MuiSwitch-switchBase.Mui-checked': {
+                            color: COLORS.gogo_blue,
                           },
+                          '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track':
+                            {
+                              backgroundColor: COLORS.gogo_blue,
+                            },
                         }}
                       />
-                    </Grid>
+                    }
+                    label="Enable Section"
+                    sx={{ color: 'white' }}
+                  />
+                </Box>
+                <Divider sx={{ mb: 3, bgcolor: 'rgba(255,255,255,0.1)' }} />
 
-                    {/* Audio file upload */}
-                    <Grid item xs={12} md={6}>
+                <Grid container spacing={{ xs: 2, md: 3 }}>
+                  <Grid item xs={12} md={6}>
+                    <CustomTextField
+                      label="Hero Title"
+                      value={impactReportForm.hero.title}
+                      onChange={(e) =>
+                        handleSectionChange('hero', 'title', e.target.value)
+                      }
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <CustomTextField
+                      label="Hero Subtitle"
+                      value={impactReportForm.hero.subtitle}
+                      onChange={(e) =>
+                        handleSectionChange('hero', 'subtitle', e.target.value)
+                      }
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography variant="subtitle1" gutterBottom>
+                      Background Image
+                    </Typography>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 2,
+                        flexDirection: { xs: 'column', sm: 'row' },
+                        flexWrap: 'wrap',
+                      }}
+                    >
                       <input
                         type="file"
-                        accept="audio/*"
-                        onChange={(e) => handleAudioUpload(songIndex, e)}
+                        accept="image/*"
+                        onChange={(e) =>
+                          handleImageUpload('hero', 'backgroundImage', e)
+                        }
                         style={{ display: 'none' }}
-                        id={`song-audio-${song.tempId}`}
+                        ref={(el) => (fileInputRefs.current['hero-bg'] = el)}
                       />
-                      <label htmlFor={`song-audio-${song.tempId}`}>
-                        <Button
-                          variant="outlined"
-                          component="span"
-                          startIcon={<CloudUploadIcon />}
-                          fullWidth
-                          sx={{ height: '56px' }}
-                        >
-                          {song.audio_file
-                            ? song.audio_file.name
-                            : 'Upload MP3 File'}
-                        </Button>
-                      </label>
-                    </Grid>
-
-                    {/* Song artists */}
-                    <Grid item xs={12}>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          mb: 1,
-                        }}
+                      <Button
+                        variant="outlined"
+                        startIcon={<CloudUploadIcon />}
+                        onClick={() =>
+                          fileInputRefs.current['hero-bg']?.click()
+                        }
+                        sx={{ minWidth: { xs: '100%', sm: 'auto' } }}
                       >
-                        <Typography variant="subtitle2">
-                          Song Artists
-                        </Typography>
-                        <Button
-                          size="small"
-                          startIcon={<AddIcon />}
-                          onClick={() => handleAddSongArtist(songIndex)}
+                        Upload Background
+                      </Button>
+                      {impactReportForm.hero.backgroundImagePreview && (
+                        <Box
+                          sx={{
+                            width: { xs: '100%', sm: 100 },
+                            height: { xs: 120, sm: 60 },
+                            overflow: 'hidden',
+                            borderRadius: 1,
+                            minWidth: { xs: 'auto', sm: 100 },
+                          }}
                         >
-                          Add Artist
-                        </Button>
-                      </Box>
+                          <img
+                            src={impactReportForm.hero.backgroundImagePreview}
+                            alt="Background preview"
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover',
+                            }}
+                          />
+                        </Box>
+                      )}
+                    </Box>
+                  </Grid>
+                </Grid>
+              </Box>
+            )}
 
-                      {song.artists.map((artist, artistIndex) => (
-                        <Grid
-                          container
-                          spacing={2}
-                          key={artist.tempId}
-                          sx={{ mb: 1 }}
+            {/* Mission Section */}
+            {currentTab === 1 && (
+              <Box>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    mb: 3,
+                  }}
+                >
+                  <Typography variant="h5">Mission Section</Typography>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={impactReportForm.mission.enabled}
+                        onChange={(e) =>
+                          handleSectionChange(
+                            'mission',
+                            'enabled',
+                            e.target.checked,
+                          )
+                        }
+                        sx={{
+                          '& .MuiSwitch-switchBase.Mui-checked': {
+                            color: COLORS.gogo_blue,
+                          },
+                          '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track':
+                            {
+                              backgroundColor: COLORS.gogo_blue,
+                            },
+                        }}
+                      />
+                    }
+                    label="Enable Section"
+                    sx={{ color: 'white' }}
+                  />
+                </Box>
+                <Divider sx={{ mb: 3, bgcolor: 'rgba(255,255,255,0.1)' }} />
+
+                <Grid container spacing={3}>
+                  <Grid item xs={12}>
+                    <CustomTextField
+                      label="Section Title"
+                      value={impactReportForm.mission.title}
+                      onChange={(e) =>
+                        handleSectionChange('mission', 'title', e.target.value)
+                      }
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <CustomTextField
+                      label="Mission Content"
+                      value={impactReportForm.mission.content}
+                      onChange={(e) =>
+                        handleSectionChange(
+                          'mission',
+                          'content',
+                          e.target.value,
+                        )
+                      }
+                      fullWidth
+                      multiline
+                      rows={4}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography variant="subtitle1" gutterBottom>
+                      Mission Image
+                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) =>
+                          handleImageUpload('mission', 'image', e)
+                        }
+                        style={{ display: 'none' }}
+                        ref={(el) =>
+                          (fileInputRefs.current['mission-img'] = el)
+                        }
+                      />
+                      <Button
+                        variant="outlined"
+                        startIcon={<CloudUploadIcon />}
+                        onClick={() =>
+                          fileInputRefs.current['mission-img']?.click()
+                        }
+                      >
+                        Upload Image
+                      </Button>
+                      {impactReportForm.mission.imagePreview && (
+                        <Box
+                          sx={{
+                            width: 100,
+                            height: 60,
+                            overflow: 'hidden',
+                            borderRadius: 1,
+                          }}
                         >
-                          <Grid item xs={10}>
-                            <TextField
-                              label={`Artist ${artistIndex + 1}`}
-                              name="name"
-                              value={artist.name}
-                              onChange={(e) =>
-                                handleSongArtistChange(
-                                  songIndex,
-                                  artistIndex,
-                                  e as React.ChangeEvent<HTMLInputElement>,
-                                )
-                              }
-                              fullWidth
-                              required
-                              size="small"
-                              InputLabelProps={{ style: { color: 'white' } }}
-                              InputProps={{ style: { color: 'white' } }}
-                              sx={{
-                                '& .MuiOutlinedInput-root': {
-                                  '& fieldset': {
-                                    borderColor: 'rgba(255, 255, 255, 0.3)',
-                                  },
-                                  '&:hover fieldset': {
-                                    borderColor: 'rgba(255, 255, 255, 0.5)',
-                                  },
-                                },
-                              }}
-                            />
-                          </Grid>
-                          <Grid item xs={2}>
+                          <img
+                            src={impactReportForm.mission.imagePreview}
+                            alt="Mission preview"
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover',
+                            }}
+                          />
+                        </Box>
+                      )}
+                    </Box>
+                  </Grid>
+                </Grid>
+              </Box>
+            )}
+
+            {/* Impact Stats Section */}
+            {currentTab === 2 && (
+              <Box>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    mb: 3,
+                  }}
+                >
+                  <Typography variant="h5">Impact Statistics</Typography>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={impactReportForm.impact.enabled}
+                        onChange={(e) =>
+                          handleSectionChange(
+                            'impact',
+                            'enabled',
+                            e.target.checked,
+                          )
+                        }
+                        sx={{
+                          '& .MuiSwitch-switchBase.Mui-checked': {
+                            color: COLORS.gogo_blue,
+                          },
+                          '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track':
+                            {
+                              backgroundColor: COLORS.gogo_blue,
+                            },
+                        }}
+                      />
+                    }
+                    label="Enable Section"
+                    sx={{ color: 'white' }}
+                  />
+                </Box>
+                <Divider sx={{ mb: 3, bgcolor: 'rgba(255,255,255,0.1)' }} />
+
+                <Grid container spacing={3}>
+                  <Grid item xs={12}>
+                    <CustomTextField
+                      label="Section Title"
+                      value={impactReportForm.impact.title}
+                      onChange={(e) =>
+                        handleSectionChange('impact', 'title', e.target.value)
+                      }
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        mb: 2,
+                      }}
+                    >
+                      <Typography variant="h6">Statistics</Typography>
+                      <Button
+                        startIcon={<AddIcon />}
+                        onClick={handleAddStat}
+                        variant="outlined"
+                        size="small"
+                      >
+                        Add Statistic
+                      </Button>
+                    </Box>
+                    {impactReportForm.impact.stats.map((stat, index) => (
+                      <Card
+                        key={stat.id}
+                        sx={{ mb: 2, bgcolor: 'rgba(255,255,255,0.05)' }}
+                      >
+                        <CardContent>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                              mb: 2,
+                            }}
+                          >
+                            <Typography variant="h6">
+                              Statistic {index + 1}
+                            </Typography>
                             <IconButton
-                              onClick={() =>
-                                handleRemoveSongArtist(songIndex, artistIndex)
-                              }
-                              disabled={song.artists.length <= 1}
-                              size="small"
+                              onClick={() => handleRemoveStat(index)}
                               sx={{ color: 'rgba(255,255,255,0.7)' }}
                             >
                               <DeleteIcon />
                             </IconButton>
+                          </Box>
+                          <Grid container spacing={2}>
+                            <Grid item xs={6}>
+                              <CustomTextField
+                                label="Number"
+                                value={stat.number}
+                                onChange={(e) =>
+                                  handleStatChange(
+                                    index,
+                                    'number',
+                                    e.target.value,
+                                  )
+                                }
+                                fullWidth
+                              />
+                            </Grid>
+                            <Grid item xs={6}>
+                              <CustomTextField
+                                label="Label"
+                                value={stat.label}
+                                onChange={(e) =>
+                                  handleStatChange(
+                                    index,
+                                    'label',
+                                    e.target.value,
+                                  )
+                                }
+                                fullWidth
+                              />
+                            </Grid>
                           </Grid>
-                        </Grid>
-                      ))}
-                    </Grid>
+                        </CardContent>
+                      </Card>
+                    ))}
                   </Grid>
-                </Paper>
-              ))
+                </Grid>
+              </Box>
             )}
-          </Paper>
 
-          {/* Form actions */}
-          <Box
-            sx={{ display: 'flex', justifyContent: 'center', gap: 2, mb: 4 }}
-          >
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              disabled={isSubmitting}
-              size="large"
-              sx={{
-                minWidth: 150,
-                bgcolor: COLORS.gogo_blue,
-                '&:hover': {
-                  bgcolor: '#0066cc',
-                },
-              }}
-            >
-              {isSubmitting ? 'Uploading...' : 'Upload Album'}
-            </Button>
+            {/* Programs Section */}
+            {currentTab === 3 && (
+              <Box>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    mb: 3,
+                  }}
+                >
+                  <Typography variant="h5">Programs Section</Typography>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={impactReportForm.programs.enabled}
+                        onChange={(e) =>
+                          handleSectionChange(
+                            'programs',
+                            'enabled',
+                            e.target.checked,
+                          )
+                        }
+                        sx={{
+                          '& .MuiSwitch-switchBase.Mui-checked': {
+                            color: COLORS.gogo_blue,
+                          },
+                          '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track':
+                            {
+                              backgroundColor: COLORS.gogo_blue,
+                            },
+                        }}
+                      />
+                    }
+                    label="Enable Section"
+                    sx={{ color: 'white' }}
+                  />
+                </Box>
+                <Divider sx={{ mb: 3, bgcolor: 'rgba(255,255,255,0.1)' }} />
 
-            <Button
-              variant="outlined"
-              size="large"
-              sx={{ minWidth: 100 }}
-              onClick={() => window.history.back()}
-            >
-              Cancel
-            </Button>
-          </Box>
+                <Grid container spacing={3}>
+                  <Grid item xs={12}>
+                    <CustomTextField
+                      label="Section Title"
+                      value={impactReportForm.programs.title}
+                      onChange={(e) =>
+                        handleSectionChange('programs', 'title', e.target.value)
+                      }
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        mb: 2,
+                      }}
+                    >
+                      <Typography variant="h6">Programs</Typography>
+                      <Button
+                        startIcon={<AddIcon />}
+                        onClick={handleAddProgram}
+                        variant="outlined"
+                        size="small"
+                      >
+                        Add Program
+                      </Button>
+                    </Box>
+                    {impactReportForm.programs.programs.map(
+                      (program, index) => (
+                        <Card
+                          key={program.id}
+                          sx={{ mb: 2, bgcolor: 'rgba(255,255,255,0.05)' }}
+                        >
+                          <CardContent>
+                            <Box
+                              sx={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                mb: 2,
+                              }}
+                            >
+                              <Typography variant="h6">
+                                Program {index + 1}
+                              </Typography>
+                              <IconButton
+                                onClick={() => handleRemoveProgram(index)}
+                                sx={{ color: 'rgba(255,255,255,0.7)' }}
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            </Box>
+                            <Grid container spacing={2}>
+                              <Grid item xs={12} md={6}>
+                                <CustomTextField
+                                  label="Program Name"
+                                  value={program.name}
+                                  onChange={(e) =>
+                                    handleProgramChange(
+                                      index,
+                                      'name',
+                                      e.target.value,
+                                    )
+                                  }
+                                  fullWidth
+                                />
+                              </Grid>
+                              <Grid item xs={12} md={6}>
+                                <CustomTextField
+                                  label="Description"
+                                  value={program.description}
+                                  onChange={(e) =>
+                                    handleProgramChange(
+                                      index,
+                                      'description',
+                                      e.target.value,
+                                    )
+                                  }
+                                  fullWidth
+                                />
+                              </Grid>
+                              <Grid item xs={12}>
+                                <Typography variant="subtitle2" gutterBottom>
+                                  Program Image
+                                </Typography>
+                                <Box
+                                  sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 2,
+                                  }}
+                                >
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => {
+                                      const file = e.target.files?.[0];
+                                      if (file) {
+                                        const reader = new FileReader();
+                                        reader.onload = (readerEvent) => {
+                                          handleProgramChange(
+                                            index,
+                                            'image',
+                                            file,
+                                          );
+                                          handleProgramChange(
+                                            index,
+                                            'imagePreview',
+                                            readerEvent.target
+                                              ?.result as string,
+                                          );
+                                        };
+                                        reader.readAsDataURL(file);
+                                      }
+                                    }}
+                                    style={{ display: 'none' }}
+                                    ref={(el) =>
+                                      (fileInputRefs.current[
+                                        `program-${index}`
+                                      ] = el)
+                                    }
+                                  />
+                                  <Button
+                                    variant="outlined"
+                                    startIcon={<CloudUploadIcon />}
+                                    onClick={() =>
+                                      fileInputRefs.current[
+                                        `program-${index}`
+                                      ]?.click()
+                                    }
+                                  >
+                                    Upload Image
+                                  </Button>
+                                  {program.imagePreview && (
+                                    <Box
+                                      sx={{
+                                        width: 100,
+                                        height: 60,
+                                        overflow: 'hidden',
+                                        borderRadius: 1,
+                                      }}
+                                    >
+                                      <img
+                                        src={program.imagePreview}
+                                        alt="Program preview"
+                                        style={{
+                                          width: '100%',
+                                          height: '100%',
+                                          objectFit: 'cover',
+                                        }}
+                                      />
+                                    </Box>
+                                  )}
+                                </Box>
+                              </Grid>
+                            </Grid>
+                          </CardContent>
+                        </Card>
+                      ),
+                    )}
+                  </Grid>
+                </Grid>
+              </Box>
+            )}
 
-          {/* General error */}
-          {errors.general && (
+            {/* Locations Section */}
+            {currentTab === 4 && (
+              <Box>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    mb: 3,
+                  }}
+                >
+                  <Typography variant="h5">Locations Section</Typography>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={impactReportForm.locations.enabled}
+                        onChange={(e) =>
+                          handleSectionChange(
+                            'locations',
+                            'enabled',
+                            e.target.checked,
+                          )
+                        }
+                        sx={{
+                          '& .MuiSwitch-switchBase.Mui-checked': {
+                            color: COLORS.gogo_blue,
+                          },
+                          '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track':
+                            {
+                              backgroundColor: COLORS.gogo_blue,
+                            },
+                        }}
+                      />
+                    }
+                    label="Enable Section"
+                    sx={{ color: 'white' }}
+                  />
+                </Box>
+                <Divider sx={{ mb: 3, bgcolor: 'rgba(255,255,255,0.1)' }} />
+
+                <Grid container spacing={3}>
+                  <Grid item xs={12}>
+                    <CustomTextField
+                      label="Section Title"
+                      value={impactReportForm.locations.title}
+                      onChange={(e) =>
+                        handleSectionChange(
+                          'locations',
+                          'title',
+                          e.target.value,
+                        )
+                      }
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography
+                      variant="body2"
+                      color="rgba(255,255,255,0.7)"
+                      sx={{ mb: 2 }}
+                    >
+                      Locations are currently managed through the main locations
+                      system. This section will display all active locations.
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </Box>
+            )}
+
+            {/* Testimonials Section */}
+            {currentTab === 5 && (
+              <Box>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    mb: 3,
+                  }}
+                >
+                  <Typography variant="h5">Testimonials Section</Typography>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={impactReportForm.testimonials.enabled}
+                        onChange={(e) =>
+                          handleSectionChange(
+                            'testimonials',
+                            'enabled',
+                            e.target.checked,
+                          )
+                        }
+                        sx={{
+                          '& .MuiSwitch-switchBase.Mui-checked': {
+                            color: COLORS.gogo_blue,
+                          },
+                          '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track':
+                            {
+                              backgroundColor: COLORS.gogo_blue,
+                            },
+                        }}
+                      />
+                    }
+                    label="Enable Section"
+                    sx={{ color: 'white' }}
+                  />
+                </Box>
+                <Divider sx={{ mb: 3, bgcolor: 'rgba(255,255,255,0.1)' }} />
+
+                <Grid container spacing={3}>
+                  <Grid item xs={12}>
+                    <CustomTextField
+                      label="Section Title"
+                      value={impactReportForm.testimonials.title}
+                      onChange={(e) =>
+                        handleSectionChange(
+                          'testimonials',
+                          'title',
+                          e.target.value,
+                        )
+                      }
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        mb: 2,
+                      }}
+                    >
+                      <Typography variant="h6">Testimonials</Typography>
+                      <Button
+                        startIcon={<AddIcon />}
+                        onClick={handleAddTestimonial}
+                        variant="outlined"
+                        size="small"
+                      >
+                        Add Testimonial
+                      </Button>
+                    </Box>
+                    {impactReportForm.testimonials.testimonials.map(
+                      (testimonial, index) => (
+                        <Card
+                          key={testimonial.id}
+                          sx={{ mb: 2, bgcolor: 'rgba(255,255,255,0.05)' }}
+                        >
+                          <CardContent>
+                            <Box
+                              sx={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                mb: 2,
+                              }}
+                            >
+                              <Typography variant="h6">
+                                Testimonial {index + 1}
+                              </Typography>
+                              <IconButton
+                                onClick={() => handleRemoveTestimonial(index)}
+                                sx={{ color: 'rgba(255,255,255,0.7)' }}
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            </Box>
+                            <Grid container spacing={2}>
+                              <Grid item xs={12} md={4}>
+                                <CustomTextField
+                                  label="Name"
+                                  value={testimonial.name}
+                                  onChange={(e) =>
+                                    handleTestimonialChange(
+                                      index,
+                                      'name',
+                                      e.target.value,
+                                    )
+                                  }
+                                  fullWidth
+                                />
+                              </Grid>
+                              <Grid item xs={12} md={4}>
+                                <CustomTextField
+                                  label="Role"
+                                  value={testimonial.role}
+                                  onChange={(e) =>
+                                    handleTestimonialChange(
+                                      index,
+                                      'role',
+                                      e.target.value,
+                                    )
+                                  }
+                                  fullWidth
+                                />
+                              </Grid>
+                              <Grid item xs={12} md={4}>
+                                <Typography variant="subtitle2" gutterBottom>
+                                  Photo
+                                </Typography>
+                                <Box
+                                  sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 2,
+                                  }}
+                                >
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => {
+                                      const file = e.target.files?.[0];
+                                      if (file) {
+                                        const reader = new FileReader();
+                                        reader.onload = (readerEvent) => {
+                                          handleTestimonialChange(
+                                            index,
+                                            'image',
+                                            file,
+                                          );
+                                          handleTestimonialChange(
+                                            index,
+                                            'imagePreview',
+                                            readerEvent.target
+                                              ?.result as string,
+                                          );
+                                        };
+                                        reader.readAsDataURL(file);
+                                      }
+                                    }}
+                                    style={{ display: 'none' }}
+                                    ref={(el) =>
+                                      (fileInputRefs.current[
+                                        `testimonial-${index}`
+                                      ] = el)
+                                    }
+                                  />
+                                  <Button
+                                    variant="outlined"
+                                    startIcon={<CloudUploadIcon />}
+                                    onClick={() =>
+                                      fileInputRefs.current[
+                                        `testimonial-${index}`
+                                      ]?.click()
+                                    }
+                                  >
+                                    Upload Photo
+                                  </Button>
+                                  {testimonial.imagePreview && (
+                                    <Box
+                                      sx={{
+                                        width: 50,
+                                        height: 50,
+                                        overflow: 'hidden',
+                                        borderRadius: '50%',
+                                      }}
+                                    >
+                                      <img
+                                        src={testimonial.imagePreview}
+                                        alt="Testimonial preview"
+                                        style={{
+                                          width: '100%',
+                                          height: '100%',
+                                          objectFit: 'cover',
+                                        }}
+                                      />
+                                    </Box>
+                                  )}
+                                </Box>
+                              </Grid>
+                              <Grid item xs={12}>
+                                <CustomTextField
+                                  label="Testimonial Content"
+                                  value={testimonial.content}
+                                  onChange={(e) =>
+                                    handleTestimonialChange(
+                                      index,
+                                      'content',
+                                      e.target.value,
+                                    )
+                                  }
+                                  fullWidth
+                                  multiline
+                                  rows={3}
+                                />
+                              </Grid>
+                            </Grid>
+                          </CardContent>
+                        </Card>
+                      ),
+                    )}
+                  </Grid>
+                </Grid>
+              </Box>
+            )}
+          </CustomPaper>
+        </Grid>
+
+        {/* General error */}
+        {errors.general && (
+          <Grid item xs={12}>
             <Typography variant="body2" color="error" align="center">
               {errors.general}
             </Typography>
-          )}
-        </form>
+          </Grid>
+        )}
       </Grid>
     </ScreenGrid>
   );
 }
 
-export default AlbumUploadPage;
+export default ImpactReportCustomizationPage;

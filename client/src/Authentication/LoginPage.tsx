@@ -120,7 +120,7 @@ function LoginPage() {
             user.lastName!,
             user.admin!,
           );
-          navigate('/home');
+          navigate('/users');
         })
         .catch((e) => {
           console.log('failed to login...');
@@ -136,7 +136,7 @@ function LoginPage() {
         <FormCol>
           <Grid item container justifyContent="center">
             <Typography variant="h2" textAlign="center">
-              Welcome to Boilerplate
+              Welcome, Admin!
             </Typography>
           </Grid>
           <Grid item width="1">
@@ -173,18 +173,6 @@ function LoginPage() {
               Login
             </PrimaryButton>
           </Grid>
-          <FormRow>
-            <Grid item>
-              <Link component={RouterLink} to="/email-reset">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link component={RouterLink} to="/register">
-                Sign up
-              </Link>
-            </Grid>
-          </FormRow>
         </FormCol>
       </FormGrid>
       {/* The alert that pops up */}

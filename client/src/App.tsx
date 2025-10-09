@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import NotFoundPage from './NotFound/NotFoundPage.tsx';
 import HomePage from './Home/HomePage.tsx';
 import AdminDashboardPage from './AdminDashboard/AdminDashboardPage.tsx';
@@ -60,10 +60,10 @@ function App() {
           {/* Impact Report (Spotify-style) route */}
           <Route path="/population" element={<Population />} />
 
-          {/* Route which redirects to a different page depending on if the user is an authenticated or not by utilizing the DynamicRedirect component */}
+          {/* Route which redirects to a different page depending on if the user is authenticated or not */}
           <Route
             path="/"
-            element={<DynamicRedirect unAuthPath="/login" authPath="/home" />}
+            element={<DynamicRedirect unAuthPath="/login" authPath="/users" />}
           />
           {/* Route which is accessed if no other route is matched */}
           <Route path="*" element={<NotFoundPage />} />
